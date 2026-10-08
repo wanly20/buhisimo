@@ -1,0 +1,40 @@
+Spanish,English,Section,Type,Lemma,Person,Notes
+él,he,1.1 El español global,pronoun,,,Approved (buhisimo_rules.md §6.1); v1 bubble 1 level 3
+ella,she,1.1 El español global,pronoun,,,Approved (buhisimo_rules.md §6.1); v1 bubble 1 level 3
+es,is / he is / she is,1.1 El español global,verb form,ser,él/ella,Approved (§6.1). Also seen inside ¿De dónde es? (1.1)
+tú,you,1.1 El español global,pronoun,,,Approved (§6.1); v1 bubble 3 level 2. Also inside ¿Y tú? (1.2)
+eres,you are,1.1 El español global,verb form,ser,tú,Approved (§6.1). Also seen inside ¿De dónde eres? (1.1)
+soy,I am,1.1 El español global,verb form,ser,yo,"Approved 2026-10-07; for ""soy de…"""
+de,from / of,1.1 El español global,preposition,,,Approved 2026-10-07. Also inside ¿De dónde eres? (1.1)
+la lengua,language,1.1 El español global,noun,,,"Approved 2026-10-07; used in v1 bubble 3, not in the Claro list"
+gracias,thank you,1.2 ¿Qué tal?,expression,,,Approved 2026-10-07
+muy,very,1.2 ¿Qué tal?,adverb,,,Approved 2026-10-07
+está,is (state / location),1.2 ¿Qué tal?,verb form,estar,él/ella,"Used by the slides agent; inside ""está en contacto con"" (3.5). ¿Cómo estás? is 1.2"
+me llamo,my name is,1.3 Mi carnet de identidad,verb form,llamarse,yo,Approved 2026-10-07
+te llamas,your name is,1.3 Mi carnet de identidad,verb form,llamarse,tú,Approved 2026-10-07; inside ¿Cómo te llamas? if in CSV
+se llama,his / her name is,1.3 Mi carnet de identidad,verb form,llamarse,él/ella,Approved 2026-10-07
+tengo,I have,1.3 Mi carnet de identidad,verb form,tener,yo,"Approved 2026-10-07; for ""tengo doce años"". Also inside tengo mascota (2.3)"
+tienes,you have,1.3 Mi carnet de identidad,verb form,tener,tú,Approved 2026-10-07
+tiene,he / she has,1.3 Mi carnet de identidad,verb form,tener,él/ella,Approved 2026-10-07
+tu,your,1.4 ¡…y que cumplas muchos más!,possessive,,,Approved 2026-10-07. Also inside ¿Cuándo es tu cumpleaños? (1.4)
+mucho/a,a lot / many,1.5 Mis preferencias,adjective,,,"Used by the slides agent; inside ""me gusta (mucho)"" (1.5). Forms muchos/muchas allowed automatically; ""muchas visitas"" first used in 3.5"
+un,a / an (m.),1.6 ¡Tod@s a clase!,article,,,Approved (§6.1); v1 b27 level 3
+una,a / an (f.),1.6 ¡Tod@s a clase!,article,,,Approved (§6.1); v1 b27 level 3
+mi,my,1.6 ¡Tod@s a clase!,possessive,,,Approved (§6.1); v1 b27 level 3. Also inside mi color favorito es… (1.5)
+en,in,1.6 ¡Tod@s a clase!,preposition,,,Approved (§6.1); v1 b27 level 3
+la mochila,backpack,1.6 ¡Tod@s a clase!,noun,,,Approved (§6.1); v1 b27 level 3. Not in the Claro 1.6 list
+el,the (m.),1.6 ¡Tod@s a clase!,article,,,Approved 2026-10-07; standalone use
+la,the (f.),1.6 ¡Tod@s a clase!,article,,,Approved 2026-10-07; standalone use
+los,the (m. pl.),1.6 ¡Tod@s a clase!,article,,,Approved 2026-10-07; standalone use
+las,the (f. pl.),1.6 ¡Tod@s a clase!,article,,,Approved 2026-10-07; standalone use
+su,his / her / their,1.6 ¡Tod@s a clase!,possessive,,,Used by the slides agent
+sus,his / her / their (pl.),1.6 ¡Tod@s a clase!,possessive,,,Used by the slides agent
+el chigüiro,capybara,2.3 Los animales y las mascotas,noun,,,"Added 2026-10-07 for the character cast. Colombian/Venezuelan word (elsewhere: capibara, carpincho)"
+al norte de,to the north of,3.7 México (fin de año),chunk,,,"Not a Claro section: end-of-year México lessons (after 3.6). Approved by Juan via the slides session; taught as a fixed chunk (""al"" not taught alone). el norte is also a 4.1 row"
+al sur de,to the south of,3.7 México (fin de año),chunk,,,Not a Claro section: end-of-year México lessons (after 3.6). Approved by Juan via the slides session; fixed chunk. el sur is also a 4.1 row
+al este de,to the east of,3.7 México (fin de año),chunk,,,Not a Claro section: end-of-year México lessons (after 3.6). Approved by Juan via the slides session; fixed chunk. el este is also a 4.1 row
+al oeste de,to the west of,3.7 México (fin de año),chunk,,,Not a Claro section: end-of-year México lessons (after 3.6). Approved by Juan via the slides session; fixed chunk. el oeste is also a 4.1 row
+la ciudad,city,3.7 México (fin de año),noun,,,"Not a Claro section: end-of-year México lessons (after 3.6). Approved by Juan via the slides session; introduced early, so the 4.1 row is recycled"
+la bandera,flag,3.7 México (fin de año),noun,,,Not a Claro section: end-of-year México lessons (after 3.6). Approved by Juan via the slides session
+el peso,peso (Mexican currency),3.7 México (fin de año),noun,,,Not a Claro section: end-of-year México lessons (after 3.6). Approved by Juan via the slides session
+el águila,eagle,3.7 México (fin de año),noun,,,"Not a Claro section: end-of-year México lessons (after 3.6). Approved by Juan via the slides session; feminine noun that takes ""el"" in the singular; only ""el águila"" is used"

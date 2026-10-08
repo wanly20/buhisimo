@@ -1,0 +1,54 @@
+Name,Type,Gender,Section,Say as,Used in,Notes
+Señor Ospina León,person,m,,,v1 Buhísimo (me llamo…),Your own name
+Carlos,person,m,,,v1 Buhísimo; conversation 12,
+Sofía,person,f,,,conversation M1,
+Valentina,person,f,1.3 Mi carnet de identidad,,conversation M2; Buhísimo v2 cast,"Valentina Restrepo, daughter, 12"
+Pablo,person,m,,,conversation M3,
+Elena,person,f,,,conversation M4,
+Juana,person,f,,,conversation P1,
+Daniel,person,m,,,conversation P1,
+Mateo,person,m,,,conversation P2,
+Lucía,person,f,,,conversation P3,
+Diego,person,m,,,conversation P4,
+Lucas,person,m,,,conversation P5,
+Hugo,person,m,,,conversation 16,
+Pedro,person,m,,,conversation 16,
+García,surname,,,,conversation 16,
+López,surname,,,,conversation 16,
+Rambo,pet,,,,conversation P2,
+Simba,pet,,,,conversation 11,
+México,place,,3.7 México (fin de año),,conversation M2,Not in the 1.1 country list
+Medellín,place,,,,conversation P2,
+Córdoba,place,,,,conversation P3,
+Australia,place,,,Australia,,Spanish pronunciation: aus-TRA-lia
+Melbourne,place,,,Mélburn,,"Spanish pronunciation; ""Say as"" is the spelling fed to the voice"
+Shakira,person (artist),f,3.5 ¡Somos fanátic@s de la música!,,slides agent: 3.5 deck,
+Bad Bunny,person (artist),m,3.5 ¡Somos fanátic@s de la música!,Bad Bóni,slides agent: 3.5 deck,"""Say as"" to check by ear"
+J Balvin,person (artist),m,3.5 ¡Somos fanátic@s de la música!,Jota Balvin,slides agent: 3.5 deck,"""Say as"" to check by ear"
+Jennifer Lopez,person (artist),f,3.5 ¡Somos fanátic@s de la música!,Yénifer López,slides agent: 3.5 deck,"""Say as"" to check by ear"
+Ozuna,person (artist),m,3.5 ¡Somos fanátic@s de la música!,,slides agent: 3.5 deck,
+Becky G,person (artist),f,3.5 ¡Somos fanátic@s de la música!,Beki Yi,slides agent: 3.5 deck,"""Say as"" to check by ear"
+Enrique Iglesias,person (artist),m,3.5 ¡Somos fanátic@s de la música!,,slides agent: 3.5 deck,
+Luis Fonsi,person (artist),m,3.5 ¡Somos fanátic@s de la música!,,slides agent: 3.5 deck,
+Camila Cabello,person (artist),f,3.5 ¡Somos fanátic@s de la música!,,slides agent: 3.5 deck,
+Puerto Rico,place,,3.5 ¡Somos fanátic@s de la música!,,slides agent: 3.5 deck,Not in the 1.1 country list
+Waka Waka,song,,3.5 ¡Somos fanátic@s de la música!,,slides agent: 3.5 deck,
+Despacito,song,,3.5 ¡Somos fanátic@s de la música!,,slides agent: 3.5 deck,
+Bailando,song,,3.5 ¡Somos fanátic@s de la música!,,slides agent: 3.5 deck,
+Guatemala,place,,3.7 México (fin de año),,México lessons (slides session),
+Belice,place,,3.7 México (fin de año),,México lessons (slides session),
+Ciudad de México,place,,3.7 México (fin de año),,México lessons (slides session),
+Golfo de México,place,,3.7 México (fin de año),,México lessons (slides session),
+océano Pacífico,place,,3.7 México (fin de año),,México lessons (slides session),
+Buhísimo,character (owl),m,1.1 El español global,,Buhísimo v2 cast,"Spectacled owl, the guide"
+Matilda,character (koala),f,1.1 El español global,,Buhísimo v2 cast,"Visitor from Melbourne, 12"
+Max,character (kangaroo),m,1.1 El español global,,Buhísimo v2 cast,"Visitor from Melbourne, 13"
+Samuel,person,m,1.3 Mi carnet de identidad,,Buhísimo v2 cast,"Samuel Restrepo, son, 13"
+Restrepo,surname,,1.3 Mi carnet de identidad,,Buhísimo v2 cast,The family in Salento
+Raúl,person,m,2.2 Te presento a mi familia,,Buhísimo v2 cast,Papá Restrepo
+María,person,f,2.2 Te presento a mi familia,,Buhísimo v2 cast,Mamá Restrepo
+Chigüi,character (capybara),m,2.3 Los animales y las mascotas,,Buhísimo v2 cast,The chigüiro (Amazon trip)
+Pereza,character (sloth),,2.3 Los animales y las mascotas,,Buhísimo v2 cast,The sloth (Amazon trip)
+Leticia,place,,2.3 Los animales y las mascotas,,Buhísimo v2 setting,Amazon trip
+Salento,place,,1.1 El español global,,Buhísimo v2 setting,Home base
+Cocora,place,,1.1 El español global,,Buhísimo v2 setting,"Valle de Cocora, the wax palms"
