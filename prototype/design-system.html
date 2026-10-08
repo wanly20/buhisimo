@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Buhísimo Design System</title>
+  <meta name="description" content="Colours, type, components and characters for Buhísimo v2.">
+  <link rel="icon" href="assets/owl-explaining.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/design-system.css">
+  <script type="module" src="js/ds.js"></script>
+</head>
+<body class="ds">
+  <header class="ds-hero">
+    <div class="ds-wrap ds-hero__inner">
+      <img class="ds-hero__owl" src="assets/owl-explaining.webp" alt="Buhísimo the owl">
+      <div>
+        <p class="ds-kicker">Buhísimo v2 · design prototype</p>
+        <h1 class="ds-title">Design system</h1>
+        <p class="ds-lead">Salento colours, chunky press-down buttons, and letters every Year 7 student can read. Everything here is used by <a href="index.html">the phone prototype</a>.</p>
+      </div>
+    </div>
+    <nav class="ds-wrap ds-nav" aria-label="Sections">
+      <a href="#fonts">Fonts</a><a href="#colour">Colour</a><a href="#type">Type</a><a href="#components">Components</a><a href="#feedback">Feedback</a><a href="#path">Path</a><a href="#characters">Characters</a><a href="#tokens">Tokens</a><a href="#tone">Tone</a>
+    </nav>
+  </header>
+
+  <main class="ds-wrap">
+    <section id="fonts" class="ds-section">
+      <h2 class="ds-h2">Font pairing</h2>
+      <p class="ds-p">A rounded, playful face for headings and buttons, and a highly legible face for every Spanish word. Try each pairing: the whole page switches. Your choice is saved and also used by the app.</p>
+      <div class="ds-fonts" id="font-switcher" role="radiogroup" aria-label="Font pairing"></div>
+    </section>
+
+    <section id="colour" class="ds-section">
+      <h2 class="ds-h2">Colour</h2>
+      <p class="ds-p">Taken from Salento's painted balconies: turquoise, magenta, mustard, emerald and terracotta, on warm cream. The 600 shades carry white text; the 50 shades are tinted backgrounds.</p>
+      <div id="palette" class="ds-palette"></div>
+      <h3 class="ds-h3">Semantic roles</h3>
+      <div id="roles" class="ds-roles"></div>
+      <h3 class="ds-h3">Contrast (WCAG AA needs 4.5:1 for text)</h3>
+      <div id="contrast" class="ds-contrast"></div>
+    </section>
+
+    <section id="type" class="ds-section">
+      <h2 class="ds-h2">Type scale</h2>
+      <p class="ds-p">Spanish prompts are never smaller than 24px on a phone. New words are 30px. Glyph check: every accent, ñ, ü, ¿ and ¡ must be unmistakable, and I, l and 1 must all look different.</p>
+      <div id="typescale" class="ds-typescale"></div>
+    </section>
+
+    <section id="components" class="ds-section">
+      <h2 class="ds-h2">Components</h2>
+      <p class="ds-p">Everything you can press has a darker bottom edge. On press, the face slides down onto the edge (a transform, so nothing around it moves). Tap targets are at least 48px.</p>
+      <div id="components-demo"></div>
+    </section>
+
+    <section id="feedback" class="ds-section">
+      <h2 class="ds-h2">Feedback sheets</h2>
+      <p class="ds-p">After CHECK, a sheet slides up over the footer. The CONTINUE button lands exactly where CHECK was, so your thumb doesn't move. Green for right, warm terracotta for "not yet", never harsh red. Buhísimo reacts.</p>
+      <div id="feedback-demo" class="ds-grid-2" style="align-items:start"></div>
+    </section>
+
+    <section id="path" class="ds-section">
+      <h2 class="ds-h2">Path pieces</h2>
+      <div id="path-demo"></div>
+    </section>
+
+    <section id="characters" class="ds-section">
+      <h2 class="ds-h2">Characters and scenes</h2>
+      <p class="ds-p">Cut out from the generated art (transparent WebP, each under 150 KB). Buhísimo is the species-accurate spectacled owl: round head, no ear tufts.</p>
+      <div id="characters-demo" class="ds-chars"></div>
+      <div class="ds-scenes">
+        <figure><img src="assets/map-background.webp" alt="Map background with hills, wax palms and Salento houses"><figcaption>Path background</figcaption></figure>
+        <figure><img src="assets/salento-street.webp" alt="A colourful street in Salento with a Willys jeep"><figcaption>Lesson-complete scene</figcaption></figure>
+      </div>
+    </section>
+
+    <section id="tokens" class="ds-section">
+      <h2 class="ds-h2">Spacing, radius, shadow, motion</h2>
+      <div id="tokens-demo" class="ds-grid-2"></div>
+    </section>
+
+    <section id="tone" class="ds-section">
+      <h2 class="ds-h2">Voice and tone</h2>
+      <div class="ds-grid-2">
+        <div class="ds-card">
+          <h3 class="ds-h3">Do</h3>
+          <ul class="ds-list">
+            <li>Praise specifically and briefly: "Accents and ñ matter."</li>
+            <li>Treat mistakes as normal: "Mistakes help you learn."</li>
+            <li>Bring wrong answers back later, kindly: "We'll come back to this one."</li>
+            <li>Spanish praise only with words the student already knows (in 1.1, Buhísimo's own name).</li>
+          </ul>
+        </div>
+        <div class="ds-card">
+          <h3 class="ds-h3">Don't</h3>
+          <ul class="ds-list">
+            <li>No "Wrong!", buzzers, lost hearts or shaming streak warnings.</li>
+            <li>No red as the only signal: always an icon and words too.</li>
+            <li>No Spanish the student hasn't met (the vocabulary checker enforces this).</li>
+            <li>No jokes at a character's expense: jokes come from their own traits.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="ds-wrap ds-foot">Icons: Lucide (ISC). Flags: flag-icons (MIT). Fonts: Google Fonts (OFL).</footer>
+</body>
+</html>

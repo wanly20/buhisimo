@@ -1,0 +1,141 @@
+/* Buhísimo design tokens. The single source of colour, type, spacing, radius,
+   shadow and motion values. Documented in DESIGN_SYSTEM.md; contrast checked by
+   tools/contrast.py (which reads the hex values from this first :root block). */
+:root {
+  /* Salento palette ------------------------------------------------------- */
+  --turquoise-50: #e3f6f5;
+  --turquoise-100: #c2ecea;
+  --turquoise-400: #2bbfb9;
+  --turquoise-500: #14a39e;
+  --turquoise-600: #0b7d79;
+  --turquoise-700: #075c59;
+
+  --magenta-50: #fde8f1;
+  --magenta-400: #ee4f97;
+  --magenta-500: #d6247a;
+  --magenta-600: #b3135f;
+  --magenta-700: #870b47;
+
+  --mustard-50: #fff5d6;
+  --mustard-300: #ffd56a;
+  --mustard-400: #f7b928;
+  --mustard-500: #e19c08;
+  --mustard-600: #b97c00;
+  --mustard-ink: #3d2a00;
+
+  --emerald-50: #e2f6ea;
+  --emerald-100: #c3ebd3;
+  --emerald-400: #2fbf71;
+  --emerald-500: #17a35a;
+  --emerald-600: #0e7f45;
+  --emerald-700: #085c31;
+
+  --terracotta-50: #fdebe3;
+  --terracotta-100: #f9d3c3;
+  --terracotta-400: #e9845d;
+  --terracotta-500: #d9643a;
+  --terracotta-600: #b7462a;
+  --terracotta-700: #8a2f19;
+
+  /* Warm neutrals */
+  --white: #ffffff;
+  --cream: #fff9f0;
+  --sand-100: #f6eee2;
+  --sand-200: #eadfcf;
+  --sand-300: #dccdb8;
+  --ink: #2c2118;
+  --ink-soft: #6b5a4b;
+  --ink-faint: #a6978a;
+
+  /* Semantic roles -------------------------------------------------------- */
+  --c-bg: var(--cream);
+  --c-surface: var(--white);
+  --c-border: var(--sand-200);
+  --c-text: var(--ink);
+  --c-text-soft: var(--ink-soft);
+  --c-primary: var(--turquoise-600);
+  --c-primary-edge: var(--turquoise-700);
+  --c-correct: var(--emerald-600);
+  --c-correct-edge: var(--emerald-700);
+  --c-correct-bg: var(--emerald-50);
+  --c-correct-text: var(--emerald-700);
+  --c-wrong: var(--terracotta-600);
+  --c-wrong-edge: var(--terracotta-700);
+  --c-wrong-bg: var(--terracotta-50);
+  --c-wrong-text: var(--terracotta-700);
+  --c-focus: var(--magenta-500);
+
+  /* Typography (the pairing is swapped by js/fonts.js via data-font on <html>) */
+  --font-display: "Fredoka", "Nunito", system-ui, sans-serif;
+  --font-learn: "Atkinson Hyperlegible", "Verdana", system-ui, sans-serif;
+  --display-weight: 600;
+  --display-weight-bold: 700;
+
+  --fs-xs: 0.8125rem;   /* 13px  small labels */
+  --fs-sm: 0.9375rem;   /* 15px  secondary text */
+  --fs-md: 1.0625rem;   /* 17px  body, options */
+  --fs-lg: 1.25rem;     /* 20px  instructions */
+  --fs-xl: 1.5rem;      /* 24px  Spanish prompts (minimum) */
+  --fs-2xl: 1.875rem;   /* 30px  new-word cards */
+  --fs-3xl: 2.375rem;   /* 38px  celebration */
+
+  /* Spacing scale (4px base) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  /* Radius */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  /* 3D press edge + shadows */
+  --edge: 4px;
+  --edge-lg: 6px;
+  --shadow-sm: 0 1px 2px rgb(44 33 24 / 0.08);
+  --shadow-md: 0 6px 18px rgb(44 33 24 / 0.10);
+  --shadow-lg: 0 16px 40px rgb(44 33 24 / 0.18);
+  --shadow-sheet: 0 -10px 30px rgb(44 33 24 / 0.12);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 120ms;
+  --dur-med: 260ms;
+  --dur-slow: 480ms;
+
+  /* Layout */
+  --app-max: 430px;
+  --tap: 48px;
+  --footer-h: 104px;
+}
+
+/* Font pairings ---------------------------------------------------------- */
+:root[data-font="baloo"] {
+  --font-display: "Baloo 2", "Nunito", system-ui, sans-serif;
+  --font-learn: "Lexend", "Verdana", system-ui, sans-serif;
+  --display-weight: 700;
+  --display-weight-bold: 800;
+}
+:root[data-font="nunito"] {
+  --font-display: "Nunito", system-ui, sans-serif;
+  --font-learn: "Andika", "Verdana", system-ui, sans-serif;
+  --display-weight: 800;
+  --display-weight-bold: 900;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur-med: 1ms;
+    --dur-slow: 1ms;
+  }
+}
