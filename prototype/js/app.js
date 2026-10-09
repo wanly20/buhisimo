@@ -8,7 +8,7 @@ import { store, untilLabel } from "./store.js";
 import { applyFont, pairings, loadPairing } from "./fonts.js";
 import { runLesson } from "./lesson.js";
 import { sfx } from "./sound.js";
-import { tts, stt } from "./speech.js";
+import { tts, stt, VOICE_OPTIONS } from "./speech.js";
 
 const app = document.getElementById("app");
 applyFont(store.get().font);
@@ -226,7 +226,7 @@ async function showComplete({ xp, accuracy }) {
         </div>
         <div class="learned">
           <span class="learned__label">Words you met</span>
-          <div class="learned__chips">${lesson.learnedEs.map((w) => `<button class="learned__chip" data-say="${esc(w)}">${icon("volume-2", 16, 2.5)}${es(w)}</button>`).join("")}</div>
+          <div class="learned__chips">${lesson.learnedEs.map((w, i) => `<button class="learned__chip" data-say="${esc(w)}" data-role="${i % 2 ? "raul" : "maria"}">${icon("volume-2", 16, 2.5)}${es(w)}</button>`).join("")}</div>
         </div>
       </div>
       ${footBar(button("Continue", { attrs: "data-done" }))}
@@ -234,7 +234,7 @@ async function showComplete({ xp, accuracy }) {
   app.appendChild(screen);
   sfx.complete();
   $$("[data-count]", screen).forEach((b, i) => setTimeout(() => countUp(b, +b.dataset.count, 900), 500 + i * 180));
-  screen.addEventListener("click", (e) => { const w = e.target.closest("[data-say]"); if (w) tts.speak(w.dataset.say, { sayAs: lesson.sayAs }); });
+  screen.addEventListener("click", (e) => { const w = e.target.closest("[data-say]"); if (w) tts.speak(w.dataset.say, { sayAs: lesson.sayAs, role: w.dataset.role }); });
   $("[data-done]", screen).addEventListener("click", () => { sfx.tap(); location.hash = "#/"; if (location.hash === "#/") route(); });
   setTimeout(() => $("[data-done]", screen).focus({ preventScroll: true }), 600);
   const onKey = (e) => { if (e.key === "Enter") { document.removeEventListener("keydown", onKey); $("[data-done]", screen)?.click(); } };
@@ -278,10 +278,20 @@ export function openSettings() {
       ${row("sfx", "volume-2", "Sound effects", "Little sounds for right and wrong answers", s.sfx)}
       ${row("speak", "mic", "Speaking exercises", !stt.available() ? "Not available in this browser" : speakOn ? "On" : `Off until ${untilLabel(s.speakOffUntil)}`, speakOn && stt.available(), !stt.available())}
       ${row("listen", "headphones", "Listening exercises", listenOn ? "On" : `Off until ${untilLabel(s.listenOffUntil)}`, listenOn)}
+      <p class="modal__section" id="voices-label">Voices (test)</p>
+      ${voiceRow("maria", "María (Mamá)", lesson.titleEs)}
+      ${voiceRow("buho", "Buhísimo", lesson.praiseEs[0])}
       <p class="modal__section">Prototype</p>
       <button class="btn-text settings-reset" data-reset>${icon("rotate-ccw", 18, 2.75)} Reset prototype progress</button>
-      <p class="settings-foot">Voice: ${esc(tts.voiceName())}. Real recordings come later.</p>
+      <p class="settings-foot">Recorded voices (Qwen3 test recordings). Raúl (Papá) has one voice. Anything without a recording uses ${esc(tts.voiceName())}.</p>
     </div>`);
+  function voiceRow(role, title, sample) {
+    const cur = role === "buho" ? s.voiceBuho : s.voiceMaria;
+    return `<div class="setting"><span class="setting__icon">${icon(role === "buho" ? "sparkles" : "volume-2", 22, 2.5)}</span>
+      <span class="setting__text"><span class="setting__title" id="voice-${role}">${title}</span><span class="setting__sub">Tap a voice to hear it</span></span>
+      <span class="voice-pick" role="radiogroup" aria-labelledby="voice-${role}">${VOICE_OPTIONS[role].map((v) => `
+        <button class="press font-card voice-pick__opt" role="radio" aria-checked="${cur === v.id}" data-voice="${v.id}" data-role="${role}" data-sample="${esc(sample)}"><span class="face">${esc(v.label)}</span></button>`).join("")}</span></div>`;
+  }
   function row(key, ico, title, sub, on, disabled = false) {
     return `<div class="setting"><span class="setting__icon">${icon(ico, 22, 2.5)}</span>
       <span class="setting__text"><span class="setting__title" id="set-${key}">${title}</span><span class="setting__sub" data-sub="${key}">${sub}</span></span>
@@ -297,6 +307,14 @@ export function openSettings() {
       applyFont(f.dataset.font);
       $$("[data-font]", node).forEach((b) => b.setAttribute("aria-checked", String(b === f)));
       sfx.select();
+      return;
+    }
+    const vb = t.closest("[data-voice]");
+    if (vb) {
+      const role = vb.dataset.role;
+      store.set(role === "buho" ? { voiceBuho: vb.dataset.voice } : { voiceMaria: vb.dataset.voice });
+      $$(`[data-voice][data-role="${role}"]`, node).forEach((b) => b.setAttribute("aria-checked", String(b === vb)));
+      tts.speak(vb.dataset.sample, { role });
       return;
     }
     const sw = t.closest("[data-switch]");

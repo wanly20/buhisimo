@@ -1,5 +1,6 @@
-// Placeholder audio (speechSynthesis) and speaking practice (SpeechRecognition).
-// Real recorded audio replaces tts.speak() later; the call sites stay the same.
+// Audio: recorded clips (audio/manifest.json) with speechSynthesis as the fallback,
+// plus speaking practice (SpeechRecognition).
+import { store } from "./store.js";
 
 const VOICE_PREFS = ["es-CO", "es-US", "es-MX", "es-419", "es-ES"];
 const REC_LANGS = ["es-CO", "es-ES", "es-US"];
@@ -23,38 +24,145 @@ function pickVoice() {
   return voices.find((x) => norm(x.lang).startsWith("es")) || null;
 }
 
-export const tts = {
-  available: () => "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined",
-  voiceName() { const v = pickVoice(); return v ? `${v.name} (${v.lang})` : "default Spanish voice"; },
-
-  /** Speak Spanish text. Resolves when finished (or after a safety timeout). */
-  speak(text, { slow = false, sayAs = {} } = {}) {
-    if (!tts.available()) return Promise.resolve(false);
-    let spoken = text;
-    for (const [word, say] of Object.entries(sayAs)) spoken = spoken.replaceAll(word, say);
-    return new Promise((resolve) => {
-      try {
-        const synth = window.speechSynthesis;
-        synth.cancel();
-        const u = new SpeechSynthesisUtterance(spoken);
-        const v = pickVoice();
-        if (v) u.voice = v;
-        u.lang = v?.lang || "es-ES";
-        u.rate = slow ? 0.75 : 0.95;
-        u.pitch = 1;
-        let done = false;
-        const finish = (ok) => { if (!done) { done = true; resolve(ok); } };
-        u.onend = () => finish(true);
-        u.onerror = () => finish(false);
-        setTimeout(() => finish(true), 1200 + spoken.length * (slow ? 140 : 100));
-        synth.speak(u);
-      } catch {
-        resolve(false);
-      }
-    });
-  },
-  stop() { try { window.speechSynthesis?.cancel(); } catch { /* ignore */ } },
+// ---------------------------------------------------------------- recorded clips
+// manifest.clips: Spanish text -> { voiceId: "audio/<voice>/<file>.mp3" }.
+// Roles: "maria" | "raul" | "buho". María and Buhísimo have two test voices each
+// (Settings → Voices (test)); Raúl has one.
+export const VOICE_OPTIONS = {
+  maria: [{ id: "maria_bogota", label: "Bogotá" }, { id: "maria_paisa", label: "Paisa" }],
+  buho: [{ id: "buho_profesor", label: "Profesor" }, { id: "buho_abuelo", label: "Abuelo" }],
 };
+const FALLBACK_ROLES = { maria: ["maria", "raul"], raul: ["raul", "maria"], buho: ["buho", "maria", "raul"] };
+
+let manifest = null;
+const manifestReady = fetch("audio/manifest.json")
+  .then((r) => (r.ok ? r.json() : null))
+  .then((m) => { manifest = m; return m; })
+  .catch(() => null);
+
+function voiceFor(role) {
+  const s = store.get();
+  if (role === "raul") return "raul";
+  if (role === "buho") return VOICE_OPTIONS.buho.some((v) => v.id === s.voiceBuho) ? s.voiceBuho : VOICE_OPTIONS.buho[0].id;
+  return VOICE_OPTIONS.maria.some((v) => v.id === s.voiceMaria) ? s.voiceMaria : VOICE_OPTIONS.maria[0].id;
+}
+
+/** The recorded clip for this text in this role (or the closest voice that has one). */
+function clipFor(text, role = "maria") {
+  const byVoice = manifest?.clips?.[text];
+  if (!byVoice) return null;
+  for (const r of FALLBACK_ROLES[role] || FALLBACK_ROLES.maria) {
+    const src = byVoice[voiceFor(r)];
+    if (src) return src;
+  }
+  return null;
+}
+
+// Clips are fetched once into blob URLs: tiny files, instant replays, and no
+// half-loaded media requests when one clip interrupts another.
+const blobs = new Map();
+function blobUrl(src) {
+  if (!blobs.has(src)) {
+    blobs.set(src, fetch(src).then((r) => (r.ok ? r.blob() : Promise.reject(r.status)))
+      .then((b) => URL.createObjectURL(b))
+      .catch(() => { blobs.delete(src); return null; }));
+  }
+  return blobs.get(src);
+}
+
+const player = typeof Audio !== "undefined" ? new Audio() : null;
+let playToken = 0;
+let endCurrent = null;
+
+function playClip(url, slow) {
+  return new Promise((resolve) => {
+    const token = ++playToken;
+    let done = false;
+    const finish = (ok) => {
+      if (done) return;
+      done = true;
+      player.onended = player.onerror = null;
+      if (endCurrent === finish) endCurrent = null;
+      resolve(ok);
+    };
+    endCurrent = finish;
+    try {
+      player.pause();
+      player.src = url;
+      player.preservesPitch = true;
+      player.webkitPreservesPitch = true;
+      player.defaultPlaybackRate = player.playbackRate = slow ? 0.75 : 1;
+      player.onended = () => finish(true);
+      player.onerror = () => finish(false);
+      const p = player.play();
+      if (p?.catch) p.catch(() => finish(false));
+      setTimeout(() => { if (token === playToken) finish(true); }, 12000);
+    } catch {
+      finish(false);
+    }
+  });
+}
+
+export const tts = {
+  available: () => !!player || synthAvailable(),
+  voiceName() { const v = pickVoice(); return v ? `${v.name} (${v.lang})` : "default Spanish voice"; },
+  /** True when this text has a recorded clip (any voice). */
+  hasClip: (text) => !!manifest?.clips?.[text],
+  ready: () => manifestReady,
+
+  /**
+   * Speak Spanish text: the recorded clip for `role` ("maria" | "raul" | "buho")
+   * when there is one, otherwise speechSynthesis. Resolves when finished.
+   */
+  async speak(text, { slow = false, sayAs = {}, role = "maria" } = {}) {
+    tts.stop();
+    const token = speakToken;
+    await manifestReady;
+    const src = player && clipFor(text, role);
+    if (src) {
+      const url = await blobUrl(src);
+      if (token !== speakToken) return false; // something newer started meanwhile
+      if (url) return playClip(url, slow);
+    }
+    if (token !== speakToken) return false;
+    return synthSpeak(text, { slow, sayAs });
+  },
+  stop() {
+    speakToken++;
+    try { player?.pause(); } catch { /* ignore */ }
+    endCurrent?.(false);
+    try { window.speechSynthesis?.cancel(); } catch { /* ignore */ }
+  },
+};
+
+let speakToken = 0;
+function synthAvailable() { return "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined"; }
+
+function synthSpeak(text, { slow = false, sayAs = {} } = {}) {
+  if (!synthAvailable()) return Promise.resolve(false);
+  let spoken = text;
+  for (const [word, say] of Object.entries(sayAs)) spoken = spoken.replaceAll(word, say);
+  return new Promise((resolve) => {
+    try {
+      const synth = window.speechSynthesis;
+      synth.cancel();
+      const u = new SpeechSynthesisUtterance(spoken);
+      const v = pickVoice();
+      if (v) u.voice = v;
+      u.lang = v?.lang || "es-ES";
+      u.rate = slow ? 0.75 : 0.95;
+      u.pitch = 1;
+      let done = false;
+      const finish = (ok) => { if (!done) { done = true; resolve(ok); } };
+      u.onend = () => finish(true);
+      u.onerror = () => finish(false);
+      setTimeout(() => finish(true), 1200 + spoken.length * (slow ? 140 : 100));
+      synth.speak(u);
+    } catch {
+      resolve(false);
+    }
+  });
+}
 
 // ---------------------------------------------------------------- recognition
 const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;

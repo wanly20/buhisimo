@@ -496,3 +496,8 @@
     color: var(--turquoise-700); text-decoration: none;
   }
 }
+
+/* Settings → Voices (test): two small radio cards per character */
+.voice-pick { flex: none; display: flex; gap: var(--sp-2); }
+.voice-pick__opt { width: auto; }
+.voice-pick__opt > .face { padding: var(--sp-2) var(--sp-3); min-height: 44px; font-weight: 700; }

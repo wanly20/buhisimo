@@ -11,6 +11,8 @@ const defaults = () => ({
   sfx: true,
   speakOffUntil: 0,      // timestamp (ms); speaking exercises snoozed until then
   listenOffUntil: 0,
+  voiceMaria: "maria_bogota", // recorded-voice test: maria_bogota | maria_paisa
+  voiceBuho: "buho_profesor", // buho_profesor | buho_abuelo
 });
 
 let state = load();
@@ -31,7 +33,7 @@ function save() {
 export const store = {
   get: () => state,
   set(patch) { state = { ...state, ...patch }; save(); return state; },
-  reset() { state = { ...defaults(), font: state.font }; save(); return state; },
+  reset() { state = { ...defaults(), font: state.font, voiceMaria: state.voiceMaria, voiceBuho: state.voiceBuho }; save(); return state; },
 
   speakOn: () => Date.now() >= state.speakOffUntil,
   listenOn: () => Date.now() >= state.listenOffUntil,

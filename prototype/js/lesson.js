@@ -81,9 +81,21 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
     complete(result) { showFeedback(result); },
     next() { advance(true); },
     skip(kind) { skipKind(kind); },
-    speak: (text, slow) => tts.speak(text, { slow, sayAs: lesson.sayAs }),
+    speak: (text, slow) => tts.speak(text, { slow, sayAs: lesson.sayAs, role: roleFor(queue[idx], idx) }),
     lesson,
   };
+
+  // Which recorded voice says this step: Buhísimo's own lines in his voice,
+  // Matilda in María's and Max in Raúl's (no kid voices yet); everything else
+  // alternates María / Raúl from one exercise to the next.
+  function roleFor(step, i) {
+    const who = step?.character || "";
+    if (who.startsWith("owl")) return "buho";
+    if (who === "matilda") return "maria";
+    if (who === "max") return "raul";
+    return i % 2 ? "raul" : "maria";
+  }
+  let praiseTimer = 0;
 
   function setProgress() {
     const p = Math.min(1, done / Math.max(1, total));
@@ -93,6 +105,7 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
 
   // ------------------------------------------------------------ flow
   function advance(countIt) {
+    clearTimeout(praiseTimer);
     if (countIt) done++;
     setProgress();
     hideSheet();
@@ -121,6 +134,7 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
   }
 
   function finish() {
+    clearTimeout(praiseTimer);
     tts.stop();
     document.removeEventListener("keydown", onKey);
     const accuracy = stats.graded ? Math.round((stats.correct / stats.graded) * 100) : 100;
@@ -183,6 +197,9 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
       } else title = result.skipped ? "Here's the answer" : esc(pick(lesson.encourageEn));
     }
     $(".feedback__title", sheet).innerHTML = title;
+    // Spanish praise is Buhísimo's catchphrase: he says it (unless listening is off).
+    const praise = lesson.praiseEs.find((p) => title === es(p));
+    if (praise && store.listenOn()) praiseTimer = setTimeout(() => tts.speak(praise, { role: "buho" }), 300);
 
     let bodyHtml = result.body || "";
     if (!result.ok && !result.body && !result.skipped) bodyHtml += `<span class="feedback__tip">${esc(pick(lesson.kindEn))}</span>`;
@@ -284,6 +301,7 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
   }
 
   function exit() {
+    clearTimeout(praiseTimer);
     tts.stop(); stt.stop();
     document.removeEventListener("keydown", onKey);
     screen.remove();
@@ -293,7 +311,7 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
   setProgress();
   advance(false);
   if (unsupported.length) setTimeout(() => toast("Speaking practice isn't available in this browser, so it's skipped.", "mic-off", 3200), 500);
-  return { destroy: exit, screen, dispose() { document.removeEventListener("keydown", onKey); tts.stop(); stt.stop(); } };
+  return { destroy: exit, screen, dispose() { clearTimeout(praiseTimer); document.removeEventListener("keydown", onKey); tts.stop(); stt.stop(); } };
 }
 
 // =================================================================== exercises
