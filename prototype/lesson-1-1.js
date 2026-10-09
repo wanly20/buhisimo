@@ -33,6 +33,9 @@ export const lesson = {
 
   // Specimen line used by the settings sheet and the design-system page.
   specimenEs: "¿De dónde eres? Soy de España.",
+  // Buhísimo's tip card on the desktop path (right panel).
+  tipEn: "Say new words out loud. Your mouth remembers too! Try [[¿De dónde eres?]] three times, a little faster each time.",
+
   // Extra example lines used on the design-system page.
   examplesEs: ["Matilda es de Melbourne.", "Max es de Australia.", "Ella es famosa.", "El monumento es histórico.", "la capital", "el mundo", "el mapa"],
 

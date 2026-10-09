@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/design-system.css">
   <script type="module" src="js/ds.js"></script>
 </head>
@@ -24,11 +25,11 @@
       <div>
         <p class="ds-kicker">Buhísimo v2 · design prototype</p>
         <h1 class="ds-title">Design system</h1>
-        <p class="ds-lead">Salento colours, chunky press-down buttons, and letters every Year 7 student can read. Everything here is used by <a href="index.html">the phone prototype</a>.</p>
+        <p class="ds-lead">Salento colours, chunky press-down buttons, and letters every Year 7 student can read. Everything here is used by <a href="index.html">the prototype</a> on phones, tablets and Chromebooks.</p>
       </div>
     </div>
     <nav class="ds-wrap ds-nav" aria-label="Sections">
-      <a href="#fonts">Fonts</a><a href="#colour">Colour</a><a href="#type">Type</a><a href="#components">Components</a><a href="#feedback">Feedback</a><a href="#path">Path</a><a href="#characters">Characters</a><a href="#tokens">Tokens</a><a href="#tone">Tone</a>
+      <a href="#fonts">Fonts</a><a href="#colour">Colour</a><a href="#type">Type</a><a href="#components">Components</a><a href="#feedback">Feedback</a><a href="#path">Path</a><a href="#desktop">Desktop</a><a href="#characters">Characters</a><a href="#tokens">Tokens</a><a href="#tone">Tone</a>
     </nav>
   </header>
 
@@ -70,6 +71,21 @@
     <section id="path" class="ds-section">
       <h2 class="ds-h2">Path pieces</h2>
       <div id="path-demo"></div>
+    </section>
+
+    <section id="desktop" class="ds-section">
+      <h2 class="ds-h2">Chromebook and desktop</h2>
+      <p class="ds-p">The same app and lessons; only the layout adapts. Phones (under 700px) keep the single column. Tablets (700–1023px) keep the top bar and centre the path. From 1024px the path gets a left sidebar and a right progress panel; from 1280px the sidebar shows labels, below that it is an icon rail. Lessons sit on a centred 720px stage with a full-width bottom bar.</p>
+      <div id="shell-demo"></div>
+      <h3 class="ds-h3">Lesson bottom bar (700px and wider)</h3>
+      <p class="ds-p">Secondary actions on the left, CHECK on the right. The feedback sheet spans the full width, and CONTINUE lands exactly where CHECK was. On phones the bar is one full-width button, as before. Narrow this window to see it.</p>
+      <div id="bar-demo"></div>
+      <h3 class="ds-h3">Keyboard</h3>
+      <div class="ds-card ds-keys">
+        <p><kbd>1</kbd>–<kbd>9</kbd> pick an option or a word tile · in matching pairs <kbd>1</kbd>–<kbd>5</kbd> are Spanish and <kbd>6</kbd>–<kbd>0</kbd> English</p>
+        <p><kbd>Enter</kbd> CHECK, then CONTINUE · <kbd>Backspace</kbd> takes the last tile back · <kbd>Esc</kbd> opens “Leave the lesson?” (and closes dialogs)</p>
+        <p><kbd>Tab</kbd> moves through everything in reading order, with a magenta focus ring. Typing works with real accented letters or the accent bar (á é í ó ú ñ ü ¿ ¡). Number badges only appear on devices with a mouse, trackpad or keyboard, never on touch screens.</p>
+      </div>
     </section>
 
     <section id="characters" class="ds-section">

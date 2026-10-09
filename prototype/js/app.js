@@ -2,7 +2,8 @@
 import { lesson } from "../lesson-1-1.js";
 import { units, unitsTextbookTitlesEs } from "../path-data.js";
 import { icon } from "./icons.js";
-import { $, $$, esc, es, el, button, charImg, toast, openModal, countUp, reducedMotion, restartAnim } from "./ui.js";
+import { $, $$, esc, es, el, button, footBar, charImg, toast, openModal, countUp, reducedMotion, restartAnim } from "./ui.js";
+import { sideNav, pathPanel, soonCard, SOON } from "./shell.js";
 import { store, untilLabel } from "./store.js";
 import { applyFont, pairings, loadPairing } from "./fonts.js";
 import { runLesson } from "./lesson.js";
@@ -27,18 +28,24 @@ let justCompleted = null;
 let activeLesson = null;
 
 // =================================================================== router
+// #/ path · #/lesson/… lesson · #/review, #/radio, #/profile "coming soon" (sidebar)
+const viewOf = (h) => (h.startsWith("#/lesson") ? "lesson" : SOON[h.slice(2)] ? h.slice(2) : "path");
+
 function route() {
-  const h = location.hash;
+  const view = viewOf(location.hash);
+  const pathScreen = app.querySelector(".screen.path");
+  // Switching between path sections keeps the shell (sidebar, panel) in place.
+  if (view !== "lesson" && pathScreen && !activeLesson) return setView(pathScreen, view);
   activeLesson?.dispose();
   activeLesson = null;
   app.querySelectorAll(".screen, .sheet, .scrim").forEach((n) => n.remove());
-  if (h.startsWith("#/lesson")) return showLesson();
-  showPath();
+  if (view === "lesson") return showLesson();
+  showPath(view);
 }
 window.addEventListener("hashchange", route);
 
 // =================================================================== path
-function showPath() {
+function showPath(view = "path") {
   const s = store.get();
   const done = (id) => !!s.completed[id];
   let g = 0;
@@ -77,6 +84,7 @@ function showPath() {
 
   const screen = el(`
     <section class="screen path" aria-label="Learning path">
+      ${sideNav(view)}
       <div class="path-bg" aria-hidden="true"><img src="assets/map-background.webp" alt=""></div>
       <header class="path-top">
         <div class="brand">
@@ -93,41 +101,45 @@ function showPath() {
         <div class="path-inner">${unitHtml}
           <p class="path-end">${icon("sparkles", 18, 2.5)} Units 2 and 3 are on their way.</p>
         </div>
+        <div class="soon" hidden></div>
       </main>
+      ${pathPanel(s)}
     </section>`);
   app.appendChild(screen);
   const scroller = $(".path-scroll", screen);
 
   // Parallax-free fixed background; keep the current node in view on load.
-  const focusNode = $(".just-done", screen) || $(".node.is-current", screen);
-  if (focusNode) requestAnimationFrame(() => {
-    const r = focusNode.getBoundingClientRect(), sr = scroller.getBoundingClientRect();
-    scroller.scrollTop += r.top - sr.top - sr.height * 0.4;
-  });
+  setView(screen, view, { first: true });
   if (justCompleted) {
     const n = $(".just-done", screen);
     setTimeout(() => { n && restartAnim(n, "pop"); sfx.pair(); }, 450);
-    restartAnim($(".chip--xp", screen), "bump");
-    restartAnim($(".chip--streak", screen), "bump");
+    $$(".chip--xp, .chip--streak, .pstat", screen).forEach((c) => restartAnim(c, "bump"));
     justCompleted = null;
   }
 
   screen.addEventListener("click", (e) => {
     const t = e.target;
-    if (t.closest('[data-act="settings"]')) return openSettings();
+    if (t.closest('[data-act="settings"], [data-nav="settings"]')) return openSettings();
     if (t.closest("[data-guide]")) return toast("Guidebooks are coming soon.", "book-open");
     if (t.closest("[data-start]")) { sfx.tap(); location.hash = "#/lesson/1.1-1"; return; }
     const node = t.closest("[data-node]");
     closePop();
-    if (node) { sfx.select(); openPop(node); }
+    if (node) { sfx.select(); openPop(node, e.detail === 0); }
   });
   scroller.addEventListener("scroll", closePop, { passive: true });
+  screen.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && $(".node-pop", screen)) {
+      const node = $(".node-pop", screen).closest(".node-wrap").querySelector(".node");
+      closePop();
+      node.focus({ preventScroll: true });
+    }
+  });
 
   function closePop() {
     $$(".node-pop", screen).forEach((p) => { p.classList.remove("is-open"); setTimeout(() => p.remove(), 200); });
   }
 
-  function openPop(node) {
+  function openPop(node, viaKeyboard = false) {
     const id = node.dataset.node;
     const unit = units.find((u) => u.id === node.dataset.unit);
     const meta = unit.nodes.find((n) => n.id === id);
@@ -148,11 +160,39 @@ function showPath() {
       </div>`);
     wrap.appendChild(pop);
     requestAnimationFrame(() => pop.classList.add("is-open"));
+    if (viaKeyboard) setTimeout(() => pop.querySelector("button:not(:disabled)")?.focus({ preventScroll: true }), 80);
     // Keep the popover visible.
     setTimeout(() => {
       const r = pop.getBoundingClientRect(), sr = scroller.getBoundingClientRect();
       if (r.bottom > sr.bottom - 12) scroller.scrollBy({ top: r.bottom - sr.bottom + 24, behavior: reducedMotion() ? "auto" : "smooth" });
     }, 60);
+  }
+}
+
+/** Show the path or a "coming soon" section inside the path screen's shell. */
+function setView(screen, view, { first = false } = {}) {
+  const scroller = $(".path-scroll", screen);
+  const soon = $(".soon", screen);
+  $$(".side-item[data-view]", screen).forEach((a) => {
+    if (a.dataset.view === view) a.setAttribute("aria-current", "page");
+    else a.removeAttribute("aria-current");
+  });
+  $$(".node-pop", screen).forEach((p) => p.remove());
+  $(".path-inner", screen).hidden = view !== "path";
+  soon.hidden = view === "path";
+  screen.dataset.view = view;
+  if (view === "path") {
+    soon.innerHTML = "";
+    // Keep the current (or just-finished) lesson in view.
+    const focusNode = $(".just-done", screen) || $(".node.is-current", screen);
+    if (focusNode) requestAnimationFrame(() => {
+      const r = focusNode.getBoundingClientRect(), sr = scroller.getBoundingClientRect();
+      scroller.scrollTop += r.top - sr.top - sr.height * 0.4;
+    });
+  } else {
+    soon.innerHTML = soonCard(view);
+    scroller.scrollTop = 0;
+    if (!first) restartAnim(soon.firstElementChild, "step-enter");
   }
 }
 
@@ -189,7 +229,7 @@ async function showComplete({ xp, accuracy }) {
           <div class="learned__chips">${lesson.learnedEs.map((w) => `<button class="learned__chip" data-say="${esc(w)}">${icon("volume-2", 16, 2.5)}${es(w)}</button>`).join("")}</div>
         </div>
       </div>
-      <footer class="lesson-foot">${button("Continue", { attrs: "data-done" })}</footer>
+      ${footBar(button("Continue", { attrs: "data-done" }))}
     </section>`);
   app.appendChild(screen);
   sfx.complete();

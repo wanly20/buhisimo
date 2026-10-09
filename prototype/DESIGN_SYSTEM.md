@@ -70,7 +70,7 @@ Students switch pairings in Settings (the slider icon in a lesson, or the gear o
 - **3D edge:** `--edge` 4px (buttons, options), 3px (tiles, keys), `--edge-lg` 6px (path nodes, big audio and mic buttons).
 - **Shadows:** sm (chips), md (banners), lg (popovers, desktop frame), sheet (modal sheets). Flat elements use the solid bottom edge instead of a blur.
 - **Motion:** 120ms press, 260ms sheets and toggles, 480ms progress and screen changes. Easing is `cubic-bezier(.22,1,.36,1)`, with a spring for pops. `prefers-reduced-motion` makes every animation instant and turns confetti off.
-- **Layout:** designed at 390×844. On desktop the app is a centred 430px card. Tap targets are at least 48px. The footer is a fixed 104px.
+- **Layout:** designed at 390×844 for phones, with tablet and Chromebook/desktop layouts in `css/layout.css` (section 9). Tap targets are at least 48px. The phone footer is a fixed 104px.
 
 ## 5. Components (in `css/components.css`)
 
@@ -80,7 +80,7 @@ Students switch pairings in Settings (the slider icon in a lesson, or the gear o
 | Button | `.btn .btn--primary / secondary / correct / wrong / magenta / mustard / on-color` | Uppercase display type. Disabled = sand. |
 | Text button | `.btn-text` | Can't speak now, Can't listen now, Show me |
 | Icon buttons | `.icon-btn--primary / secondary / magenta`, `--sm` | Audio, 🐢 slow (rate 0.75), mic |
-| Option card | `.option` + `aria-pressed`, `.is-correct`, `.is-wrong` | Number key badge (keys 1–4 work) |
+| Option card | `.option` + `aria-pressed`, `.is-correct`, `.is-wrong` | Number key badge (keys 1–9 work); hidden on touch screens |
 | Word tile | `.tile`, `.tile-slot`, `.tile-fly` | The bank keeps a grey slot where a tile was, so nothing reflows. Tiles fly with FLIP. |
 | Progress bar | `.progress > .progress__fill` (`--p` 0–1) | translateX fill with a glossy highlight |
 | Chips | `.chip--streak`, `.chip--xp` | Path top bar |
@@ -126,21 +126,44 @@ Buhísimo is the species-accurate seed-3 set (round head, no ear tufts). The cel
 - **Sounds:** WebAudio tones (correct = rising G5→D6, not-yet = soft E4→C4, complete = arpeggio), plus `navigator.vibrate` where available. They can be switched off in Settings.
 - **Saved:** XP, streak (days in a row), completed nodes, font, sound, and the speak/listen snoozes. Key: `buhisimo.prototype.v1`; every access is wrapped in try/catch.
 
-## 9. Files
+## 9. Tablet, Chromebook and desktop
+
+Same app, same lessons; only the layout adapts. All of it is CSS (`css/layout.css`, grid + media queries + `clamp()`); the phone rules are untouched.
+
+| Width | Layout |
+|---|---|
+| < 700px | Phone, as designed (a framed 430px card at 600–699px) |
+| 700–1023px (tablet) | Top bar as on the phone; the path is a centred 560px column over the scene; the right panel is hidden |
+| 1024–1279px | Icon-rail sidebar (96px) + path column + right panel (300px) |
+| ≥ 1280px | Labelled sidebar (236px) + path column + right panel (340px) |
+| height ≤ 820px | Compact lesson header and a 100px bottom bar (92px at ≤ 680px); characters are sized with `vh` so a whole exercise fits on 1366×768, 1280×720 and even a Chromebook's real ~1366×657 viewport |
+
+- **Sidebar** (`.side-nav`, `js/shell.js`): logo; Path, Review, Radio Búho, Profile, Settings. Only Path works; the others open a "Coming soon" card (`#/review`, `#/radio`, `#/profile`) without reloading the shell.
+- **Right panel** (`.path-panel`): streak + XP, a weekly goal ring (50 XP, prototype), "Your class is up to 1.4" (static placeholder, with a You/Class track) and Buhísimo's tip (`tipEn` in `lesson-1-1.js`).
+- **Path art:** the 768px-wide map stays crisp behind the column; wider screens fill both sides with the same picture, blurred, so it is never stretched or pixelated.
+- **Lessons:** a centred 720px stage, type one step larger (prompts 28px, new words 36px), choices in a 2×2 grid, and the new-word card laid out sideways. From 700px the bottom bar is full width: secondary actions on the left (Skip, Can't listen now / Can't speak now, Show me), CHECK on the right. **Skip** shows the answer kindly ("Here's the answer") and the question comes back later; on match and speaking it just moves on. The feedback sheet spans the full width with its content on the same 1000px grid, and CONTINUE lands exactly where CHECK was (same size, same spot). The accent bar adds ¿ and ¡.
+- **Dialogs** (settings, quit) become centred cards. The lesson-complete screen is two columns from 1024px.
+- **Keyboard:** 1–9 pick an option or word tile; in matching pairs 1–5 are Spanish and 6–9, 0 English; Backspace takes the last tile back; Enter = CHECK, then CONTINUE (holding it never races ahead; a focused tile, letter or audio button still does its own thing); Esc = quit dialog. Tab order follows the screen, with a magenta focus ring. Number badges show only with a fine pointer or no pointer (`@media (pointer: fine), (pointer: none)`), never on touch screens.
+- **Tests:** `tools/e2e.mjs` (phone, unchanged) and `tools/e2e-keyboard.mjs` (the whole lesson with the keyboard only at 1366×768).
+
+## 10. Files
 
 ```
 prototype/
-  index.html                 app shell (phone prototype)
+  index.html                 app shell (phone, tablet and desktop)
   design-system.html         living style guide
   lesson-1-1.js              ALL lesson content and Spanish strings
   path-data.js               units 1.1–1.6 (textbook titles)
   css/tokens.css             design tokens  ← start here
   css/base.css · components.css · app.css · design-system.css
+  css/layout.css             tablet + Chromebook/desktop layouts, keyboard hints
   js/app.js                  router, path, lesson complete, settings
   js/lesson.js               lesson runner + 7 exercise types + accent fix-up
+  js/shell.js                desktop sidebar, right panel, "coming soon" cards
   js/speech.js · sound.js · store.js · fonts.js · ui.js · icons.js (Lucide, ISC) · ds.js
   assets/                    WebP art + flags
   tools/check_vocab.mjs      vocabulary validator (node tools/check_vocab.mjs)
+  tools/e2e.mjs · e2e-keyboard.mjs   headless Chromium tests (phone; keyboard-only desktop)
   tools/contrast.py          contrast table from tokens.css
   tools/process_art.py       art cut-out pipeline (rembg)
 ```

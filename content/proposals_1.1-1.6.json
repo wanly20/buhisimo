@@ -1,0 +1,98 @@
+{
+  "_about": "Proposed additions for units 1.1-1.6. NOT approved and NOT in data/*.csv. Sentences that depend on one carry \"needs\": [\"P#\"] and are reported as PENDING by tools/check_vocab.mjs. If Juan approves one, copy its words into the master CSVs (spanish_app/) with the section shown, re-sync data/, and remove the tag from the sentences.",
+  "proposals": [
+    {
+      "id": "P1", "priority": "core", "kind": "words",
+      "title": "sí / no",
+      "words": [
+        { "es": "sí", "en": "yes", "section": "1.1", "type": "adverb" },
+        { "es": "no", "en": "no / not", "section": "1.1", "type": "adverb" }
+      ],
+      "unlocks": "Yes/no answers from 1.1 (¿Eres de España? — No, soy de Australia.), 'No hay…' in 1.6, true/false checks with a Spanish answer."
+    },
+    {
+      "id": "P2", "priority": "nice", "kind": "words",
+      "title": "el español",
+      "words": [ { "es": "el español", "en": "Spanish (the language)", "section": "1.1", "type": "noun" } ],
+      "unlocks": "Makes the approved helper 'la lengua' usable: La lengua de Cuba es el español. It is also the unit's own title word (El español global)."
+    },
+    {
+      "id": "P3", "priority": "core", "kind": "words",
+      "title": "¿Cómo te llamas? / ¿Cómo se llama?",
+      "words": [
+        { "es": "¿Cómo te llamas?", "en": "What's your name?", "section": "1.3", "type": "chunk", "lemma": "llamarse" },
+        { "es": "¿Cómo se llama?", "en": "What's his/her name?", "section": "1.3", "type": "chunk", "lemma": "llamarse" }
+      ],
+      "unlocks": "The standard name question. Today 'cómo' exists only inside ¿Cómo estás?, so students can only ask '¿Y tú?' or '¿Te llamas…?'."
+    },
+    {
+      "id": "P4", "priority": "core", "kind": "words",
+      "title": "años (in 'tengo … años')",
+      "words": [ { "es": "años", "en": "years (old)", "section": "1.3", "type": "noun form", "lemma": "el año" } ],
+      "unlocks": "Tengo doce años / Samuel tiene trece años. The helper note for 'tengo' already says it is 'for tengo doce años', but 'años' itself only exists inside ¿Cuántos años tienes? (and 'el año' is 1.4)."
+    },
+    {
+      "id": "P5", "priority": "core", "kind": "move",
+      "title": "mi: move from 1.6 to 1.3",
+      "words": [ { "es": "mi", "en": "my", "section": "1.3", "type": "possessive" } ],
+      "unlocks": "Mi nombre es… / Mi amiga se llama Valentina (1.3), Mi cumpleaños es… (1.4). Needs P7 too, because 'mi' is always followed by a noun without its article."
+    },
+    {
+      "id": "P6", "priority": "core", "kind": "move",
+      "title": "el: move from 1.6 to 1.4",
+      "words": [ { "es": "el", "en": "the (m.)", "section": "1.4", "type": "article" } ],
+      "unlocks": "Every date except el primero / el uno (el doce de marzo, el veinte de julio) in 1.4, and colour opinions in 1.5 (Me encanta el azul; Odio el naranja). Without it, odio/detesto/prefiero have no natural sentence until 1.6."
+    },
+    {
+      "id": "P7", "priority": "core", "kind": "rule", "rule": "bare-nouns",
+      "title": "Rule: a CSV noun may appear without its article",
+      "unlocks": "un libro, una regla, mi mochila, tu estuche, su libro, Hay un lápiz…, ID-card labels (Nombre: Samuel). Every token is still a CSV word; only the article is dropped. Without it, 'hay', 'un/una' and 'mi/su/sus' (all 1.6) cannot be used at all."
+    },
+    {
+      "id": "P8", "priority": "core", "kind": "rule", "rule": "noun-plurals",
+      "title": "Rule: regular plurals of CSV nouns",
+      "unlocks": "tres lápices, dos cuadernos, los libros (1.6 Mochila game and mix engine, as in v1). The validator prints each plural actually used so it can be checked."
+    },
+    {
+      "id": "P9", "priority": "core", "kind": "fix",
+      "title": "CSV typo: el lugar de nascimiento → nacimiento",
+      "words": [ { "es": "el lugar de nacimiento", "en": "birthplace", "section": "1.3", "type": "noun" } ],
+      "unlocks": "The 1.3 ID card can show the correct spelling. Until fixed, the validator only accepts the misspelt form."
+    },
+    {
+      "id": "P10", "priority": "nice", "kind": "words",
+      "title": "Letter names + ¿Cómo se escribe?",
+      "words": [
+        { "es": "¿Cómo se escribe?", "en": "How do you spell it?", "section": "1.2", "type": "chunk" },
+        { "es": "a", "en": "A", "section": "1.2", "type": "letter" },
+        { "es": "be", "en": "B", "section": "1.2", "type": "letter" },
+        { "es": "ce", "en": "C", "section": "1.2", "type": "letter" },
+        { "es": "de", "en": "D", "section": "1.2", "type": "letter" },
+        { "es": "e", "en": "E", "section": "1.2", "type": "letter" },
+        { "es": "efe", "en": "F", "section": "1.2", "type": "letter" },
+        { "es": "ge", "en": "G", "section": "1.2", "type": "letter" },
+        { "es": "hache", "en": "H", "section": "1.2", "type": "letter" },
+        { "es": "i", "en": "I", "section": "1.2", "type": "letter" },
+        { "es": "jota", "en": "J", "section": "1.2", "type": "letter" },
+        { "es": "ka", "en": "K", "section": "1.2", "type": "letter" },
+        { "es": "ele", "en": "L", "section": "1.2", "type": "letter" },
+        { "es": "eme", "en": "M", "section": "1.2", "type": "letter" },
+        { "es": "ene", "en": "N", "section": "1.2", "type": "letter" },
+        { "es": "eñe", "en": "Ñ", "section": "1.2", "type": "letter" },
+        { "es": "o", "en": "O", "section": "1.2", "type": "letter" },
+        { "es": "pe", "en": "P", "section": "1.2", "type": "letter" },
+        { "es": "cu", "en": "Q", "section": "1.2", "type": "letter" },
+        { "es": "erre", "en": "R", "section": "1.2", "type": "letter" },
+        { "es": "ese", "en": "S", "section": "1.2", "type": "letter" },
+        { "es": "te", "en": "T", "section": "1.2", "type": "letter" },
+        { "es": "u", "en": "U", "section": "1.2", "type": "letter" },
+        { "es": "uve", "en": "V", "section": "1.2", "type": "letter" },
+        { "es": "uve doble", "en": "W", "section": "1.2", "type": "letter" },
+        { "es": "equis", "en": "X", "section": "1.2", "type": "letter" },
+        { "es": "ye", "en": "Y", "section": "1.2", "type": "letter" },
+        { "es": "zeta", "en": "Z", "section": "1.2", "type": "letter" }
+      ],
+      "unlocks": "Spelling practice for el alfabeto / escribir (1.2): ¿Cómo se escribe Max? — Eme, a, equis. Letter names follow the RAE list; Juan to choose 'uve' or 've corta' and 'ye' or 'i griega' to match class."
+    }
+  ]
+}

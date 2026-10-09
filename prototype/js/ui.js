@@ -33,6 +33,12 @@ export function button(label, { variant = "primary", block = true, attrs = "", i
   return `<button class="press btn btn--${variant} ${block ? "btn--block" : ""}" ${attrs}><span class="face">${ico ? icon(ico, 22, 2.75) : ""}<span>${label}</span></span></button>`;
 }
 
+/** The bottom button bar. On phones only `main` shows (full width); from 700px
+ *  it becomes a full-width bar with `aside` (secondary actions) on the left. */
+export function footBar(main, aside = "") {
+  return `<footer class="lesson-foot"><div class="lesson-foot__inner"><div class="lesson-foot__aside">${aside}</div><div class="lesson-foot__main">${main}</div></div></footer>`;
+}
+
 export function audioButtons({ slow = true, size = "" } = {}) {
   return `<button class="press icon-btn icon-btn--primary ${size}" data-audio="normal" aria-label="Play audio"><span class="face">${icon("volume-2", 28)}</span></button>` +
     (slow ? `<button class="press icon-btn icon-btn--secondary ${size}" data-audio="slow" aria-label="Play slowly"><span class="face">${icon("turtle", 28)}</span></button>` : "");

@@ -2,7 +2,7 @@
 // Each exercise is a controller: { el, mount?(), check?() -> result, footer, destroy?() }.
 // Results: { ok, nearly?, title?, body?, answerEs?, owl? }.
 import { icon } from "./icons.js";
-import { $, $$, esc, es, rich, el, button, audioButtons, charImg, flagImg, shuffle, pick, restartAnim, reducedMotion, toast, openModal } from "./ui.js";
+import { $, $$, esc, es, rich, el, button, footBar, audioButtons, charImg, flagImg, shuffle, pick, restartAnim, reducedMotion, toast, openModal } from "./ui.js";
 import { tts, stt, fold, speechMatches } from "./speech.js";
 import { sfx } from "./sound.js";
 import { store } from "./store.js";
@@ -38,8 +38,8 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
         <div class="combo" aria-hidden="true">${icon("flame", 16, 2.5)}<span></span></div>
       </header>
       <main class="lesson-body" tabindex="-1"></main>
-      <footer class="lesson-foot">${button("Check", { attrs: 'data-act="main"' })}</footer>
-      <div class="sheet feedback" role="region" aria-live="polite" aria-label="Answer feedback">
+      ${footBar(button("Check", { attrs: 'data-act="main"' }))}
+      <div class="sheet feedback" role="region" aria-live="polite" aria-label="Answer feedback" inert>
         <img class="feedback__owl" alt="" src="assets/owl-celebrating.webp">
         <div class="feedback__head">
           <span class="feedback__icon"></span>
@@ -58,6 +58,17 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
   const fill = $(".progress__fill", screen);
   const bar = $(".progress", screen);
   const combo = $(".combo", screen);
+  const foot = $(".lesson-foot", screen);
+  const aside = $(".lesson-foot__aside", screen);
+
+  // Secondary actions shown on the left of the bottom bar from 700px wide.
+  // (Phones keep them inside the exercise, as before.)
+  const ASIDE = {
+    skip: () => button("Skip", { variant: "secondary", block: false, attrs: 'data-act="skip"' }),
+    "cant-listen": () => `<button class="btn-text" data-act="cant-listen">${icon("ear-off", 20, 2.5)} Can't listen now</button>`,
+    "cant-speak": () => `<button class="btn-text" data-act="cant-speak">${icon("mic-off", 20, 2.5)} Can't speak now</button>`,
+    show: () => `<button class="btn-text" data-act="show">${icon("sparkles", 18, 2.5)} Show me</button>`,
+  };
 
   const api = {
     setFooter(label, { enabled = true, variant = "primary" } = {}) {
@@ -66,6 +77,7 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
       mainBtn.disabled = !enabled;
     },
     enableCheck(on) { mainBtn.disabled = !on; },
+    setAside(keys = []) { aside.innerHTML = keys.map((k) => ASIDE[k]()).join(""); },
     complete(result) { showFeedback(result); },
     next() { advance(true); },
     skip(kind) { skipKind(kind); },
@@ -102,6 +114,9 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
     body.scrollTop = 0;
     const f = current.footer || { label: "Check", enabled: false };
     api.setFooter(f.label, f);
+    api.setAside(current.aside);
+    // Focus was on CONTINUE (now hidden): park it on the exercise, not the page.
+    if (!screen.contains(document.activeElement) || sheet.contains(document.activeElement) || document.activeElement === document.body) body.focus({ preventScroll: true });
     current.mount?.();
   }
 
@@ -122,6 +137,15 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
     if (kind === "speak") { store.snoozeSpeak(); toast("Speaking exercises are off for 15 minutes.", "mic-off"); }
     if (kind === "listen") { store.snoozeListen(); toast("Listening exercises are off for 15 minutes.", "ear-off"); }
     advance(true);
+  }
+
+  // "Skip" (tablet/desktop bar): show the answer, and the question comes back later.
+  function skipStep() {
+    if (mode !== "answer" || !current) return;
+    sfx.tap();
+    if (current.onSkip) return current.onSkip();
+    const r = current.check?.({ skipped: true });
+    if (r) showFeedback({ ...r, ok: false, skipped: true, answerEn: r.answerEn || queue[idx].en || "" });
   }
 
   function showFeedback(result) {
@@ -156,12 +180,12 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
       if (result.ok) {
         praiseCount++;
         title = praiseCount === 1 || Math.random() < 0.35 ? es(pick(lesson.praiseEs)) : esc(pick(lesson.praiseEn));
-      } else title = esc(pick(lesson.encourageEn));
+      } else title = result.skipped ? "Here's the answer" : esc(pick(lesson.encourageEn));
     }
     $(".feedback__title", sheet).innerHTML = title;
 
     let bodyHtml = result.body || "";
-    if (!result.ok && !result.body) bodyHtml += `<span class="feedback__tip">${esc(pick(lesson.kindEn))}</span>`;
+    if (!result.ok && !result.body && !result.skipped) bodyHtml += `<span class="feedback__tip">${esc(pick(lesson.kindEn))}</span>`;
     if (result.answerEs) {
       if (!result.ok) bodyHtml += `<span class="feedback__label">Correct answer:</span>`;
       bodyHtml += `<span class="feedback__answer">${es(result.answerEs)}
@@ -174,7 +198,9 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
     contBtn.className = `press btn btn--${result.ok ? "correct" : "wrong"} btn--block`;
     // Wrong answers don't move the bar; the retry will.
     pendingCount = result.ok || !wrongAndRetry;
+    sheet.inert = false;
     sheet.classList.add("is-open");
+    foot.inert = true;
     mainBtn.setAttribute("aria-hidden", "true");
     mainBtn.tabIndex = -1;
     setTimeout(() => contBtn.focus({ preventScroll: true }), 80);
@@ -183,6 +209,8 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
 
   function hideSheet() {
     sheet.classList.remove("is-open");
+    sheet.inert = true;
+    foot.inert = false;
     mainBtn.removeAttribute("aria-hidden");
     mainBtn.tabIndex = 0;
   }
@@ -209,16 +237,31 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
       advance(pendingCount);
     } else if (act === "close") confirmQuit();
     else if (act === "settings") openSettings?.();
+    else if (act === "skip") skipStep();
+    else if (act === "cant-listen") api.skip("listen");
+    else if (act === "cant-speak") { stt.stop(); api.skip("speak"); }
+    else if (act === "show") current?.showMe?.();
   });
 
+  // Keyboard: Enter = CHECK / CONTINUE, Esc = quit dialog, 1–9 (and 0) pick an
+  // option, tile or card, Backspace takes the last tile back.
   function onKey(e) {
-    if (document.querySelector(".modal")) return;
+    if (document.querySelector(".modal") || e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
+    const t = e.target instanceof Element ? e.target : null;
     if (e.key === "Enter") {
+      if (e.repeat) { e.preventDefault(); return; } // holding Enter never races through steps
+      if (mode === "feedback") { e.preventDefault(); contBtn.click(); return; }
+      // A focused button (tile, letter, audio, Skip…) does its own thing, except
+      // an answer option once CHECK is ready: then Enter checks, as on Duolingo.
+      const isButton = t?.matches("button, a[href]") && t !== mainBtn;
+      if (isButton && !(t.matches(".option") && !mainBtn.disabled)) return;
       e.preventDefault();
-      if (mode === "feedback") contBtn.click();
-      else if (!mainBtn.disabled) mainBtn.click();
+      if (!mainBtn.disabled) mainBtn.click();
     } else if (e.key === "Escape") confirmQuit();
-    else if (mode === "answer" && /^[1-9]$/.test(e.key) && current?.onKey && !e.target.matches("input")) current.onKey(+e.key);
+    else if (mode === "answer" && current?.onKey && !t?.matches("input, textarea")) {
+      if (/^[0-9]$/.test(e.key)) { e.preventDefault(); current.onKey(e.key === "0" ? 10 : +e.key); }
+      else if (e.key === "Backspace") { e.preventDefault(); current.onKey("Backspace"); }
+    }
   }
   document.addEventListener("keydown", onKey);
 
@@ -329,7 +372,8 @@ function choiceController(node, step, api, extra = {}) {
   return {
     el: node,
     footer: { label: "Check", enabled: false },
-    onKey(n) { const b = btns[n - 1]; if (b) choose(b); },
+    aside: ["skip"],
+    onKey(n) { const b = btns[n - 1]; if (b && !b.disabled) { choose(b); b.focus({ preventScroll: true }); } },
     check() {
       const ok = chosen === step.answer;
       btns.forEach((b) => {
@@ -383,7 +427,7 @@ function listen(step, api) {
   node.querySelector("[data-cant]").addEventListener("click", () => api.skip("listen"));
   return choiceController(node, step, api, {
     result: (ok) => ({ ok, answerEs: step.optionsEs[step.answer] }),
-    ctrl: { mount() { setTimeout(() => node.querySelector(".listen-big").click(), 380); } },
+    ctrl: { aside: ["cant-listen", "skip"], mount() { setTimeout(() => node.querySelector(".listen-big").click(), 380); } },
   });
 }
 
@@ -399,7 +443,7 @@ function tiles(step, api) {
       </div>
       <div class="answer-lines" aria-label="Your answer" lang="es"></div>
       <div class="bank" aria-label="Word bank" lang="es">
-        ${order.map((ti) => `<span class="tile-slot"><button class="press tile" data-ti="${ti}"><span class="face">${esc(step.tilesEs[ti])}</span></button></span>`).join("")}
+        ${order.map((ti, k) => `<span class="tile-slot"><button class="press tile" data-ti="${ti}"><span class="face" data-key="${k + 1}">${esc(step.tilesEs[ti])}</span></button></span>`).join("")}
       </div>
     </div>`);
   const answer = $(".answer-lines", node);
@@ -464,13 +508,20 @@ function tiles(step, api) {
   return {
     el: node,
     footer: { label: "Check", enabled: false },
-    check() {
+    aside: ["skip"],
+    onKey(k) {
+      if (node.classList.contains("is-locked")) return;
+      if (k === "Backspace") { $$(".tile", answer).at(-1)?.click(); return; }
+      const t = $$(".bank .tile", node)[k - 1];
+      if (t && !t.classList.contains("is-ghost")) t.click();
+    },
+    check({ skipped = false } = {}) {
       node.classList.add("is-locked");
       const got = placed.map((i) => step.tilesEs[i].toLowerCase()).join(" ");
       const want = step.answerEs.map((w) => w.toLowerCase()).join(" ");
       const ok = got === want;
       answer.classList.add(ok ? "is-correct" : "is-wrong");
-      if (!ok) restartAnim(answer, "shake");
+      if (!ok && !skipped) restartAnim(answer, "shake");
       return { ok, answerEs: step.fullEs, answerEn: ok ? step.en : "" };
     },
   };
@@ -497,7 +548,7 @@ export function grade(input, target) {
 }
 
 function typeIt(step, api) {
-  const keys = ["á", "é", "í", "ó", "ú", "ñ", "ü"];
+  const keys = ["á", "é", "í", "ó", "ú", "ñ", "ü", "¿", "¡"]; // ¿ and ¡ show from 700px wide
   const node = el(`
     <div class="ex ex-type">
       ${head("Type this in Spanish")}
@@ -510,7 +561,7 @@ function typeIt(step, api) {
                aria-label="Type the Spanish for “${esc(step.en)}”" placeholder="Type in Spanish">
       </div>
       <div class="accent-bar" role="group" aria-label="Spanish letters">
-        ${keys.map((k) => `<button class="press accent-key" data-k="${k}" tabindex="0"><span class="face">${k}</span></button>`).join("")}
+        ${keys.map((k) => `<button class="press accent-key ${"¿¡".includes(k) ? "accent-key--wide" : ""}" data-k="${k}" aria-label="Type ${k}"><span class="face">${k}</span></button>`).join("")}
       </div>
     </div>`);
   const input = $(".type-input", node);
@@ -530,7 +581,13 @@ function typeIt(step, api) {
   const ctrl = {
     el: node,
     footer: { label: "Check", enabled: false },
+    aside: ["skip"],
     mount() { setTimeout(() => input.focus({ preventScroll: true }), 300); },
+    onSkip() {
+      input.readOnly = true;
+      input.blur();
+      api.complete({ ok: false, skipped: true, answerEs: step.answerEs, answerEn: step.en });
+    },
     onMain() {
       const g = grade(input.value, step.answerEs);
       input.readOnly = true;
@@ -571,7 +628,9 @@ function typeIt(step, api) {
       </div>`);
     node.replaceWith(fix);
     ctrl.el = fix;
+    delete ctrl.onSkip;
     api.setFooter("Tap the letters", { enabled: false });
+    api.setAside(["show"]);
     sfx.select();
 
     const letters = new Map($$(".fix-letter", fix).map((b) => [+b.dataset.i, b]));
@@ -592,6 +651,7 @@ function typeIt(step, api) {
 
     function win(shown) {
       fix.classList.add("is-solved");
+      api.setAside([]);
       $$(".fix-letter", fix).forEach((b, k) => { b.disabled = true; setTimeout(() => restartAnim(b, "pop"), k * 45); });
       fix.querySelector(".fix-result").innerHTML = `${icon("check", 22, 3)} ${es(target)}`;
       fix.querySelector("[data-show]").hidden = true;
@@ -607,13 +667,19 @@ function typeIt(step, api) {
       }), reducedMotion() ? 200 : 750);
     }
 
+    let showing = false;
+    ctrl.showMe = () => {
+      if (showing || fix.classList.contains("is-solved")) return;
+      showing = true;
+      api.setAside([]);
+      // Animate the needed fixes one by one.
+      const need = cur.map((c, i) => (c !== want[i] ? i : -1)).filter((i) => i >= 0);
+      need.forEach((i, k) => setTimeout(() => { cur[i] = want[i]; render(i); restartAnim(letters.get(i), "pop"); if (k === need.length - 1) win(true); }, 250 * k));
+    };
+    setTimeout(() => fix.querySelector(".fix-letter:not([disabled])")?.focus({ preventScroll: true }), 120);
+
     fix.addEventListener("click", (e) => {
-      if (e.target.closest("[data-show]")) {
-        // Animate the needed fixes one by one.
-        const need = cur.map((c, i) => (c !== want[i] ? i : -1)).filter((i) => i >= 0);
-        need.forEach((i, k) => setTimeout(() => { cur[i] = want[i]; render(i); restartAnim(letters.get(i), "pop"); if (k === need.length - 1) win(true); }, 250 * k));
-        return;
-      }
+      if (e.target.closest("[data-show]")) { ctrl.showMe(); return; }
       const b = e.target.closest(".fix-letter");
       if (!b || fix.classList.contains("is-solved")) return;
       const i = +b.dataset.i;
@@ -644,8 +710,8 @@ function match(step, api) {
     <div class="ex ex-match">
       ${head("Tap the matching pairs")}
       <div class="match-grid">
-        <div class="match-col">${left.map((x) => `<button class="press option match-card" data-side="es" data-i="${x.i}"><span class="face">${es(x.text, "label")}</span></button>`).join("")}</div>
-        <div class="match-col">${right.map((x) => `<button class="press option match-card" data-side="en" data-i="${x.i}"><span class="face"><span class="label">${esc(x.text)}</span></span></button>`).join("")}</div>
+        <div class="match-col">${left.map((x, k) => `<button class="press option match-card" data-side="es" data-i="${x.i}"><span class="face" data-key="${k + 1}">${es(x.text, "label")}</span></button>`).join("")}</div>
+        <div class="match-col">${right.map((x, k) => `<button class="press option match-card" data-side="en" data-i="${x.i}"><span class="face" data-key="${(left.length + k + 1) % 10}"><span class="label">${esc(x.text)}</span></span></button>`).join("")}</div>
       </div>
     </div>`);
   let sel = { es: null, en: null };
@@ -683,7 +749,15 @@ function match(step, api) {
       }
     }
   });
-  return { el: node, footer: { label: "Check", enabled: false } };
+  const cards = [...$$('.match-card[data-side="es"]', node), ...$$('.match-card[data-side="en"]', node)];
+  return {
+    el: node,
+    footer: { label: "Check", enabled: false },
+    aside: ["skip"],
+    onSkip() { api.next(); },
+    // Keys 1–5 pick a Spanish card, 6–9 and 0 an English one (as on Duolingo).
+    onKey(k) { const b = cards[k - 1]; if (b && !b.disabled) { b.click(); b.focus({ preventScroll: true }); } },
+  };
 }
 
 // ------------------------------------------------------------ say it
@@ -734,6 +808,8 @@ function speak(step, api) {
   return {
     el: node,
     footer: { label: "Check", enabled: false },
+    aside: ["cant-speak", "skip"],
+    onSkip() { stt.stop(); api.next(); },
     // After two tries the footer becomes "Skip for now": no penalty, speaking never blocks progress.
     onMain() { stt.stop(); api.next(); },
     mount() { setTimeout(() => api.speak(step.es), 350); },

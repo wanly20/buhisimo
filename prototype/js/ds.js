@@ -3,7 +3,8 @@
 import { lesson } from "../lesson-1-1.js";
 import { unitsTextbookTitlesEs } from "../path-data.js";
 import { icon } from "./icons.js";
-import { $, esc, es, button, charImg, flagImg, CHAR_ALT } from "./ui.js";
+import { $, esc, es, button, footBar, charImg, flagImg, CHAR_ALT } from "./ui.js";
+import { sideNav, pathPanel } from "./shell.js";
 import { pairings, applyFont, loadPairing } from "./fonts.js";
 import { store } from "./store.js";
 import { tts } from "./speech.js";
@@ -149,7 +150,8 @@ $("#components-demo").innerHTML = `
   <div class="ds-grid-2">
     <div class="ds-card">
       <div class="type-field"><input class="type-input" lang="es" value="${esc(fold(lesson.steps.find((s) => s.id === "type-espana").answerEs))}" aria-label="Example answer" readonly></div>
-      <div class="accent-bar" style="margin-top:12px">${["á", "é", "í", "ó", "ú", "ñ", "ü"].map((k) => `<button class="press accent-key"><span class="face">${k}</span></button>`).join("")}</div>
+      <div class="accent-bar" style="margin-top:12px">${["á", "é", "í", "ó", "ú", "ñ", "ü", "¿", "¡"].map((k) => `<button class="press accent-key ${"¿¡".includes(k) ? "accent-key--wide" : ""}"><span class="face">${k}</span></button>`).join("")}</div>
+      <p class="ds-small" style="margin:8px 0 0">¿ and ¡ join the bar from 700px wide.</p>
     </div>
     <div class="ds-card">
       <div class="fix-letters" lang="es">${[...lesson.steps.find((s) => s.id === "type-espana").answerEs.toLowerCase()].map((c) => `<button class="press fix-letter ${c === "ñ" ? "is-changed" : ""}"><span class="face">${c}</span></button>`).join("")}</div>
@@ -254,3 +256,35 @@ $("#tokens-demo").innerHTML = `
   <div class="ds-card"><h3 class="ds-h3" style="margin-top:0">Radius</h3><div class="ds-row">${R.map((r) => `<div class="ds-radius" style="border-radius:var(--r-${r})"><code>${r}</code><small>${css(`--r-${r}`)}</small></div>`).join("")}</div>
     <h3 class="ds-h3">Shadow</h3><div class="ds-row">${SH.map((s) => `<div class="ds-shadow" style="box-shadow:var(--shadow-${s})"><code>${s}</code></div>`).join("")}</div>
     <h3 class="ds-h3">Motion</h3><p class="ds-small">Fast ${css("--dur-fast")} (press) · medium ${css("--dur-med")} (sheets, toggles) · slow ${css("--dur-slow")} (progress, screens). Only transform and opacity animate. With “reduce motion” switched on, every animation becomes instant and there's no confetti.</p></div>`;
+
+// ---------------------------------------------------------------- desktop shell
+const demoState = { xp: 30, streak: 3, completed: { "1.1-1": {} } };
+$("#shell-demo").innerHTML = `
+  <div class="ds-shell">
+    ${sideNav("path").replaceAll('href="#/', 'href="index.html#/')}
+    <div class="ds-shell__main">
+      <div class="unit unit--turquoise ds-shell__unit">
+        <div class="unit-banner"><div class="unit-banner__text"><span class="unit-kicker">Unit 1.1</span><h3 class="unit-title" lang="es">${esc(unitsTextbookTitlesEs["1.1"])}</h3><p class="unit-sub">Countries and where people are from</p></div><button class="unit-guide" aria-label="Guidebook">${icon("book-open", 24, 2.5)}</button></div>
+        <div class="node-wrap is-current" style="--x:0px;margin:88px auto 0;width:fit-content"><div class="start-bubble">Start</div><button class="press node is-current" aria-label="Current lesson"><span class="face">${icon("star", 34, 3)}</span></button></div>
+      </div>
+      <p class="ds-shell__note">Path column (560px) over the Salento scene. Wide screens blur the same art on both sides, so it is never stretched.</p>
+    </div>
+    ${pathPanel(demoState)}
+  </div>
+  <div class="ds-grid-2" style="margin-top:16px">
+    <p class="ds-small"><b>Sidebar</b> (<code>.side-nav</code>): logo; Path, Review, Radio Búho, Profile, Settings. Only Path works in the prototype; the others show a friendly “Coming soon” card. The current item is outlined like a selected option.</p>
+    <p class="ds-small"><b>Right panel</b> (<code>.path-panel</code>): streak and XP, the weekly goal ring, the class catch-up card (placeholder: “Your class is up to 1.4”) and a tip from Buhísimo.</p>
+  </div>`;
+
+$("#bar-demo").innerHTML = `
+  <div class="lesson ds-bar">
+    ${footBar(button("Check", { attrs: "disabled" }), button("Skip", { variant: "secondary", block: false }) + `<button class="btn-text">${icon("ear-off", 20, 2.5)} Can't listen now</button>`)}
+  </div>
+  <div class="lesson ds-bar" style="margin-top:12px">
+    <div class="sheet feedback is-open is-static">
+      <img class="feedback__owl" alt="" src="assets/owl-celebrating.webp">
+      <div class="feedback__head"><span class="feedback__icon">${icon("check", 28, 3.5)}</span><h3 class="feedback__title">${es(lesson.praiseEs[0])}</h3></div>
+      <div class="feedback__body"><span class="feedback__answer">${es(lesson.steps[0].es)}<button class="press icon-btn icon-btn--sm" aria-label="Play"><span class="face">${icon("volume-2", 22)}</span></button></span><span class="feedback__en">${esc(lesson.steps[0].en)}</span></div>
+      ${button("Continue", { variant: "correct" })}
+    </div>
+  </div>`;
