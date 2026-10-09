@@ -2,6 +2,7 @@
    shadow and motion values. Documented in DESIGN_SYSTEM.md; contrast checked by
    tools/contrast.py (which reads the hex values from this first :root block). */
 :root {
+  color-scheme: only light; /* the app is designed light-only; opt out of browser auto dark mode */
   /* Salento palette ------------------------------------------------------- */
   --turquoise-50: #e3f6f5;
   --turquoise-100: #c2ecea;
