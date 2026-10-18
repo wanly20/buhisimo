@@ -28,8 +28,12 @@ export const lesson = {
   encourageEn: ["Not quite", "Almost!", "Good try!"],
   kindEn: ["Mistakes help you learn.", "Everyone mixes these up at first.", "Let's look at it together."],
 
+  // New items (content/lessons_1.1-1.6.json, 1.1 L1): ¿De dónde eres?, soy de (one chunk),
+  // él, es, Colombia, España = 6, plus the names Buhísimo, Matilda, Max, Australia.
+  // "el país" moved to 1.1 L2 on 2026-10-18 (decision: about 6 new items per lesson).
+
   // Shown as chips on the lesson-complete screen.
-  learnedEs: ["¿De dónde eres?", "soy de", "él es", "España", "el país"],
+  learnedEs: ["¿De dónde eres?", "soy de", "él es", "España"],
 
   // Specimen line used by the settings sheet and the design-system page.
   specimenEs: "¿De dónde eres? Soy de España.",
@@ -111,21 +115,11 @@ export const lesson = {
       answerEs: "España",
     },
     {
-      id: "intro-pais",
-      type: "intro",
-      flags: ["co", "es", "au"],
-      contextEn: "Colombia, [[España]] and Australia are all…",
-      es: "el país",
-      en: "the country",
-      exampleEs: "Colombia es el país de Buhísimo.",
-      exampleEn: "Colombia is Buhísimo's country.",
-    },
-    {
       id: "match-1",
       type: "match",
       pairs: [
         { es: "España", en: "Spain" },
-        { es: "el país", en: "the country" },
+        { es: "es", en: "is" },
         { es: "soy", en: "I am" },
         { es: "eres", en: "you are" },
         { es: "él", en: "he" },
@@ -137,14 +131,6 @@ export const lesson = {
       character: "matilda",
       es: "Soy de Australia.",
       en: "I'm from Australia.",
-    },
-    {
-      id: "type-pais",
-      type: "type",
-      en: "the country",
-      answerEs: "el país",
-      // Typing it without the article is accepted as "nearly" with a reminder
-      // (handled generically by the grader, so no extra Spanish string is needed).
     },
   ],
 };

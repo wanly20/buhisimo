@@ -75,7 +75,7 @@ while (guard++ < 30) {
     await key("Enter"); await wait(700); continue;
   }
   if (t === "match") {
-    const pairs = { "España": "Spain", "el país": "the country", "soy": "I am", "eres": "you are", "él": "he" };
+    const pairs = { "España": "Spain", "es": "is", "soy": "I am", "eres": "you are", "él": "he" };
     for (const [es, en] of Object.entries(pairs)) {
       const a = await keyFor('.match-card[data-side="es"]', `^${es}$`), c = await keyFor('.match-card[data-side="en"]', `^${en}$`);
       await key(String(a + 1)); await key(String((5 + c + 1) % 10)); await wait(300);

@@ -7,23 +7,57 @@ eres,you are,1.1 El español global,verb form,ser,tú,Approved (§6.1). Also see
 soy,I am,1.1 El español global,verb form,ser,yo,"Approved 2026-10-07; for ""soy de…"""
 de,from / of,1.1 El español global,preposition,,,Approved 2026-10-07. Also inside ¿De dónde eres? (1.1)
 la lengua,language,1.1 El español global,noun,,,"Approved 2026-10-07; used in v1 bubble 3, not in the Claro list"
+sí,yes,1.1 El español global,adverb,,,Approved by Juan 2026-10-18 (Buhísimo v2 plan P1). Accent matters: si = if (3.4)
+no,no / not,1.1 El español global,adverb,,,Approved by Juan 2026-10-18 (Buhísimo v2 plan P1). Also inside no me gusta (nada) (1.5)
+el español,Spanish (the language),1.1 El español global,noun,,,Approved by Juan 2026-10-18 (Buhísimo v2 plan P2). Makes la lengua usable; unit title word
 gracias,thank you,1.2 ¿Qué tal?,expression,,,Approved 2026-10-07
 muy,very,1.2 ¿Qué tal?,adverb,,,Approved 2026-10-07
 está,is (state / location),1.2 ¿Qué tal?,verb form,estar,él/ella,"Used by the slides agent; inside ""está en contacto con"" (3.5). ¿Cómo estás? is 1.2"
+¿Cómo se escribe?,How do you spell it?,1.2 ¿Qué tal?,chunk,,,Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Fixed chunk: escribe is not counted as a form of escribir (1.2 row)
+la a,the letter A,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la be,the letter B,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la ce,the letter C,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la de,the letter D,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la e,the letter E,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la efe,the letter F,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la ge,the letter G,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la hache,the letter H,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la i,the letter I,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la jota,the letter J,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la ka,the letter K,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la ele,the letter L,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la eme,the letter M,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la ene,the letter N,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la eñe,the letter Ñ,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la o,the letter O,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la pe,the letter P,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la cu,the letter Q,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la erre,the letter R,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la ese,the letter S,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la te,the letter T,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la u,the letter U,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la uve,the letter V,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name; Juan chose uve (not ve corta). Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la uve doble,the letter W,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name; RAE name, to match uve. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la equis,the letter X,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la ye,the letter Y,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name; Juan chose ye (not i griega). Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
+la zeta,the letter Z,1.2 ¿Qué tal?,letter,,,"Approved by Juan 2026-10-18 (Buhísimo v2 plan P10). Letter name. Used bare only when spelling (¿Cómo se escribe…?, el alfabeto)"
 me llamo,my name is,1.3 Mi carnet de identidad,verb form,llamarse,yo,Approved 2026-10-07
 te llamas,your name is,1.3 Mi carnet de identidad,verb form,llamarse,tú,Approved 2026-10-07; inside ¿Cómo te llamas? if in CSV
 se llama,his / her name is,1.3 Mi carnet de identidad,verb form,llamarse,él/ella,Approved 2026-10-07
 tengo,I have,1.3 Mi carnet de identidad,verb form,tener,yo,"Approved 2026-10-07; for ""tengo doce años"". Also inside tengo mascota (2.3)"
 tienes,you have,1.3 Mi carnet de identidad,verb form,tener,tú,Approved 2026-10-07
 tiene,he / she has,1.3 Mi carnet de identidad,verb form,tener,él/ella,Approved 2026-10-07
+mi,my,1.3 Mi carnet de identidad,possessive,,,Approved (§6.1); v1 b27 level 3. Moved from 1.6 to 1.3 by Juan 2026-10-18 (Buhísimo v2 plan P5) for Mi nombre es… / Mi apellido es…. Also inside mi color favorito es… (1.5)
+¿Cómo te llamas?,What's your name?,1.3 Mi carnet de identidad,chunk,,,Approved by Juan 2026-10-18 (Buhísimo v2 plan P3). Chunk; no Lemma so it is not counted as an extra form of llamarse
+¿Cómo se llama?,What's his / her name?,1.3 Mi carnet de identidad,chunk,,,Approved by Juan 2026-10-18 (Buhísimo v2 plan P3). Chunk; no Lemma so it is not counted as an extra form of llamarse
+años,years (old),1.3 Mi carnet de identidad,noun (plural form),,,Approved by Juan 2026-10-18 (Buhísimo v2 plan P4). Plural of el año (1.4); always after a number: tengo doce años
 tu,your,1.4 ¡…y que cumplas muchos más!,possessive,,,Approved 2026-10-07. Also inside ¿Cuándo es tu cumpleaños? (1.4)
+el,the (m.),1.4 ¡…y que cumplas muchos más!,article,,,Approved 2026-10-07; standalone use. Moved from 1.6 to 1.4 by Juan 2026-10-18 (Buhísimo v2 plan P6) for dates (el veinte de julio) and colour opinions in 1.5 (me encanta el azul)
 mucho/a,a lot / many,1.5 Mis preferencias,adjective,,,"Used by the slides agent; inside ""me gusta (mucho)"" (1.5). Forms muchos/muchas allowed automatically; ""muchas visitas"" first used in 3.5"
 un,a / an (m.),1.6 ¡Tod@s a clase!,article,,,Approved (§6.1); v1 b27 level 3
 una,a / an (f.),1.6 ¡Tod@s a clase!,article,,,Approved (§6.1); v1 b27 level 3
-mi,my,1.6 ¡Tod@s a clase!,possessive,,,Approved (§6.1); v1 b27 level 3. Also inside mi color favorito es… (1.5)
 en,in,1.6 ¡Tod@s a clase!,preposition,,,Approved (§6.1); v1 b27 level 3
 la mochila,backpack,1.6 ¡Tod@s a clase!,noun,,,Approved (§6.1); v1 b27 level 3. Not in the Claro 1.6 list
-el,the (m.),1.6 ¡Tod@s a clase!,article,,,Approved 2026-10-07; standalone use
 la,the (f.),1.6 ¡Tod@s a clase!,article,,,Approved 2026-10-07; standalone use
 los,the (m. pl.),1.6 ¡Tod@s a clase!,article,,,Approved 2026-10-07; standalone use
 las,the (f. pl.),1.6 ¡Tod@s a clase!,article,,,Approved 2026-10-07; standalone use

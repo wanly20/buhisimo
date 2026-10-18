@@ -166,7 +166,7 @@ log("RUN A: full lesson with right, wrong, accent fix-up, tiles, match, speech")
     }
     if (t === "match") {
       await shot(page, `lesson-${tag}`);
-      const pairs = { "España": "Spain", "el país": "the country", "soy": "I am", "eres": "you are", "él": "he" };
+      const pairs = { "España": "Spain", "es": "is", "soy": "I am", "eres": "you are", "él": "he" };
       // one deliberate mix-up
       await page.locator('.match-card[data-side="es"]', { hasText: /^soy$/ }).click();
       await page.locator('.match-card[data-side="en"]', { hasText: /^you are$/ }).click();
@@ -285,7 +285,7 @@ log("RUN B: Can't listen now + Can't speak now");
       continue;
     }
     if (t === "match") {
-      for (const [es, en] of Object.entries({ "España": "Spain", "el país": "the country", "soy": "I am", "eres": "you are", "él": "he" })) {
+      for (const [es, en] of Object.entries({ "España": "Spain", "es": "is", "soy": "I am", "eres": "you are", "él": "he" })) {
         await page.locator('.match-card[data-side="es"]', { hasText: new RegExp(`^${es}$`) }).click();
         await page.locator('.match-card[data-side="en"]', { hasText: new RegExp(`^${en}$`) }).click();
         await settle(page, 200);

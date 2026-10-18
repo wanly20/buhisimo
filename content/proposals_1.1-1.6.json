@@ -1,98 +1,402 @@
 {
-  "_about": "Proposed additions for units 1.1-1.6. NOT approved and NOT in data/*.csv. Sentences that depend on one carry \"needs\": [\"P#\"] and are reported as PENDING by tools/check_vocab.mjs. If Juan approves one, copy its words into the master CSVs (spanish_app/) with the section shown, re-sync data/, and remove the tag from the sentences.",
+  "_about": "Proposals for units 1.1-1.6. P1–P10 were APPROVED by Juan on 2026-10-18: their words are now rows of the master CSVs (spanish_app/, synced to data/) and P7/P8 are built-in validator rules, so tools/check_vocab.mjs ignores approved entries (a leftover \"needs\" tag on an approved proposal is reported as a warning). Proposals with status 'proposed' are still open: sentences that use them carry \"needs\": [\"P#\"] and are reported as PENDING. To approve one: copy its words into the master CSVs with the section shown, run spanish_app/sync_vocab.py, set status to approved and remove the tags.",
   "proposals": [
     {
-      "id": "P1", "priority": "core", "kind": "words",
+      "id": "P1",
+      "priority": "core",
+      "kind": "words",
       "title": "sí / no",
       "words": [
-        { "es": "sí", "en": "yes", "section": "1.1", "type": "adverb" },
-        { "es": "no", "en": "no / not", "section": "1.1", "type": "adverb" }
+        {
+          "es": "sí",
+          "en": "yes",
+          "section": "1.1",
+          "type": "adverb"
+        },
+        {
+          "es": "no",
+          "en": "no / not",
+          "section": "1.1",
+          "type": "adverb"
+        }
       ],
-      "unlocks": "Yes/no answers from 1.1 (¿Eres de España? — No, soy de Australia.), 'No hay…' in 1.6, true/false checks with a Spanish answer."
+      "unlocks": "Yes/no answers from 1.1 (¿Eres de España? — No, soy de Australia.), 'No hay…' in 1.6, true/false checks with a Spanish answer.",
+      "status": "approved",
+      "approved": "2026-10-18",
+      "implemented": "helper_words.csv, 1.1 (sí, no). Taught in 1.1 L4."
     },
     {
-      "id": "P2", "priority": "nice", "kind": "words",
+      "id": "P2",
+      "priority": "nice",
+      "kind": "words",
       "title": "el español",
-      "words": [ { "es": "el español", "en": "Spanish (the language)", "section": "1.1", "type": "noun" } ],
-      "unlocks": "Makes the approved helper 'la lengua' usable: La lengua de Cuba es el español. It is also the unit's own title word (El español global)."
+      "words": [
+        {
+          "es": "el español",
+          "en": "Spanish (the language)",
+          "section": "1.1",
+          "type": "noun"
+        }
+      ],
+      "unlocks": "Makes the approved helper 'la lengua' usable: La lengua de Cuba es el español. It is also the unit's own title word (El español global).",
+      "status": "approved",
+      "approved": "2026-10-18",
+      "implemented": "helper_words.csv, 1.1 (el español). Taught in 1.1 L6 with la lengua."
     },
     {
-      "id": "P3", "priority": "core", "kind": "words",
+      "id": "P3",
+      "priority": "core",
+      "kind": "words",
       "title": "¿Cómo te llamas? / ¿Cómo se llama?",
       "words": [
-        { "es": "¿Cómo te llamas?", "en": "What's your name?", "section": "1.3", "type": "chunk", "lemma": "llamarse" },
-        { "es": "¿Cómo se llama?", "en": "What's his/her name?", "section": "1.3", "type": "chunk", "lemma": "llamarse" }
+        {
+          "es": "¿Cómo te llamas?",
+          "en": "What's your name?",
+          "section": "1.3",
+          "type": "chunk",
+          "lemma": "llamarse"
+        },
+        {
+          "es": "¿Cómo se llama?",
+          "en": "What's his/her name?",
+          "section": "1.3",
+          "type": "chunk",
+          "lemma": "llamarse"
+        }
       ],
-      "unlocks": "The standard name question. Today 'cómo' exists only inside ¿Cómo estás?, so students can only ask '¿Y tú?' or '¿Te llamas…?'."
+      "unlocks": "The standard name question. Today 'cómo' exists only inside ¿Cómo estás?, so students can only ask '¿Y tú?' or '¿Te llamas…?'.",
+      "status": "approved",
+      "approved": "2026-10-18",
+      "implemented": "helper_words.csv, 1.3, Type chunk, no Lemma (not counted as llamarse forms). Taught in 1.3 L2."
     },
     {
-      "id": "P4", "priority": "core", "kind": "words",
+      "id": "P4",
+      "priority": "core",
+      "kind": "words",
       "title": "años (in 'tengo … años')",
-      "words": [ { "es": "años", "en": "years (old)", "section": "1.3", "type": "noun form", "lemma": "el año" } ],
-      "unlocks": "Tengo doce años / Samuel tiene trece años. The helper note for 'tengo' already says it is 'for tengo doce años', but 'años' itself only exists inside ¿Cuántos años tienes? (and 'el año' is 1.4)."
+      "words": [
+        {
+          "es": "años",
+          "en": "years (old)",
+          "section": "1.3",
+          "type": "noun form",
+          "lemma": "el año"
+        }
+      ],
+      "unlocks": "Tengo doce años / Samuel tiene trece años. The helper note for 'tengo' already says it is 'for tengo doce años', but 'años' itself only exists inside ¿Cuántos años tienes? (and 'el año' is 1.4).",
+      "status": "approved",
+      "approved": "2026-10-18",
+      "implemented": "helper_words.csv, 1.3, Type \"noun (plural form)\": always after a number (tengo doce años). Taught in 1.3 L8."
     },
     {
-      "id": "P5", "priority": "core", "kind": "move",
+      "id": "P5",
+      "priority": "core",
+      "kind": "move",
       "title": "mi: move from 1.6 to 1.3",
-      "words": [ { "es": "mi", "en": "my", "section": "1.3", "type": "possessive" } ],
-      "unlocks": "Mi nombre es… / Mi amiga se llama Valentina (1.3), Mi cumpleaños es… (1.4). Needs P7 too, because 'mi' is always followed by a noun without its article."
+      "words": [
+        {
+          "es": "mi",
+          "en": "my",
+          "section": "1.3",
+          "type": "possessive"
+        }
+      ],
+      "unlocks": "Mi nombre es… / Mi amiga se llama Valentina (1.3), Mi cumpleaños es… (1.4). Needs P7 too, because 'mi' is always followed by a noun without its article.",
+      "status": "approved",
+      "approved": "2026-10-18",
+      "implemented": "helper_words.csv: mi moved from 1.6 to 1.3 (taught 1.3 L14). tu stays 1.4 (it arrives with ¿Cuándo es tu cumpleaños?), su stays 1.6: no 1.3 sentence needs them."
     },
     {
-      "id": "P6", "priority": "core", "kind": "move",
+      "id": "P6",
+      "priority": "core",
+      "kind": "move",
       "title": "el: move from 1.6 to 1.4",
-      "words": [ { "es": "el", "en": "the (m.)", "section": "1.4", "type": "article" } ],
-      "unlocks": "Every date except el primero / el uno (el doce de marzo, el veinte de julio) in 1.4, and colour opinions in 1.5 (Me encanta el azul; Odio el naranja). Without it, odio/detesto/prefiero have no natural sentence until 1.6."
+      "words": [
+        {
+          "es": "el",
+          "en": "the (m.)",
+          "section": "1.4",
+          "type": "article"
+        }
+      ],
+      "unlocks": "Every date except el primero / el uno (el doce de marzo, el veinte de julio) in 1.4, and colour opinions in 1.5 (Me encanta el azul; Odio el naranja). Without it, odio/detesto/prefiero have no natural sentence until 1.6.",
+      "status": "approved",
+      "approved": "2026-10-18",
+      "implemented": "helper_words.csv: el moved from 1.6 to 1.4 (taught 1.4 L10 with la fecha)."
     },
     {
-      "id": "P7", "priority": "core", "kind": "rule", "rule": "bare-nouns",
-      "title": "Rule: a CSV noun may appear without its article",
-      "unlocks": "un libro, una regla, mi mochila, tu estuche, su libro, Hay un lápiz…, ID-card labels (Nombre: Samuel). Every token is still a CSV word; only the article is dropped. Without it, 'hay', 'un/una' and 'mi/su/sus' (all 1.6) cannot be used at all."
+      "id": "P7",
+      "priority": "core",
+      "kind": "rule",
+      "rule": "bare-nouns",
+      "title": "Rule: a CSV noun may swap its el/la for another determiner (never bare)",
+      "unlocks": "un libro, una regla, mi mochila, tu estuche, su libro, Hay un lápiz…, ID-card labels (Nombre: Samuel). Every token is still a CSV word; only the article is dropped. Without it, 'hay', 'un/una' and 'mi/su/sus' (all 1.6) cannot be used at all.",
+      "status": "approved",
+      "approved": "2026-10-18",
+      "implemented": "Built into tools/check_vocab.mjs: a CSV noun may swap el/la for un/una, mi/tu/su, los/las, mis/tus/sus or a number, with agreement; it is never bare (no labels such as \"Nombre: Samuel\")."
     },
     {
-      "id": "P8", "priority": "core", "kind": "rule", "rule": "noun-plurals",
-      "title": "Rule: regular plurals of CSV nouns",
-      "unlocks": "tres lápices, dos cuadernos, los libros (1.6 Mochila game and mix engine, as in v1). The validator prints each plural actually used so it can be checked."
+      "id": "P8",
+      "priority": "core",
+      "kind": "rule",
+      "rule": "noun-plurals",
+      "title": "Rule: plurals of CSV nouns, each plural rule taught before use",
+      "unlocks": "tres lápices, dos cuadernos, los libros (1.6 Mochila game and mix engine, as in v1). The validator prints each plural actually used so it can be checked.",
+      "status": "approved",
+      "approved": "2026-10-18",
+      "implemented": "Built into tools/check_vocab.mjs with plural rules (content/plurals.json): every plural rule must be taught first. 1.6 L6 regular, 1.6 L7 z-ces / unchanged / plural-only, 1.6 L8 accent-loss / compound."
     },
     {
-      "id": "P9", "priority": "core", "kind": "fix",
+      "id": "P9",
+      "priority": "core",
+      "kind": "fix",
       "title": "CSV typo: el lugar de nascimiento → nacimiento",
-      "words": [ { "es": "el lugar de nacimiento", "en": "birthplace", "section": "1.3", "type": "noun" } ],
-      "unlocks": "The 1.3 ID card can show the correct spelling. Until fixed, the validator only accepts the misspelt form."
+      "words": [
+        {
+          "es": "el lugar de nacimiento",
+          "en": "birthplace",
+          "section": "1.3",
+          "type": "noun"
+        }
+      ],
+      "unlocks": "The 1.3 ID card can show the correct spelling. Until fixed, the validator only accepts the misspelt form.",
+      "status": "approved",
+      "approved": "2026-10-18",
+      "implemented": "vocabulary_database.csv master fixed to el lugar de nacimiento and synced."
     },
     {
-      "id": "P10", "priority": "nice", "kind": "words",
+      "id": "P10",
+      "priority": "nice",
+      "kind": "words",
       "title": "Letter names + ¿Cómo se escribe?",
       "words": [
-        { "es": "¿Cómo se escribe?", "en": "How do you spell it?", "section": "1.2", "type": "chunk" },
-        { "es": "a", "en": "A", "section": "1.2", "type": "letter" },
-        { "es": "be", "en": "B", "section": "1.2", "type": "letter" },
-        { "es": "ce", "en": "C", "section": "1.2", "type": "letter" },
-        { "es": "de", "en": "D", "section": "1.2", "type": "letter" },
-        { "es": "e", "en": "E", "section": "1.2", "type": "letter" },
-        { "es": "efe", "en": "F", "section": "1.2", "type": "letter" },
-        { "es": "ge", "en": "G", "section": "1.2", "type": "letter" },
-        { "es": "hache", "en": "H", "section": "1.2", "type": "letter" },
-        { "es": "i", "en": "I", "section": "1.2", "type": "letter" },
-        { "es": "jota", "en": "J", "section": "1.2", "type": "letter" },
-        { "es": "ka", "en": "K", "section": "1.2", "type": "letter" },
-        { "es": "ele", "en": "L", "section": "1.2", "type": "letter" },
-        { "es": "eme", "en": "M", "section": "1.2", "type": "letter" },
-        { "es": "ene", "en": "N", "section": "1.2", "type": "letter" },
-        { "es": "eñe", "en": "Ñ", "section": "1.2", "type": "letter" },
-        { "es": "o", "en": "O", "section": "1.2", "type": "letter" },
-        { "es": "pe", "en": "P", "section": "1.2", "type": "letter" },
-        { "es": "cu", "en": "Q", "section": "1.2", "type": "letter" },
-        { "es": "erre", "en": "R", "section": "1.2", "type": "letter" },
-        { "es": "ese", "en": "S", "section": "1.2", "type": "letter" },
-        { "es": "te", "en": "T", "section": "1.2", "type": "letter" },
-        { "es": "u", "en": "U", "section": "1.2", "type": "letter" },
-        { "es": "uve", "en": "V", "section": "1.2", "type": "letter" },
-        { "es": "uve doble", "en": "W", "section": "1.2", "type": "letter" },
-        { "es": "equis", "en": "X", "section": "1.2", "type": "letter" },
-        { "es": "ye", "en": "Y", "section": "1.2", "type": "letter" },
-        { "es": "zeta", "en": "Z", "section": "1.2", "type": "letter" }
+        {
+          "es": "¿Cómo se escribe?",
+          "en": "How do you spell it?",
+          "section": "1.2",
+          "type": "chunk"
+        },
+        {
+          "es": "la a",
+          "en": "A",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la be",
+          "en": "B",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la ce",
+          "en": "C",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la de",
+          "en": "D",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la e",
+          "en": "E",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la efe",
+          "en": "F",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la ge",
+          "en": "G",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la hache",
+          "en": "H",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la i",
+          "en": "I",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la jota",
+          "en": "J",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la ka",
+          "en": "K",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la ele",
+          "en": "L",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la eme",
+          "en": "M",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la ene",
+          "en": "N",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la eñe",
+          "en": "Ñ",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la o",
+          "en": "O",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la pe",
+          "en": "P",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la cu",
+          "en": "Q",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la erre",
+          "en": "R",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la ese",
+          "en": "S",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la te",
+          "en": "T",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la u",
+          "en": "U",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la uve",
+          "en": "V",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la uve doble",
+          "en": "W",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la equis",
+          "en": "X",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la ye",
+          "en": "Y",
+          "section": "1.2",
+          "type": "letter"
+        },
+        {
+          "es": "la zeta",
+          "en": "Z",
+          "section": "1.2",
+          "type": "letter"
+        }
       ],
-      "unlocks": "Spelling practice for el alfabeto / escribir (1.2): ¿Cómo se escribe Max? — Eme, a, equis. Letter names follow the RAE list; Juan to choose 'uve' or 've corta' and 'ye' or 'i griega' to match class."
+      "unlocks": "Spelling practice for el alfabeto / escribir (1.2): ¿Cómo se escribe Max? — Eme, a, equis. Juan chose uve and ye.",
+      "status": "approved",
+      "approved": "2026-10-18",
+      "implemented": "helper_words.csv, 1.2: ¿Cómo se escribe? (chunk) and 27 letter rows \"la a\" … \"la zeta\" (Type letter). Juan chose uve (not ve corta) and ye (not i griega); W is uve doble to match. Bare letter names are allowed only when spelling. Taught in 1.2 L9–L11, chant and podcast in 1.2 L12."
+    },
+    {
+      "id": "P11",
+      "priority": "nice",
+      "kind": "words",
+      "status": "proposed",
+      "title": "cero",
+      "words": [
+        {
+          "es": "cero",
+          "en": "zero",
+          "section": "1.3",
+          "type": "number"
+        }
+      ],
+      "unlocks": "Numbers 0–31 in the 1.3 counting song and podcast (as Juan asked), countdowns that end on cero, phone-style digit dictation. Not in the Claro 1.3 list; the 1.3 song currently runs 1–31."
+    },
+    {
+      "id": "P12",
+      "priority": "nice",
+      "kind": "words",
+      "status": "proposed",
+      "title": "mis, tus",
+      "words": [
+        {
+          "es": "mis",
+          "en": "my (pl.)",
+          "section": "1.6",
+          "type": "possessive"
+        },
+        {
+          "es": "tus",
+          "en": "your (pl.)",
+          "section": "1.6",
+          "type": "possessive"
+        }
+      ],
+      "unlocks": "Plural possessives next to sus in 1.6 L9 (mis libros, tus lápices). Juan's P7 decision lists mis/tus as allowed determiners, but they are not rows yet; the validator already accepts them as determiners once they are."
+    },
+    {
+      "id": "P13",
+      "priority": "nice",
+      "kind": "words",
+      "status": "proposed",
+      "title": "el abecedario",
+      "words": [
+        {
+          "es": "el abecedario",
+          "en": "the alphabet (ABC)",
+          "section": "1.2",
+          "type": "noun"
+        }
+      ],
+      "unlocks": "The everyday Colombian school word for the alphabet, next to the Claro word el alfabeto, for the 1.2 chant title (El abecedario de Buhísimo)."
     }
   ]
 }
