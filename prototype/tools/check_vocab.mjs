@@ -223,7 +223,7 @@ if (WRITE_TODO) writeTodo();
 
 function writeTodo() {
   const clips = {};
-  for (const m of ["manifest.json", "manifest-extra.json"]) {
+  for (const m of ["manifest.json", "manifest-extra.json", "manifest-l2.json"]) {
     const p = join(PROTO, "audio", m);
     if (existsSync(p)) for (const [t, by] of Object.entries(JSON.parse(readFileSync(p, "utf8")).clips)) clips[t] = { ...clips[t], ...by };
   }

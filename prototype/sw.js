@@ -7,7 +7,7 @@
 // Updates: bump VERSION (and APP_VERSION in js/app.js) on every release. The new worker
 // installs in the background, then the page tells it to take over (SKIP_WAITING) as
 // soon as no lesson is running (js/app.js); old caches are deleted on activate.
-const VERSION = "2026-10-18.l2";
+const VERSION = "2026-10-18.l2-audio";
 const SHELL = `buhisimo-shell-${VERSION}`;
 const MEDIA = `buhisimo-media-${VERSION}`;
 const RUNTIME = "buhisimo-runtime";
@@ -18,7 +18,7 @@ const CODE = [
   "js/app.js", "js/fonts.js", "js/icons.js", "js/lesson.js", "js/radio.js", "js/review.js", "js/shell.js",
   "js/sound.js", "js/speech.js", "js/store.js", "js/ui.js", "js/worldmap.js", "js/worldmap-data.js",
   "lesson-1-1.js", "unit-1-1.js", "path-data.js",
-  "audio/manifest.json", "audio/manifest-extra.json", "radio/episodes.json", "radio/demo-1-1.json",
+  "audio/manifest.json", "audio/manifest-extra.json", "audio/manifest-l2.json", "radio/episodes.json", "radio/demo-1-1.json",
 ];
 const PICTURES = [
   "assets/map-background.webp", "assets/salento-street.webp", "assets/family.webp",
@@ -39,7 +39,7 @@ self.addEventListener("install", (event) => {
     await media.addAll(PICTURES);
     // Every recorded clip listed in the audio manifests.
     const clips = new Set();
-    for (const m of ["audio/manifest.json", "audio/manifest-extra.json"]) {
+    for (const m of ["audio/manifest.json", "audio/manifest-extra.json", "audio/manifest-l2.json"]) {
       try {
         const data = await (await shell.match(m)).json();
         for (const byVoice of Object.values(data.clips || {})) for (const p of Object.values(byVoice)) clips.add(p);

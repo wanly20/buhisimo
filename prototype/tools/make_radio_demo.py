@@ -39,7 +39,7 @@ GAP_SAME, GAP_NEW = 0.55, 0.9  # pause before a line: same speaker / new speaker
 
 def clips():
     out = {}
-    for name in ("manifest.json", "manifest-extra.json"):
+    for name in ("manifest.json", "manifest-extra.json", "manifest-l2.json"):
         p = PROTO / "audio" / name
         if p.exists():
             for text, by in json.loads(p.read_text())["clips"].items():

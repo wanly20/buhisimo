@@ -25,6 +25,25 @@ let OFFLINE = false;
 const log = (...a) => console.log(...a);
 const ok = (c, msg) => { if (!c) { errors.push("ASSERT: " + msg); log("  ✗", msg); } else log("  ✓", msg); return c; };
 const shots = new Set();
+// Every recorded clip (the three manifests js/speech.js merges): text -> voices.
+const CLIPS = {};
+for (const m of ["manifest.json", "manifest-extra.json", "manifest-l2.json"]) {
+  try { for (const [t, by] of Object.entries(JSON.parse(readFileSync(join(PROTO, "audio", m), "utf8")).clips)) CLIPS[t] = { ...CLIPS[t], ...by }; } catch { /* optional */ }
+}
+const hasClip = (t) => !!CLIPS[t];
+// "Audio coming soon" badges seen while playing: { where, texts } (texts = the lines the badge could stand for).
+const badges = [];
+const listenSteps = { audio: 0, readOnly: [] }; // listening steps: real (audio) vs fallen back to read-and-choose
+async function collectBadges(page, where, s) {
+  const found = await page.evaluate(() => [...document.querySelectorAll(".lesson-body .ex:not(.step-leave) .audio-soon")].map((b) => {
+    const line = b.closest(".story-line");
+    return line ? line.querySelector(".story-es")?.textContent.trim() : null;
+  }));
+  for (const lineText of found) {
+    const texts = lineText ? [lineText] : ["es", "exampleEs", "promptEs", "sayEs", "fullEs"].map((k) => s[k]).filter((t) => typeof t === "string");
+    badges.push({ where: `${where} ${s.id} (${s.type})`, texts });
+  }
+}
 const shot = async (page, name) => { const f = `${OUT}/${name}.png`; await page.screenshot({ path: f }); shots.add(f); };
 
 const MOCK_SPEECH = () => {
@@ -152,6 +171,8 @@ async function playLesson(page, tag, { keys = true, wrongOnce = true, checkFit =
     if (!st.step) { await wait(page, 500); continue; }
     const s = st.step;
     seen[s.type] = (seen[s.type] || 0) + 1;
+    await collectBadges(page, tag, s);
+    if (s.type === "listen") { if (/\bex-listen\b/.test(st.cls)) listenSteps.audio++; else listenSteps.readOnly.push(`${tag} ${s.id}`); }
     if (checkFit) { const o = await overflow(page); if (o > 1) fitIssues.push(`${s.id} (${s.type}) +${o}px`); }
     const shotName = `${shotPrefix}${s.type}${s.lines ? "-order" : ""}`;
     if (shotTypes.has(s.type) && !shots.has(`${OUT}/${shotName}.png`)) await shot(page, shotName);
@@ -336,9 +357,15 @@ log("A. Chromebook 1366×768: every 1.1 lesson in order, keyboard play");
 log("B. Story lesson details (1366×768)");
 {
   const { ctx, page } = await newPage({ width: 1366, height: 768 });
-  await page.addInitScript(() => { window.__spoken = []; const s = window.speechSynthesis; if (s) s.speak = (u) => { window.__spoken.push(u.text); setTimeout(() => u.onend && u.onend(), 50); }; });
+  // Record what is spoken: recorded clips (HTMLMediaElement.play) and the computer voice.
+  await page.addInitScript(() => {
+    window.__spoken = []; window.__played = 0;
+    const s = window.speechSynthesis; if (s) s.speak = (u) => { window.__spoken.push(u.text); setTimeout(() => u.onend && u.onend(), 50); };
+    const play = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function () { if (this.src.startsWith("blob:")) window.__played++; return play.call(this); };
+  });
   await page.goto(BASE + "index.html");
-  await page.evaluate(() => { localStorage.clear(); localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ unlockAll: true, robotVoice: true })); });
+  await page.evaluate(() => { localStorage.clear(); localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ unlockAll: true, robotVoice: false })); });
   await page.goto(BASE + "index.html#/lesson/1.1-9");
   await page.reload();
   await wait(page, 1500);
@@ -350,6 +377,7 @@ log("B. Story lesson details (1366×768)");
     const st = await step(page);
     if (st.complete) break;
     const s = st.step;
+    await collectBadges(page, "story", s);
     if (s.type === "storyline") {
       maxPanels = Math.max(maxPanels, await page.locator(".story-line").count());
       if (s.line === 6) {
@@ -357,9 +385,18 @@ log("B. Story lesson details (1366×768)");
         await page.click(".story-line.is-new .story-en-btn");
         await wait(page, 200);
         ok(await page.locator(".story-line.is-new .story-en").isVisible(), "EN shows the line's English");
+        const line7 = "¿Cocora? ¿Es Perú? ¿Es Cuba? ¿Es Chile?";
+        ok(hasClip(line7) && await page.locator(".story-line.is-new [data-say-line]").count() === 1, "story line 7 has a recording and a play button");
+        await wait(page, 1500); // let the automatic play finish
+        const n0 = await page.evaluate(() => window.__played);
         await page.click(".story-line.is-new .story-es");
-        await wait(page, 300);
-        ok((await page.evaluate(() => window.__spoken)).includes("¿Cocora? ¿Es Perú? ¿Es Cuba? ¿Es Chile?"), "tapping a line plays it");
+        await wait(page, 600);
+        ok(await page.evaluate((n) => window.__played > n, n0), "tapping a line plays its recording");
+        const n1 = await page.evaluate(() => window.__played);
+        await page.click(".story-line.is-new [data-say-line]");
+        await wait(page, 600);
+        ok(await page.evaluate((n) => window.__played > n, n1), "the line's play button plays its recording");
+        ok((await page.evaluate(() => window.__spoken)).length === 0, "no computer voice in the story");
         await shot(page, "d08-story-en");
         await page.evaluate(() => document.activeElement?.blur());
       }
@@ -419,6 +456,18 @@ log("D. Tablet 820×1180");
   await wait(page, 1300);
   ok(await page.locator(".tab-bar").isVisible(), "tablet: tab bar visible");
   await ctx.close();
+}
+
+// ===================================================================== E. audio coverage
+log("E. Audio coverage");
+{
+  const wrongBadges = badges.filter((b) => b.texts.length && b.texts.every(hasClip));
+  ok(wrongBadges.length === 0, `no "Audio coming soon" badge for a line that has a recording${wrongBadges.length ? ": " + [...new Set(wrongBadges.map((b) => `${b.where}: ${b.texts.join(" / ")}`))].join("; ") : ""}`);
+  const still = [...new Set(badges.filter((b) => !b.texts.every(hasClip)).flatMap((b) => b.texts.filter((t) => !hasClip(t))))];
+  log(`  lines still showing "Audio coming soon": ${still.length ? still.join(" | ") : "none"} (${badges.length} badge(s) seen in all)`);
+  ok(listenSteps.audio > 0 && listenSteps.readOnly.length === 0, `listening steps are real listening (${listenSteps.audio} with audio${listenSteps.readOnly.length ? "; read-only: " + listenSteps.readOnly.join(", ") : ""})`);
+  const missingFiles = Object.values(CLIPS).flatMap((by) => Object.values(by)).filter((p) => { try { readFileSync(join(PROTO, p)); return false; } catch { return true; } });
+  ok(missingFiles.length === 0, `every clip in the manifests exists on disk${missingFiles.length ? ": " + missingFiles.join(", ") : ""}`);
 }
 
 await browser.close();

@@ -35,13 +35,14 @@ export const VOICE_OPTIONS = {
 const FALLBACK_ROLES = { maria: ["maria", "raul"], raul: ["raul", "maria"], buho: ["buho", "maria", "raul"] };
 
 // audio/manifest.json is written by lesson_audio.py; audio/manifest-extra.json holds
-// clips copied from the voice-design test (tools/import_design_clips.py). Merged here.
+// clips copied from the voice-design test (tools/import_design_clips.py); audio/manifest-l2.json
+// holds the Unit 1.1 lines recorded from TODO_lines.json (same pipeline). Merged here.
 let manifest = null;
 const getJson = (url) => fetch(url).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-const manifestReady = Promise.all([getJson("audio/manifest.json"), getJson("audio/manifest-extra.json")])
-  .then(([main, extra]) => {
+const manifestReady = Promise.all([getJson("audio/manifest.json"), getJson("audio/manifest-extra.json"), getJson("audio/manifest-l2.json")])
+  .then(([main, ...extras]) => {
     const clips = {};
-    for (const m of [main, extra]) for (const [text, byVoice] of Object.entries(m?.clips || {})) clips[text] = { ...clips[text], ...byVoice };
+    for (const m of [main, ...extras]) for (const [text, byVoice] of Object.entries(m?.clips || {})) clips[text] = { ...clips[text], ...byVoice };
     manifest = { ...(main || {}), clips };
     return manifest;
   });

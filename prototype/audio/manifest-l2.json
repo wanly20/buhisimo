@@ -1,0 +1,509 @@
+{
+ "note": "Unit 1.1 lines from audio/TODO_lines.json (Oct 2026), recorded with Qwen3-TTS (x-vector clone) from the same reference wavs and with the same export filter as manifest.json (lesson_audio.py). Merged with manifest.json and manifest-extra.json by js/speech.js.",
+ "clips": {
+  "¡Cocora es famoso! El destino es Cocora.": {
+   "buho_abuelo": "audio/buho_abuelo/cocora-es-famoso-el-destino-es-cocora-a571a2.mp3",
+   "buho_profesor": "audio/buho_profesor/cocora-es-famoso-el-destino-es-cocora-a571a2.mp3"
+  },
+  "¡Max es famoso!": {
+   "maria_bogota": "audio/maria_bogota/max-es-famoso-0bcf56.mp3",
+   "maria_paisa": "audio/maria_paisa/max-es-famoso-0bcf56.mp3",
+   "raul": "audio/raul/max-es-famoso-0bcf56.mp3"
+  },
+  "¡Soy famoso!": {
+   "raul": "audio/raul/soy-famoso-9db926.mp3"
+  },
+  "¿Cocora? ¿Es Perú? ¿Es Cuba? ¿Es Chile?": {
+   "raul": "audio/raul/cocora-es-peru-es-cuba-es-chile-6ac106.mp3"
+  },
+  "¿De dónde eres, Buhísimo?": {
+   "raul": "audio/raul/de-donde-eres-buhisimo-0247f4.mp3"
+  },
+  "¿De dónde eres, Matilda?": {
+   "buho_abuelo": "audio/buho_abuelo/de-donde-eres-matilda-c10516.mp3",
+   "buho_profesor": "audio/buho_profesor/de-donde-eres-matilda-c10516.mp3"
+  },
+  "¿De dónde eres, Max?": {
+   "maria_bogota": "audio/maria_bogota/de-donde-eres-max-746286.mp3",
+   "maria_paisa": "audio/maria_paisa/de-donde-eres-max-746286.mp3",
+   "raul": "audio/raul/de-donde-eres-max-746286.mp3"
+  },
+  "¿De dónde eres, Max? — Soy de Melbourne.": {
+   "maria_bogota": "audio/maria_bogota/de-donde-eres-max-soy-de-melbourne-017517.mp3",
+   "maria_paisa": "audio/maria_paisa/de-donde-eres-max-soy-de-melbourne-017517.mp3",
+   "raul": "audio/raul/de-donde-eres-max-soy-de-melbourne-017517.mp3"
+  },
+  "¿De dónde es ella? — Es de Argentina.": {
+   "maria_bogota": "audio/maria_bogota/de-donde-es-ella-es-de-argentina-70785c.mp3",
+   "maria_paisa": "audio/maria_paisa/de-donde-es-ella-es-de-argentina-70785c.mp3",
+   "raul": "audio/raul/de-donde-es-ella-es-de-argentina-70785c.mp3"
+  },
+  "¿De dónde es Matilda?": {
+   "maria_bogota": "audio/maria_bogota/de-donde-es-matilda-883fd7.mp3",
+   "maria_paisa": "audio/maria_paisa/de-donde-es-matilda-883fd7.mp3",
+   "raul": "audio/raul/de-donde-es-matilda-883fd7.mp3"
+  },
+  "¿De dónde es?": {
+   "maria_bogota": "audio/maria_bogota/de-donde-es-44a554.mp3",
+   "maria_paisa": "audio/maria_paisa/de-donde-es-44a554.mp3",
+   "raul": "audio/raul/de-donde-es-44a554.mp3"
+  },
+  "¿De dónde es? — Es de Perú.": {
+   "buho_abuelo": "audio/buho_abuelo/de-donde-es-es-de-peru-92efd8.mp3",
+   "buho_profesor": "audio/buho_profesor/de-donde-es-es-de-peru-92efd8.mp3",
+   "maria_bogota": "audio/maria_bogota/de-donde-es-es-de-peru-92efd8.mp3",
+   "maria_paisa": "audio/maria_paisa/de-donde-es-es-de-peru-92efd8.mp3",
+   "raul": "audio/raul/de-donde-es-es-de-peru-92efd8.mp3"
+  },
+  "¿El destino? ¡Las Islas Filipinas!": {
+   "maria_bogota": "audio/maria_bogota/el-destino-las-islas-filipinas-eb8b01.mp3",
+   "maria_paisa": "audio/maria_paisa/el-destino-las-islas-filipinas-eb8b01.mp3",
+   "raul": "audio/raul/el-destino-las-islas-filipinas-eb8b01.mp3"
+  },
+  "¿Él es de Colombia?": {
+   "buho_abuelo": "audio/buho_abuelo/el-es-de-colombia-6d31c4.mp3",
+   "buho_profesor": "audio/buho_profesor/el-es-de-colombia-6d31c4.mp3",
+   "maria_bogota": "audio/maria_bogota/el-es-de-colombia-6d31c4.mp3",
+   "maria_paisa": "audio/maria_paisa/el-es-de-colombia-6d31c4.mp3",
+   "raul": "audio/raul/el-es-de-colombia-6d31c4.mp3"
+  },
+  "¿Él es de Colombia? — Sí, es de Salento.": {
+   "maria_bogota": "audio/maria_bogota/el-es-de-colombia-si-es-de-salento-776ebd.mp3",
+   "maria_paisa": "audio/maria_paisa/el-es-de-colombia-si-es-de-salento-776ebd.mp3",
+   "raul": "audio/raul/el-es-de-colombia-si-es-de-salento-776ebd.mp3"
+  },
+  "¿Eres de Argentina? — No, soy de Chile.": {
+   "maria_bogota": "audio/maria_bogota/eres-de-argentina-no-soy-de-chile-25c1cc.mp3",
+   "maria_paisa": "audio/maria_paisa/eres-de-argentina-no-soy-de-chile-25c1cc.mp3",
+   "raul": "audio/raul/eres-de-argentina-no-soy-de-chile-25c1cc.mp3"
+  },
+  "¿Eres de Cuba? — No, soy de República Dominicana.": {
+   "maria_bogota": "audio/maria_bogota/eres-de-cuba-no-soy-de-republica-dominic-8d7234.mp3",
+   "maria_paisa": "audio/maria_paisa/eres-de-cuba-no-soy-de-republica-dominic-8d7234.mp3",
+   "raul": "audio/raul/eres-de-cuba-no-soy-de-republica-dominic-8d7234.mp3"
+  },
+  "¿Eres de España? — No, soy de Australia.": {
+   "maria_bogota": "audio/maria_bogota/eres-de-espana-no-soy-de-australia-cfd60a.mp3",
+   "maria_paisa": "audio/maria_paisa/eres-de-espana-no-soy-de-australia-cfd60a.mp3",
+   "raul": "audio/raul/eres-de-espana-no-soy-de-australia-cfd60a.mp3"
+  },
+  "¿Eres de Perú? — Sí, soy de Perú.": {
+   "maria_bogota": "audio/maria_bogota/eres-de-peru-si-soy-de-peru-7a205e.mp3",
+   "maria_paisa": "audio/maria_paisa/eres-de-peru-si-soy-de-peru-7a205e.mp3",
+   "raul": "audio/raul/eres-de-peru-si-soy-de-peru-7a205e.mp3"
+  },
+  "¿La lengua de Chile? ¡El español!": {
+   "maria_bogota": "audio/maria_bogota/la-lengua-de-chile-el-espanol-cda5bc.mp3",
+   "maria_paisa": "audio/maria_paisa/la-lengua-de-chile-el-espanol-cda5bc.mp3",
+   "raul": "audio/raul/la-lengua-de-chile-el-espanol-cda5bc.mp3"
+  },
+  "¿Matilda es de Australia?": {
+   "maria_bogota": "audio/maria_bogota/matilda-es-de-australia-4a3c79.mp3",
+   "maria_paisa": "audio/maria_paisa/matilda-es-de-australia-4a3c79.mp3",
+   "raul": "audio/raul/matilda-es-de-australia-4a3c79.mp3"
+  },
+  "¿Matilda es de Australia? — Sí.": {
+   "maria_bogota": "audio/maria_bogota/matilda-es-de-australia-si-1bdf6f.mp3",
+   "maria_paisa": "audio/maria_paisa/matilda-es-de-australia-si-1bdf6f.mp3",
+   "raul": "audio/raul/matilda-es-de-australia-si-1bdf6f.mp3"
+  },
+  "¿Max es de Chile?": {
+   "maria_bogota": "audio/maria_bogota/max-es-de-chile-de9ef4.mp3",
+   "maria_paisa": "audio/maria_paisa/max-es-de-chile-de9ef4.mp3",
+   "raul": "audio/raul/max-es-de-chile-de9ef4.mp3"
+  },
+  "¿Max es de Chile? — No, es de Australia.": {
+   "maria_bogota": "audio/maria_bogota/max-es-de-chile-no-es-de-australia-7187b1.mp3",
+   "maria_paisa": "audio/maria_paisa/max-es-de-chile-no-es-de-australia-7187b1.mp3",
+   "raul": "audio/raul/max-es-de-chile-no-es-de-australia-7187b1.mp3"
+  },
+  "¿Salento es famoso?": {
+   "raul": "audio/raul/salento-es-famoso-05a654.mp3"
+  },
+  "Argentina": {
+   "maria_bogota": "audio/maria_bogota/argentina-354bf9.mp3",
+   "maria_paisa": "audio/maria_paisa/argentina-354bf9.mp3",
+   "raul": "audio/raul/argentina-354bf9.mp3"
+  },
+  "Australia es el país de Matilda.": {
+   "maria_bogota": "audio/maria_bogota/australia-es-el-pais-de-matilda-4ce240.mp3",
+   "maria_paisa": "audio/maria_paisa/australia-es-el-pais-de-matilda-4ce240.mp3",
+   "raul": "audio/raul/australia-es-el-pais-de-matilda-4ce240.mp3"
+  },
+  "Chile": {
+   "maria_bogota": "audio/maria_bogota/chile-349507.mp3",
+   "maria_paisa": "audio/maria_paisa/chile-349507.mp3",
+   "raul": "audio/raul/chile-349507.mp3"
+  },
+  "Chile es hispanohablante.": {
+   "buho_abuelo": "audio/buho_abuelo/chile-es-hispanohablante-65b2fc.mp3",
+   "buho_profesor": "audio/buho_profesor/chile-es-hispanohablante-65b2fc.mp3",
+   "maria_bogota": "audio/maria_bogota/chile-es-hispanohablante-65b2fc.mp3",
+   "maria_paisa": "audio/maria_paisa/chile-es-hispanohablante-65b2fc.mp3",
+   "raul": "audio/raul/chile-es-hispanohablante-65b2fc.mp3"
+  },
+  "Cocora es famoso.": {
+   "buho_abuelo": "audio/buho_abuelo/cocora-es-famoso-0cf839.mp3",
+   "buho_profesor": "audio/buho_profesor/cocora-es-famoso-0cf839.mp3",
+   "maria_bogota": "audio/maria_bogota/cocora-es-famoso-0cf839.mp3",
+   "maria_paisa": "audio/maria_paisa/cocora-es-famoso-0cf839.mp3",
+   "raul": "audio/raul/cocora-es-famoso-0cf839.mp3"
+  },
+  "Colombia": {
+   "maria_bogota": "audio/maria_bogota/colombia-2f7373.mp3",
+   "maria_paisa": "audio/maria_paisa/colombia-2f7373.mp3",
+   "raul": "audio/raul/colombia-2f7373.mp3"
+  },
+  "Colombia es el país de Buhísimo. ¡El destino es Cocora!": {
+   "buho_abuelo": "audio/buho_abuelo/colombia-es-el-pais-de-buhisimo-el-desti-d22ab2.mp3",
+   "buho_profesor": "audio/buho_profesor/colombia-es-el-pais-de-buhisimo-el-desti-d22ab2.mp3"
+  },
+  "Cuba": {
+   "maria_bogota": "audio/maria_bogota/cuba-c484b1.mp3",
+   "maria_paisa": "audio/maria_paisa/cuba-c484b1.mp3",
+   "raul": "audio/raul/cuba-c484b1.mp3"
+  },
+  "Cuba es hispanohablante.": {
+   "maria_bogota": "audio/maria_bogota/cuba-es-hispanohablante-0ac25c.mp3",
+   "maria_paisa": "audio/maria_paisa/cuba-es-hispanohablante-0ac25c.mp3",
+   "raul": "audio/raul/cuba-es-hispanohablante-0ac25c.mp3"
+  },
+  "el destino": {
+   "maria_bogota": "audio/maria_bogota/el-destino-368de6.mp3",
+   "maria_paisa": "audio/maria_paisa/el-destino-368de6.mp3",
+   "raul": "audio/raul/el-destino-368de6.mp3"
+  },
+  "El destino es España.": {
+   "maria_bogota": "audio/maria_bogota/el-destino-es-espana-05ca88.mp3",
+   "maria_paisa": "audio/maria_paisa/el-destino-es-espana-05ca88.mp3",
+   "raul": "audio/raul/el-destino-es-espana-05ca88.mp3"
+  },
+  "El destino es la Isla de Pascua.": {
+   "maria_bogota": "audio/maria_bogota/el-destino-es-la-isla-de-pascua-37c170.mp3",
+   "maria_paisa": "audio/maria_paisa/el-destino-es-la-isla-de-pascua-37c170.mp3",
+   "raul": "audio/raul/el-destino-es-la-isla-de-pascua-37c170.mp3"
+  },
+  "Él es de Chile.": {
+   "maria_bogota": "audio/maria_bogota/el-es-de-chile-d86eca.mp3",
+   "maria_paisa": "audio/maria_paisa/el-es-de-chile-d86eca.mp3",
+   "raul": "audio/raul/el-es-de-chile-d86eca.mp3"
+  },
+  "Él es de Estados Unidos.": {
+   "maria_bogota": "audio/maria_bogota/el-es-de-estados-unidos-5eb035.mp3",
+   "maria_paisa": "audio/maria_paisa/el-es-de-estados-unidos-5eb035.mp3",
+   "raul": "audio/raul/el-es-de-estados-unidos-5eb035.mp3"
+  },
+  "Él es de Guinea Ecuatorial.": {
+   "maria_bogota": "audio/maria_bogota/el-es-de-guinea-ecuatorial-1baeb0.mp3",
+   "maria_paisa": "audio/maria_paisa/el-es-de-guinea-ecuatorial-1baeb0.mp3",
+   "raul": "audio/raul/el-es-de-guinea-ecuatorial-1baeb0.mp3"
+  },
+  "Él es de las Islas Baleares.": {
+   "maria_bogota": "audio/maria_bogota/el-es-de-las-islas-baleares-d3ff06.mp3",
+   "maria_paisa": "audio/maria_paisa/el-es-de-las-islas-baleares-d3ff06.mp3",
+   "raul": "audio/raul/el-es-de-las-islas-baleares-d3ff06.mp3"
+  },
+  "Él es de Perú.": {
+   "maria_bogota": "audio/maria_bogota/el-es-de-peru-f3f86c.mp3",
+   "maria_paisa": "audio/maria_paisa/el-es-de-peru-f3f86c.mp3",
+   "raul": "audio/raul/el-es-de-peru-f3f86c.mp3"
+  },
+  "Él es de Salento.": {
+   "maria_bogota": "audio/maria_bogota/el-es-de-salento-e79a9d.mp3",
+   "maria_paisa": "audio/maria_paisa/el-es-de-salento-e79a9d.mp3",
+   "raul": "audio/raul/el-es-de-salento-e79a9d.mp3"
+  },
+  "el español": {
+   "buho_abuelo": "audio/buho_abuelo/el-espanol-c87b2a.mp3",
+   "buho_profesor": "audio/buho_profesor/el-espanol-c87b2a.mp3",
+   "maria_bogota": "audio/maria_bogota/el-espanol-c87b2a.mp3",
+   "maria_paisa": "audio/maria_paisa/el-espanol-c87b2a.mp3",
+   "raul": "audio/raul/el-espanol-c87b2a.mp3"
+  },
+  "El español es la lengua de Cuba.": {
+   "buho_abuelo": "audio/buho_abuelo/el-espanol-es-la-lengua-de-cuba-42a535.mp3",
+   "buho_profesor": "audio/buho_profesor/el-espanol-es-la-lengua-de-cuba-42a535.mp3",
+   "maria_bogota": "audio/maria_bogota/el-espanol-es-la-lengua-de-cuba-42a535.mp3",
+   "maria_paisa": "audio/maria_paisa/el-espanol-es-la-lengua-de-cuba-42a535.mp3",
+   "raul": "audio/raul/el-espanol-es-la-lengua-de-cuba-42a535.mp3"
+  },
+  "El mapa es de Max.": {
+   "maria_bogota": "audio/maria_bogota/el-mapa-es-de-max-ea1bb0.mp3",
+   "maria_paisa": "audio/maria_paisa/el-mapa-es-de-max-ea1bb0.mp3",
+   "raul": "audio/raul/el-mapa-es-de-max-ea1bb0.mp3"
+  },
+  "el monumento": {
+   "maria_bogota": "audio/maria_bogota/el-monumento-9ad68f.mp3",
+   "maria_paisa": "audio/maria_paisa/el-monumento-9ad68f.mp3",
+   "raul": "audio/raul/el-monumento-9ad68f.mp3"
+  },
+  "El monumento es famoso.": {
+   "maria_bogota": "audio/maria_bogota/el-monumento-es-famoso-538ddc.mp3",
+   "maria_paisa": "audio/maria_paisa/el-monumento-es-famoso-538ddc.mp3",
+   "raul": "audio/raul/el-monumento-es-famoso-538ddc.mp3"
+  },
+  "El monumento es histórico.": {
+   "maria_bogota": "audio/maria_bogota/el-monumento-es-historico-744615.mp3",
+   "maria_paisa": "audio/maria_paisa/el-monumento-es-historico-744615.mp3",
+   "raul": "audio/raul/el-monumento-es-historico-744615.mp3"
+  },
+  "el país": {
+   "buho_abuelo": "audio/buho_abuelo/el-pais-d33879.mp3"
+  },
+  "ella": {
+   "maria_bogota": "audio/maria_bogota/ella-5edf31.mp3",
+   "maria_paisa": "audio/maria_paisa/ella-5edf31.mp3"
+  },
+  "Ella es de Argentina.": {
+   "maria_bogota": "audio/maria_bogota/ella-es-de-argentina-644a73.mp3",
+   "maria_paisa": "audio/maria_paisa/ella-es-de-argentina-644a73.mp3",
+   "raul": "audio/raul/ella-es-de-argentina-644a73.mp3"
+  },
+  "Ella es de Chile. Él es de Cuba.": {
+   "buho_abuelo": "audio/buho_abuelo/ella-es-de-chile-el-es-de-cuba-9c6a33.mp3",
+   "buho_profesor": "audio/buho_profesor/ella-es-de-chile-el-es-de-cuba-9c6a33.mp3",
+   "maria_bogota": "audio/maria_bogota/ella-es-de-chile-el-es-de-cuba-9c6a33.mp3",
+   "maria_paisa": "audio/maria_paisa/ella-es-de-chile-el-es-de-cuba-9c6a33.mp3",
+   "raul": "audio/raul/ella-es-de-chile-el-es-de-cuba-9c6a33.mp3"
+  },
+  "Ella es de Cuba.": {
+   "maria_bogota": "audio/maria_bogota/ella-es-de-cuba-5afbe0.mp3",
+   "maria_paisa": "audio/maria_paisa/ella-es-de-cuba-5afbe0.mp3",
+   "raul": "audio/raul/ella-es-de-cuba-5afbe0.mp3"
+  },
+  "Ella es de Estados Unidos.": {
+   "maria_bogota": "audio/maria_bogota/ella-es-de-estados-unidos-854c7a.mp3",
+   "maria_paisa": "audio/maria_paisa/ella-es-de-estados-unidos-854c7a.mp3",
+   "raul": "audio/raul/ella-es-de-estados-unidos-854c7a.mp3"
+  },
+  "Ella es de las Islas Canarias.": {
+   "maria_bogota": "audio/maria_bogota/ella-es-de-las-islas-canarias-b9af8b.mp3",
+   "maria_paisa": "audio/maria_paisa/ella-es-de-las-islas-canarias-b9af8b.mp3",
+   "raul": "audio/raul/ella-es-de-las-islas-canarias-b9af8b.mp3"
+  },
+  "Ella es de Melbourne.": {
+   "buho_abuelo": "audio/buho_abuelo/ella-es-de-melbourne-44ab49.mp3",
+   "buho_profesor": "audio/buho_profesor/ella-es-de-melbourne-44ab49.mp3",
+   "maria_bogota": "audio/maria_bogota/ella-es-de-melbourne-44ab49.mp3",
+   "maria_paisa": "audio/maria_paisa/ella-es-de-melbourne-44ab49.mp3",
+   "raul": "audio/raul/ella-es-de-melbourne-44ab49.mp3"
+  },
+  "Ella es de República Dominicana.": {
+   "maria_bogota": "audio/maria_bogota/ella-es-de-republica-dominicana-3e1281.mp3",
+   "maria_paisa": "audio/maria_paisa/ella-es-de-republica-dominicana-3e1281.mp3",
+   "raul": "audio/raul/ella-es-de-republica-dominicana-3e1281.mp3"
+  },
+  "Eres de Perú.": {
+   "maria_bogota": "audio/maria_bogota/eres-de-peru-732d9c.mp3",
+   "maria_paisa": "audio/maria_paisa/eres-de-peru-732d9c.mp3",
+   "raul": "audio/raul/eres-de-peru-732d9c.mp3"
+  },
+  "es": {
+   "maria_bogota": "audio/maria_bogota/es-09cd68.mp3",
+   "maria_paisa": "audio/maria_paisa/es-09cd68.mp3",
+   "raul": "audio/raul/es-09cd68.mp3"
+  },
+  "Es de Cuba.": {
+   "maria_bogota": "audio/maria_bogota/es-de-cuba-0b0374.mp3",
+   "maria_paisa": "audio/maria_paisa/es-de-cuba-0b0374.mp3",
+   "raul": "audio/raul/es-de-cuba-0b0374.mp3"
+  },
+  "Estados Unidos": {
+   "maria_bogota": "audio/maria_bogota/estados-unidos-cccbd8.mp3",
+   "maria_paisa": "audio/maria_paisa/estados-unidos-cccbd8.mp3",
+   "raul": "audio/raul/estados-unidos-cccbd8.mp3"
+  },
+  "famoso": {
+   "maria_bogota": "audio/maria_bogota/famoso-a7c4e6.mp3",
+   "maria_paisa": "audio/maria_paisa/famoso-a7c4e6.mp3",
+   "raul": "audio/raul/famoso-a7c4e6.mp3"
+  },
+  "Guinea Ecuatorial": {
+   "maria_bogota": "audio/maria_bogota/guinea-ecuatorial-5d5b0b.mp3",
+   "maria_paisa": "audio/maria_paisa/guinea-ecuatorial-5d5b0b.mp3",
+   "raul": "audio/raul/guinea-ecuatorial-5d5b0b.mp3"
+  },
+  "Guinea Ecuatorial es hispanohablante.": {
+   "maria_bogota": "audio/maria_bogota/guinea-ecuatorial-es-hispanohablante-e38625.mp3",
+   "maria_paisa": "audio/maria_paisa/guinea-ecuatorial-es-hispanohablante-e38625.mp3",
+   "raul": "audio/raul/guinea-ecuatorial-es-hispanohablante-e38625.mp3"
+  },
+  "hispanohablante": {
+   "maria_bogota": "audio/maria_bogota/hispanohablante-91a30c.mp3",
+   "maria_paisa": "audio/maria_paisa/hispanohablante-91a30c.mp3",
+   "raul": "audio/raul/hispanohablante-91a30c.mp3"
+  },
+  "histórica": {
+   "maria_bogota": "audio/maria_bogota/historica-c330c0.mp3",
+   "maria_paisa": "audio/maria_paisa/historica-c330c0.mp3",
+   "raul": "audio/raul/historica-c330c0.mp3"
+  },
+  "histórico": {
+   "maria_bogota": "audio/maria_bogota/historico-b8d620.mp3",
+   "maria_paisa": "audio/maria_paisa/historico-b8d620.mp3",
+   "raul": "audio/raul/historico-b8d620.mp3"
+  },
+  "La capital es famosa.": {
+   "maria_bogota": "audio/maria_bogota/la-capital-es-famosa-1e7496.mp3",
+   "maria_paisa": "audio/maria_paisa/la-capital-es-famosa-1e7496.mp3",
+   "raul": "audio/raul/la-capital-es-famosa-1e7496.mp3"
+  },
+  "La capital es histórica.": {
+   "maria_bogota": "audio/maria_bogota/la-capital-es-historica-2c7fd6.mp3",
+   "maria_paisa": "audio/maria_paisa/la-capital-es-historica-2c7fd6.mp3",
+   "raul": "audio/raul/la-capital-es-historica-2c7fd6.mp3"
+  },
+  "la Isla de Pascua": {
+   "maria_bogota": "audio/maria_bogota/la-isla-de-pascua-0b5ccc.mp3",
+   "maria_paisa": "audio/maria_paisa/la-isla-de-pascua-0b5ccc.mp3",
+   "raul": "audio/raul/la-isla-de-pascua-0b5ccc.mp3"
+  },
+  "La Isla de Pascua es de Chile.": {
+   "buho_abuelo": "audio/buho_abuelo/la-isla-de-pascua-es-de-chile-322e8b.mp3",
+   "buho_profesor": "audio/buho_profesor/la-isla-de-pascua-es-de-chile-322e8b.mp3",
+   "maria_bogota": "audio/maria_bogota/la-isla-de-pascua-es-de-chile-322e8b.mp3",
+   "maria_paisa": "audio/maria_paisa/la-isla-de-pascua-es-de-chile-322e8b.mp3",
+   "raul": "audio/raul/la-isla-de-pascua-es-de-chile-322e8b.mp3"
+  },
+  "La Isla de Pascua es famosa.": {
+   "buho_abuelo": "audio/buho_abuelo/la-isla-de-pascua-es-famosa-351ae7.mp3",
+   "buho_profesor": "audio/buho_profesor/la-isla-de-pascua-es-famosa-351ae7.mp3",
+   "maria_bogota": "audio/maria_bogota/la-isla-de-pascua-es-famosa-351ae7.mp3",
+   "maria_paisa": "audio/maria_paisa/la-isla-de-pascua-es-famosa-351ae7.mp3",
+   "raul": "audio/raul/la-isla-de-pascua-es-famosa-351ae7.mp3"
+  },
+  "la lengua": {
+   "buho_abuelo": "audio/buho_abuelo/la-lengua-b86509.mp3",
+   "buho_profesor": "audio/buho_profesor/la-lengua-b86509.mp3",
+   "maria_bogota": "audio/maria_bogota/la-lengua-b86509.mp3",
+   "maria_paisa": "audio/maria_paisa/la-lengua-b86509.mp3",
+   "raul": "audio/raul/la-lengua-b86509.mp3"
+  },
+  "La lengua de Guinea Ecuatorial es el español.": {
+   "maria_bogota": "audio/maria_bogota/la-lengua-de-guinea-ecuatorial-es-el-esp-d5f6f0.mp3",
+   "maria_paisa": "audio/maria_paisa/la-lengua-de-guinea-ecuatorial-es-el-esp-d5f6f0.mp3",
+   "raul": "audio/raul/la-lengua-de-guinea-ecuatorial-es-el-esp-d5f6f0.mp3"
+  },
+  "La lengua de Perú es el español.": {
+   "maria_bogota": "audio/maria_bogota/la-lengua-de-peru-es-el-espanol-9a6f7f.mp3",
+   "maria_paisa": "audio/maria_paisa/la-lengua-de-peru-es-el-espanol-9a6f7f.mp3",
+   "raul": "audio/raul/la-lengua-de-peru-es-el-espanol-9a6f7f.mp3"
+  },
+  "las Islas Baleares": {
+   "maria_bogota": "audio/maria_bogota/las-islas-baleares-6743a6.mp3",
+   "maria_paisa": "audio/maria_paisa/las-islas-baleares-6743a6.mp3",
+   "raul": "audio/raul/las-islas-baleares-6743a6.mp3"
+  },
+  "las Islas Canarias": {
+   "maria_bogota": "audio/maria_bogota/las-islas-canarias-7e5707.mp3",
+   "maria_paisa": "audio/maria_paisa/las-islas-canarias-7e5707.mp3",
+   "raul": "audio/raul/las-islas-canarias-7e5707.mp3"
+  },
+  "las Islas Filipinas": {
+   "maria_bogota": "audio/maria_bogota/las-islas-filipinas-dedc4d.mp3",
+   "maria_paisa": "audio/maria_paisa/las-islas-filipinas-dedc4d.mp3",
+   "raul": "audio/raul/las-islas-filipinas-dedc4d.mp3"
+  },
+  "Matilda es de Australia.": {
+   "maria_bogota": "audio/maria_bogota/matilda-es-de-australia-88d035.mp3",
+   "maria_paisa": "audio/maria_paisa/matilda-es-de-australia-88d035.mp3",
+   "raul": "audio/raul/matilda-es-de-australia-88d035.mp3"
+  },
+  "Matilda es de Australia. Buhísimo es de Colombia.": {
+   "buho_abuelo": "audio/buho_abuelo/matilda-es-de-australia-buhisimo-es-de-c-0aa679.mp3",
+   "buho_profesor": "audio/buho_profesor/matilda-es-de-australia-buhisimo-es-de-c-0aa679.mp3",
+   "maria_bogota": "audio/maria_bogota/matilda-es-de-australia-buhisimo-es-de-c-0aa679.mp3",
+   "maria_paisa": "audio/maria_paisa/matilda-es-de-australia-buhisimo-es-de-c-0aa679.mp3",
+   "raul": "audio/raul/matilda-es-de-australia-buhisimo-es-de-c-0aa679.mp3"
+  },
+  "Max es de Australia.": {
+   "buho_abuelo": "audio/buho_abuelo/max-es-de-australia-1fca04.mp3"
+  },
+  "Max… ¡Cocora es de Colombia!": {
+   "maria_bogota": "audio/maria_bogota/max-cocora-es-de-colombia-ae4bd1.mp3",
+   "maria_paisa": "audio/maria_paisa/max-cocora-es-de-colombia-ae4bd1.mp3"
+  },
+  "no": {
+   "maria_bogota": "audio/maria_bogota/no-fd1286.mp3",
+   "maria_paisa": "audio/maria_paisa/no-fd1286.mp3",
+   "raul": "audio/raul/no-fd1286.mp3"
+  },
+  "No, no soy de España.": {
+   "maria_bogota": "audio/maria_bogota/no-no-soy-de-espana-f99a85.mp3",
+   "maria_paisa": "audio/maria_paisa/no-no-soy-de-espana-f99a85.mp3",
+   "raul": "audio/raul/no-no-soy-de-espana-f99a85.mp3"
+  },
+  "No, soy de República Dominicana.": {
+   "maria_bogota": "audio/maria_bogota/no-soy-de-republica-dominicana-fe2ebe.mp3",
+   "maria_paisa": "audio/maria_paisa/no-soy-de-republica-dominicana-fe2ebe.mp3",
+   "raul": "audio/raul/no-soy-de-republica-dominicana-fe2ebe.mp3"
+  },
+  "Perú": {
+   "maria_bogota": "audio/maria_bogota/peru-367866.mp3",
+   "maria_paisa": "audio/maria_paisa/peru-367866.mp3",
+   "raul": "audio/raul/peru-367866.mp3"
+  },
+  "República Dominicana": {
+   "maria_bogota": "audio/maria_bogota/republica-dominicana-027be5.mp3",
+   "maria_paisa": "audio/maria_paisa/republica-dominicana-027be5.mp3",
+   "raul": "audio/raul/republica-dominicana-027be5.mp3"
+  },
+  "sí": {
+   "maria_bogota": "audio/maria_bogota/si-5e06bd.mp3",
+   "maria_paisa": "audio/maria_paisa/si-5e06bd.mp3",
+   "raul": "audio/raul/si-5e06bd.mp3"
+  },
+  "Soy Buhísimo. Tú eres Matilda.": {
+   "buho_abuelo": "audio/buho_abuelo/soy-buhisimo-tu-eres-matilda-7779d6.mp3",
+   "buho_profesor": "audio/buho_profesor/soy-buhisimo-tu-eres-matilda-7779d6.mp3",
+   "maria_bogota": "audio/maria_bogota/soy-buhisimo-tu-eres-matilda-7779d6.mp3",
+   "maria_paisa": "audio/maria_paisa/soy-buhisimo-tu-eres-matilda-7779d6.mp3",
+   "raul": "audio/raul/soy-buhisimo-tu-eres-matilda-7779d6.mp3"
+  },
+  "Soy de Australia. ¿De dónde eres?": {
+   "maria_bogota": "audio/maria_bogota/soy-de-australia-de-donde-eres-3c99cb.mp3",
+   "maria_paisa": "audio/maria_paisa/soy-de-australia-de-donde-eres-3c99cb.mp3",
+   "raul": "audio/raul/soy-de-australia-de-donde-eres-3c99cb.mp3"
+  },
+  "Soy de Australia. Soy de Melbourne.": {
+   "maria_bogota": "audio/maria_bogota/soy-de-australia-soy-de-melbourne-369c68.mp3",
+   "maria_paisa": "audio/maria_paisa/soy-de-australia-soy-de-melbourne-369c68.mp3"
+  },
+  "Soy de Chile.": {
+   "maria_bogota": "audio/maria_bogota/soy-de-chile-4c1cd8.mp3",
+   "maria_paisa": "audio/maria_paisa/soy-de-chile-4c1cd8.mp3",
+   "raul": "audio/raul/soy-de-chile-4c1cd8.mp3"
+  },
+  "Soy de Colombia. ¡Soy de Salento!": {
+   "buho_abuelo": "audio/buho_abuelo/soy-de-colombia-soy-de-salento-0c4e8c.mp3",
+   "buho_profesor": "audio/buho_profesor/soy-de-colombia-soy-de-salento-0c4e8c.mp3"
+  },
+  "Soy de España.": {
+   "maria_bogota": "audio/maria_bogota/soy-de-espana-5ba767.mp3",
+   "maria_paisa": "audio/maria_paisa/soy-de-espana-5ba767.mp3",
+   "raul": "audio/raul/soy-de-espana-5ba767.mp3"
+  },
+  "Soy de las Islas Canarias.": {
+   "maria_bogota": "audio/maria_bogota/soy-de-las-islas-canarias-cd4038.mp3",
+   "maria_paisa": "audio/maria_paisa/soy-de-las-islas-canarias-cd4038.mp3",
+   "raul": "audio/raul/soy-de-las-islas-canarias-cd4038.mp3"
+  },
+  "Soy de Melbourne.": {
+   "maria_bogota": "audio/maria_bogota/soy-de-melbourne-f22ccf.mp3",
+   "maria_paisa": "audio/maria_paisa/soy-de-melbourne-f22ccf.mp3",
+   "raul": "audio/raul/soy-de-melbourne-f22ccf.mp3"
+  },
+  "tú": {
+   "maria_bogota": "audio/maria_bogota/tu-044e99.mp3",
+   "maria_paisa": "audio/maria_paisa/tu-044e99.mp3",
+   "raul": "audio/raul/tu-044e99.mp3"
+  },
+  "Tú eres de Australia.": {
+   "buho_abuelo": "audio/buho_abuelo/tu-eres-de-australia-0fe9dc.mp3",
+   "buho_profesor": "audio/buho_profesor/tu-eres-de-australia-0fe9dc.mp3",
+   "maria_bogota": "audio/maria_bogota/tu-eres-de-australia-0fe9dc.mp3",
+   "maria_paisa": "audio/maria_paisa/tu-eres-de-australia-0fe9dc.mp3",
+   "raul": "audio/raul/tu-eres-de-australia-0fe9dc.mp3"
+  }
+ }
+}

@@ -149,7 +149,8 @@
 .map-pin.is-wrong { --face: var(--terracotta-50); --face-border: var(--terracotta-400); --edge-c: var(--terracotta-400); }
 .map-pin.is-wrong .map-pin__label { color: var(--terracotta-700); }
 .map-pin:disabled { cursor: default; }
-.ex-maptap .map-frame { width: min(100%, calc((100dvh - 376px) * 1.6)); margin-inline: auto; }
+/* 380px: header, bubble (with its play button), feedback footer; keeps the map step within 1366×768 */
+.ex-maptap .map-frame { width: min(100%, calc((100dvh - 380px) * 1.6)); margin-inline: auto; }
 .ex-maptap .speaker-row--solo .bubble .es { font-size: var(--fs-xl); }
 
 /* =================================================================== rule table */
