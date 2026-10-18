@@ -36,7 +36,7 @@ const MOCK_SPEECH = () => {
   window.webkitSpeechRecognition = MockRec;
 };
 
-const browser = await chromium.launch({ executablePath: "/usr/bin/chromium", args: ["--autoplay-policy=no-user-gesture-required"] });
+const browser = await chromium.launch({ executablePath: "/usr/bin/chromium", args: ["--headless=new", "--ozone-platform=headless", "--disable-gpu", "--use-gl=swiftshader", "--autoplay-policy=no-user-gesture-required"] });
 
 async function newPage(viewport = { width: 390, height: 844 }) {
   const ctx = await browser.newContext({ viewport, deviceScaleFactor: DSF, hasTouch: viewport.width < 600 });
@@ -122,9 +122,9 @@ log("RUN A: full lesson with right, wrong, accent fix-up, tiles, match, speech")
     if (t === "tiles") {
       await shot(page, `lesson-${tag}`);
       // place a wrong tile, remove it, then build the right answer
-      await page.locator(".bank .tile", { hasText: /^eres$/ }).click();
+      await page.locator(".bank .tile", { hasText: /^él$/ }).click();
       await settle(page, 350);
-      await page.locator(".answer-lines .tile", { hasText: /^eres$/ }).click();
+      await page.locator(".answer-lines .tile", { hasText: /^él$/ }).click();
       await settle(page, 350);
       for (const w of ["soy", "de", "Colombia"]) { await page.locator(".bank .tile", { hasText: new RegExp(`^${w}$`) }).click(); await settle(page, 320); }
       await shot(page, `lesson-${tag}-built`);
@@ -166,10 +166,10 @@ log("RUN A: full lesson with right, wrong, accent fix-up, tiles, match, speech")
     }
     if (t === "match") {
       await shot(page, `lesson-${tag}`);
-      const pairs = { "España": "Spain", "es": "is", "soy": "I am", "eres": "you are", "él": "he" };
+      const pairs = { "España": "Spain", "es": "is", "soy": "I am", "¿De dónde eres\\?": "Where are you from\\?", "él": "he" };
       // one deliberate mix-up
       await page.locator('.match-card[data-side="es"]', { hasText: /^soy$/ }).click();
-      await page.locator('.match-card[data-side="en"]', { hasText: /^you are$/ }).click();
+      await page.locator('.match-card[data-side="en"]', { hasText: /^he$/ }).click();
       await settle(page, 200);
       await shot(page, `lesson-${tag}-mixup`);
       await settle(page, 500);
@@ -285,7 +285,7 @@ log("RUN B: Can't listen now + Can't speak now");
       continue;
     }
     if (t === "match") {
-      for (const [es, en] of Object.entries({ "España": "Spain", "es": "is", "soy": "I am", "eres": "you are", "él": "he" })) {
+      for (const [es, en] of Object.entries({ "España": "Spain", "es": "is", "soy": "I am", "¿De dónde eres\\?": "Where are you from\\?", "él": "he" })) {
         await page.locator('.match-card[data-side="es"]', { hasText: new RegExp(`^${es}$`) }).click();
         await page.locator('.match-card[data-side="en"]', { hasText: new RegExp(`^${en}$`) }).click();
         await settle(page, 200);

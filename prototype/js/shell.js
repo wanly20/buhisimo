@@ -1,31 +1,36 @@
-// Desktop shell pieces (Chromebook / desktop, ≥1024px): the left sidebar, the
-// right progress panel and the "coming soon" cards for sections that aren't
-// built yet. The phone never shows the sidebar or panel (css/layout.css hides
-// them); the design-system page renders them as components.
+// Shell pieces: the desktop sidebar and right progress panel (Chromebook /
+// desktop, ≥1024px), and the bottom tab bar for phones and tablets (<1024px).
+// css/layout.css shows each one only at its widths; the design-system page
+// renders them as components.
 import { icon } from "./icons.js";
 import { esc, rich, charImg } from "./ui.js";
 import { units } from "../path-data.js";
 import { lesson } from "../lesson-1-1.js";
 
 export const NAV = [
-  { id: "path", label: "Path", icon: "map", href: "#/" },
-  { id: "review", label: "Review", icon: "repeat", href: "#/review" },
-  { id: "radio", label: "Radio Búho", icon: "radio", href: "#/radio" },
-  { id: "profile", label: "Profile", icon: "user", href: "#/profile" },
+  { id: "path", label: "Path", tab: "Learn", icon: "map", href: "#/" },
+  { id: "review", label: "Review", tab: "Review", icon: "repeat", href: "#/review" },
+  { id: "radio", label: "Radio Búho", tab: "Radio", icon: "radio", href: "#/radio" },
+  { id: "profile", label: "Profile", tab: "Me", icon: "user", href: "#/profile" },
 ];
 
-/** Sections that are only placeholders in the prototype. */
-export const SOON = {
-  review: { title: "Review is coming soon", text: "Buhísimo will pick the words you find tricky, so you can practise them in five minutes.", owl: "owl-thinking", icon: "repeat" },
-  radio: { title: "Radio Búho is coming soon", text: "Short listening shows from Salento, with Buhísimo as your host. Perfect for the bus home.", owl: "owl-explaining", icon: "radio" },
-  profile: { title: "Your profile is coming soon", text: "See your XP, your streak and every word you've learned so far.", owl: "owl-celebrating", icon: "user" },
-};
+/** Bottom navigation on phones and tablets: Learn / Review / Radio / Me. */
+export function tabBar(active = "path", due = 0) {
+  return `
+    <nav class="tab-bar" aria-label="Main">
+      ${NAV.map((n) => `
+        <a class="tab tab--${n.id}" href="${n.href}" data-view="${n.id}" ${n.id === active ? 'aria-current="page"' : ""}>
+          <span class="tab__icon">${icon(n.icon, 24, 2.5)}${n.id === "review" && due ? `<span class="tab__badge" aria-label="${due} to review">${due > 9 ? "9+" : due}</span>` : ""}</span>
+          <span class="tab__label">${esc(n.tab)}</span>
+        </a>`).join("")}
+    </nav>`;
+}
 
 // Static placeholders until the teacher dashboard exists.
 export const CLASS_UNIT = "1.4";
 export const WEEK_GOAL_XP = 50;
 
-export function sideNav(active = "path") {
+export function sideNav(active = "path", due = 0) {
   return `
     <nav class="side-nav" aria-label="Main">
       <a class="side-brand" href="#/" aria-label="Buhísimo, back to the path">
@@ -35,7 +40,7 @@ export function sideNav(active = "path") {
       <ul class="side-list">
         ${NAV.map((n) => `
           <li><a class="side-item side-item--${n.id}" href="${n.href}" data-view="${n.id}" title="${esc(n.label)}" ${n.id === active ? 'aria-current="page"' : ""}>
-            <span class="side-item__icon">${icon(n.icon, 24, 2.5)}</span><span class="side-item__label">${esc(n.label)}</span>
+            <span class="side-item__icon">${icon(n.icon, 24, 2.5)}${n.id === "review" && due ? `<span class="tab__badge" aria-label="${due} to review">${due > 9 ? "9+" : due}</span>` : ""}</span><span class="side-item__label">${esc(n.label)}</span>
           </a></li>`).join("")}
         <li><button class="side-item side-item--settings" data-nav="settings" title="Settings">
           <span class="side-item__icon">${icon("settings", 24, 2.5)}</span><span class="side-item__label">Settings</span>
@@ -97,16 +102,4 @@ export function pathPanel(s) {
         </div>
       </section>
     </aside>`;
-}
-
-export function soonCard(view) {
-  const v = SOON[view];
-  return `
-    <div class="soon-card">
-      <div class="soon-art">${charImg(v.owl, "soon-owl")}<span class="soon-icon">${icon(v.icon, 26, 2.5)}</span></div>
-      <span class="badge badge--turquoise">${icon("sparkles", 16, 2.75)} Coming soon</span>
-      <h1 class="h-title soon-title" tabindex="-1">${esc(v.title)}</h1>
-      <p class="soon-text">${esc(v.text)}</p>
-      <a class="press btn btn--primary soon-back" href="#/"><span class="face">${icon("map", 22, 2.75)}<span>Back to the path</span></span></a>
-    </div>`;
 }

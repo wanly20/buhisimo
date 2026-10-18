@@ -272,7 +272,7 @@ $("#shell-demo").innerHTML = `
     ${pathPanel(demoState)}
   </div>
   <div class="ds-grid-2" style="margin-top:16px">
-    <p class="ds-small"><b>Sidebar</b> (<code>.side-nav</code>): logo; Path, Review, Radio Búho, Profile, Settings. Only Path works in the prototype; the others show a friendly “Coming soon” card. The current item is outlined like a selected option.</p>
+    <p class="ds-small"><b>Sidebar</b> (<code>.side-nav</code>): logo; Path, Review, Radio Búho, Profile, Settings. Path, Review (spaced repetition and My knowledge), Radio Búho and Profile all work; on phones and tablets the same four views are in the bottom tab bar (<code>.tab-bar</code>: Learn / Review / Radio / Me). The current item is outlined like a selected option.</p>
     <p class="ds-small"><b>Right panel</b> (<code>.path-panel</code>): streak and XP, the weekly goal ring, the class catch-up card (placeholder: “Your class is up to 1.4”) and a tip from Buhísimo.</p>
   </div>`;
 

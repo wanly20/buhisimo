@@ -8,7 +8,7 @@
 2. **Everything you can press looks pressable.** Chunky 3D buttons have a darker bottom edge and sink when tapped.
 3. **Kind feedback.** Right answers are emerald, and "not yet" answers are a warm terracotta (never alarm red). An icon and words always go with the colour. Wrong answers come back later; there are no hearts and no "failed" screens.
 4. **Nothing jumps.** The bottom button bar has a fixed height. The feedback sheet slides over it, so CONTINUE lands exactly where CHECK was. Only `transform` and `opacity` animate.
-5. **One source for Spanish.** All Spanish shown on screen comes from `lesson-1-1.js` and is checked by `tools/check_vocab.mjs`.
+5. **One source for Spanish.** All Spanish shown on screen comes from `lesson-1-1.js` and `unit-1-1.js` (plus Radio Búho transcripts) and is checked by `tools/check_vocab.mjs`.
 
 ## 2. Colour (Salento palette)
 
@@ -146,26 +146,52 @@ Same app, same lessons; only the layout adapts. All of it is CSS (`css/layout.cs
 - **Keyboard:** 1–9 pick an option or word tile; in matching pairs 1–5 are Spanish and 6–9, 0 English; Backspace takes the last tile back; Enter = CHECK, then CONTINUE (holding it never races ahead; a focused tile, letter or audio button still does its own thing); Esc = quit dialog. Tab order follows the screen, with a magenta focus ring. Number badges show only with a fine pointer or no pointer (`@media (pointer: fine), (pointer: none)`), never on touch screens.
 - **Tests:** `tools/e2e.mjs` (phone, unchanged) and `tools/e2e-keyboard.mjs` (the whole lesson with the keyboard only at 1366×768).
 
-## 10. Files
+## 10. Unit 1.1 level (18 October 2026)
 
+All 11 lessons of Unit 1.1 are playable (`unit-1-1.js`, following `docs/content_plan_1.1-1.6.md` §4). New pieces, all in `css/unit.css` with the same tokens and press recipe:
+
+| Piece | Class | Notes |
+|---|---|---|
+| Audio coming | `.audio-soon` | Dashed sand chip where a line has no recording yet. Never a computer voice (a teacher switch in Settings turns one on). Listening steps without a recording become "read and choose", so nothing is ever audio-only without audio. |
+| Choose | `.ex-choose`, `.pic-option` | One exercise for Spanish/English/picture options (sí/no, picture of *el mapa*, story checks). |
+| Gap fill | `.ex-gap`, `.gap-slot` | The chosen word drops into a dashed slot; turquoise, then emerald or terracotta. |
+| Sort | `.ex-sort` | One card at a time into 2–3 buckets (soy/eres/es, famoso/famosa); keys 1–3. |
+| Map | `.map-frame`, `.map-pin` | Natural Earth shapes (`js/worldmap-data.js`). Locator maps on new-word cards; Map tap pins are labelled buttons (keys 1–4) whose labels move so they never overlap. |
+| Rule table | `.rule-card` | Worked example: soy/eres/es, histórico/histórica. One line per row on short screens. |
+| Story | `.story-line`, `.story-bubble` | Comic-style panels, the last three lines only (no scrolling), EN toggle, tap a line to hear it. |
+| Passport | `.passport` | The unit check finale: listen (or read) and type; the passport gets a stamp. |
+| Views | `.view`, `.view-hero` | Review + My knowledge, Radio Búho (karaoke `.k-line`/`.k-w`), Me (progress file). |
+| Tab bar | `.tab-bar` | Phones and tablets (<1024px): Learn / Review / Radio / Me. The Chromebook layout keeps its sidebar. |
+
+**Offline:** `sw.js` caches the app shell, pictures and every recorded clip. Code is network-first (an online student always gets the newest version); media is cache-first. Bump `VERSION` in `sw.js` and `APP_VERSION` in `js/app.js` together; a new version takes over as soon as no lesson is running.
+
+## 11. Files
 ```
 prototype/
-  index.html                 app shell (phone, tablet and desktop)
+  index.html                 app shell (phone, tablet and desktop) · manifest.webmanifest · sw.js (offline)
   design-system.html         living style guide
-  lesson-1-1.js              ALL lesson content and Spanish strings
+  lesson-1-1.js              lesson 1 content (the original prototype lesson)
+  unit-1-1.js                lessons 2–11, the story, Unit 1.1 items (all Spanish)
   path-data.js               units 1.1–1.6 (textbook titles)
   css/tokens.css             design tokens  ← start here
   css/base.css · components.css · app.css · design-system.css
   css/layout.css             tablet + Chromebook/desktop layouts, keyboard hints
-  js/app.js                  router, path, lesson complete, settings
-  js/lesson.js               lesson runner + 7 exercise types + accent fix-up
-  js/shell.js                desktop sidebar, right panel, "coming soon" cards
+  css/unit.css               Unit 1.1 exercise types, views, tab bar
+  js/app.js                  router, path, views, lesson complete, settings, service worker
+  js/lesson.js               lesson runner + exercise types + accent fix-up
+  js/review.js               spaced repetition, Review sessions, My knowledge
+  js/radio.js                Radio Búho player (align_lyrics.py JSON format)
+  js/worldmap.js · worldmap-data.js   maps
+  js/shell.js                desktop sidebar, right panel, phone tab bar
   js/speech.js · sound.js · store.js · fonts.js · ui.js · icons.js (Lucide, ISC) · ds.js
-  assets/                    WebP art + flags
-  tools/check_vocab.mjs      vocabulary validator (node tools/check_vocab.mjs)
-  tools/e2e.mjs · e2e-keyboard.mjs   headless Chromium tests (phone; keyboard-only desktop)
+  assets/ · icons/           WebP art + flags · app icons
+  audio/                     recorded clips, manifest.json (lesson_audio.py), manifest-extra.json, TODO_lines.json
+  radio/                     episodes.json + episode JSON/MP3
+  tools/check_vocab.mjs      vocabulary validator (unit and lesson level; --todo writes audio/TODO_lines.json)
+  tools/e2e-unit.mjs         headless Chromium test of all of Unit 1.1 (plus e2e.mjs, e2e-keyboard.mjs for lesson 1)
   tools/contrast.py          contrast table from tokens.css
-  tools/process_art.py       art cut-out pipeline (rembg)
+  tools/process_art.py       art cut-out pipeline (rembg) · process_art_l2.py (flood fill, no model)
+  tools/make_worldmap.mjs · make_radio_demo.py · import_design_clips.py
 ```
 
 Run it locally with `python3 -m http.server` in `prototype/` and open `http://localhost:8000/` (ES modules need http).

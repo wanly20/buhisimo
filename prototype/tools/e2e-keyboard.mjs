@@ -9,7 +9,7 @@ import { mkdirSync } from "node:fs";
 const OUT = process.argv[2]; mkdirSync(OUT, { recursive: true });
 const [W, H] = (process.argv[3] || "1366x768").split("x").map(Number);
 const MOCK = () => { class R { start() { setTimeout(() => this.onstart && this.onstart(), 60); setTimeout(() => { this.onresult && this.onresult({ results: [[{ transcript: "soy de Australia", confidence: .9 }]] }); this.onend && this.onend(); }, 700); } stop() {} abort() {} } window.SpeechRecognition = R; window.webkitSpeechRecognition = R; };
-const b = await chromium.launch({ executablePath: "/usr/bin/chromium" });
+const b = await chromium.launch({ executablePath: "/usr/bin/chromium", args: ["--headless=new", "--ozone-platform=headless", "--disable-gpu", "--use-gl=swiftshader"] });
 const ctx = await b.newContext({ viewport: { width: W, height: H } });
 await ctx.addInitScript(MOCK);
 const p = await ctx.newPage();
@@ -50,7 +50,7 @@ while (guard++ < 30) {
   }
   if (t === "tiles") {
     const press = async (w) => { const i = await keyFor(".bank .tile", `^${w}$`); await key(String(i + 1)); await wait(330); };
-    await press("eres"); await key("Backspace"); await wait(400);
+    await press("él"); await key("Backspace"); await wait(400);
     ok(await p.locator(".answer-lines .tile").count() === 0, "Backspace takes the tile back");
     for (const w of ["soy", "de", "Colombia"]) await press(w);
     await p.screenshot({ path: `${OUT}/k04-tiles.png` });
@@ -75,7 +75,7 @@ while (guard++ < 30) {
     await key("Enter"); await wait(700); continue;
   }
   if (t === "match") {
-    const pairs = { "España": "Spain", "es": "is", "soy": "I am", "eres": "you are", "él": "he" };
+    const pairs = { "España": "Spain", "es": "is", "soy": "I am", "¿De dónde eres\\?": "Where are you from\\?", "él": "he" };
     for (const [es, en] of Object.entries(pairs)) {
       const a = await keyFor('.match-card[data-side="es"]', `^${es}$`), c = await keyFor('.match-card[data-side="en"]', `^${en}$`);
       await key(String(a + 1)); await key(String((5 + c + 1) % 10)); await wait(300);

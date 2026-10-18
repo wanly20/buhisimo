@@ -94,7 +94,7 @@ export const lesson = {
       character: "matilda",
       en: "I'm from Colombia.",
       answerEs: ["soy", "de", "Colombia"],
-      tilesEs: ["Colombia", "eres", "soy", "Australia", "de", "es"],
+      tilesEs: ["Colombia", "él", "soy", "Australia", "de", "es"],
       fullEs: "Soy de Colombia.",
     },
     {
@@ -121,7 +121,7 @@ export const lesson = {
         { es: "España", en: "Spain" },
         { es: "es", en: "is" },
         { es: "soy", en: "I am" },
-        { es: "eres", en: "you are" },
+        { es: "¿De dónde eres?", en: "Where are you from?" },
         { es: "él", en: "he" },
       ],
     },

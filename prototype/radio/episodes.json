@@ -1,0 +1,13 @@
+{
+ "_about": "Radio Búho episodes. Each JSON uses the format of video_generation/scripts/align_lyrics.py ({audio, duration, lines:[{text, start, end, words:[{word, start, end}]}]}); audio paths are relative to this folder. Optional extras: title, demo, note; per line speaker, en.",
+ "episodes": [
+  {
+   "id": "demo-1-1",
+   "json": "demo-1-1.json",
+   "unit": "1.1",
+   "titleEn": "Where are you from?",
+   "art": "owl-explaining",
+   "demo": true
+  }
+ ]
+}

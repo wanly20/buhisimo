@@ -1,0 +1,41 @@
+{
+ "note": "Clips copied from spanish_app/design/voices/lines (the voice-design test, x-vector clones of the same reference wavs as manifest.json). Written by tools/import_design_clips.py.",
+ "clips": {
+  "Soy de Colombia.": {
+   "buho_profesor": "audio/buho_profesor/soy-de-colombia-dc6cc3.mp3"
+  },
+  "Max es de Australia.": {
+   "maria_bogota": "audio/maria_bogota/max-es-de-australia-1fca04.mp3",
+   "maria_paisa": "audio/maria_paisa/max-es-de-australia-1fca04.mp3",
+   "raul": "audio/raul/max-es-de-australia-1fca04.mp3",
+   "buho_profesor": "audio/buho_profesor/max-es-de-australia-1fca04.mp3"
+  },
+  "Matilda es de Melbourne.": {
+   "maria_bogota": "audio/maria_bogota/matilda-es-de-melbourne-567eb5.mp3",
+   "maria_paisa": "audio/maria_paisa/matilda-es-de-melbourne-567eb5.mp3",
+   "raul": "audio/raul/matilda-es-de-melbourne-567eb5.mp3",
+   "buho_profesor": "audio/buho_profesor/matilda-es-de-melbourne-567eb5.mp3"
+  },
+  "el país": {
+   "buho_profesor": "audio/buho_profesor/el-pais-d33879.mp3"
+  },
+  "la capital": {
+   "maria_bogota": "audio/maria_bogota/la-capital-ee503c.mp3",
+   "maria_paisa": "audio/maria_paisa/la-capital-ee503c.mp3",
+   "raul": "audio/raul/la-capital-ee503c.mp3",
+   "buho_profesor": "audio/buho_profesor/la-capital-ee503c.mp3"
+  },
+  "el mundo": {
+   "maria_bogota": "audio/maria_bogota/el-mundo-84382f.mp3",
+   "maria_paisa": "audio/maria_paisa/el-mundo-84382f.mp3",
+   "raul": "audio/raul/el-mundo-84382f.mp3",
+   "buho_profesor": "audio/buho_profesor/el-mundo-84382f.mp3"
+  },
+  "el mapa": {
+   "maria_bogota": "audio/maria_bogota/el-mapa-bd41fe.mp3",
+   "maria_paisa": "audio/maria_paisa/el-mapa-bd41fe.mp3",
+   "raul": "audio/raul/el-mapa-bd41fe.mp3",
+   "buho_profesor": "audio/buho_profesor/el-mapa-bd41fe.mp3"
+  }
+ }
+}

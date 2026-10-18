@@ -34,11 +34,17 @@ export const VOICE_OPTIONS = {
 };
 const FALLBACK_ROLES = { maria: ["maria", "raul"], raul: ["raul", "maria"], buho: ["buho", "maria", "raul"] };
 
+// audio/manifest.json is written by lesson_audio.py; audio/manifest-extra.json holds
+// clips copied from the voice-design test (tools/import_design_clips.py). Merged here.
 let manifest = null;
-const manifestReady = fetch("audio/manifest.json")
-  .then((r) => (r.ok ? r.json() : null))
-  .then((m) => { manifest = m; return m; })
-  .catch(() => null);
+const getJson = (url) => fetch(url).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+const manifestReady = Promise.all([getJson("audio/manifest.json"), getJson("audio/manifest-extra.json")])
+  .then(([main, extra]) => {
+    const clips = {};
+    for (const m of [main, extra]) for (const [text, byVoice] of Object.entries(m?.clips || {})) clips[text] = { ...clips[text], ...byVoice };
+    manifest = { ...(main || {}), clips };
+    return manifest;
+  });
 
 function voiceFor(role) {
   const s = store.get();
@@ -106,8 +112,11 @@ function playClip(url, slow) {
 export const tts = {
   available: () => !!player || synthAvailable(),
   voiceName() { const v = pickVoice(); return v ? `${v.name} (${v.lang})` : "default Spanish voice"; },
-  /** True when this text has a recorded clip (any voice). */
+  /** True when this text has a recorded clip (any voice). Lines without one show
+   *  an "audio coming" state instead of a computer voice (Buhísimo v2, Oct 2026). */
   hasClip: (text) => !!manifest?.clips?.[text],
+  /** Every recorded clip path (for the service worker and tests). */
+  clipPaths: () => Object.values(manifest?.clips || {}).flatMap((v) => Object.values(v)),
   ready: () => manifestReady,
 
   /**
@@ -125,6 +134,9 @@ export const tts = {
       if (url) return playClip(url, slow);
     }
     if (token !== speakToken) return false;
+    // No recording yet: silence ("audio coming"), unless the teacher turned the
+    // computer voice on in Settings.
+    if (!store.get().robotVoice) return false;
     return synthSpeak(text, { slow, sayAs });
   },
   stop() {
@@ -217,7 +229,7 @@ export const stt = {
 // ---------------------------------------------------------------- matching helpers
 export function fold(s) {
   return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
-    .replace(/[¡!¿?.,;:"“”'‘’…]/g, " ").replace(/\s+/g, " ").trim();
+    .replace(/[¡!¿?.,;:"“”'‘’…—–]/g, " ").replace(/\s+/g, " ").trim();
 }
 
 /** Lenient speech match: every expected word appears, in order. */

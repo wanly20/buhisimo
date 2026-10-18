@@ -1,0 +1,427 @@
+// End-to-end test for the Unit 1.1 level of the prototype (headless Chromium only,
+// software rendering, never the GPU, never a visible window).
+//
+// Setup (outside the repo):  mkdir -p $PW && cd $PW && npm i playwright-core@1.48.2
+// Serve:  cd prototype && python3 -m http.server 8765 --bind 127.0.0.1
+// Run:    NODE_PATH=$PW/node_modules node prototype/tools/e2e-unit.mjs <outDir>
+//
+// Covers: every 1.1 lesson played start to finish (keyboard on the Chromebook size, with
+// wrong answers and the retry), "fits 1366×768 without scrolling" for every step, Review
+// (spaced repetition + My knowledge), the story, Radio Búho karaoke highlighting, the
+// phone tab bar, the progress file, offline mode and the service worker.
+import { createRequire } from "node:module";
+import { mkdirSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const require = createRequire(import.meta.url);
+const { chromium } = require("playwright-core"); // resolved through NODE_PATH
+const OUT = process.argv[2] || "e2e-unit-shots";
+mkdirSync(OUT, { recursive: true });
+const BASE = "http://127.0.0.1:8765/";
+const PROTO = join(dirname(fileURLToPath(import.meta.url)), "..");
+const errors = [];
+let OFFLINE = false;
+const log = (...a) => console.log(...a);
+const ok = (c, msg) => { if (!c) { errors.push("ASSERT: " + msg); log("  ✗", msg); } else log("  ✓", msg); return c; };
+const shots = new Set();
+const shot = async (page, name) => { const f = `${OUT}/${name}.png`; await page.screenshot({ path: f }); shots.add(f); };
+
+const MOCK_SPEECH = () => {
+  class MockRec {
+    start() {
+      setTimeout(() => this.onstart && this.onstart(), 60);
+      setTimeout(() => { this.onresult && this.onresult({ results: [[{ transcript: window.__heard || "soy de Australia", confidence: 0.9 }]] }); this.onend && this.onend(); }, 500);
+    }
+    stop() {} abort() {}
+  }
+  window.SpeechRecognition = MockRec;
+  window.webkitSpeechRecognition = MockRec;
+};
+
+const browser = await chromium.launch({
+  executablePath: "/usr/bin/chromium",
+  headless: true,
+  args: ["--headless=new", "--ozone-platform=headless", "--disable-gpu", "--use-gl=swiftshader", "--autoplay-policy=no-user-gesture-required"],
+});
+
+async function newPage(viewport, { touch = false } = {}) {
+  const ctx = await browser.newContext({ viewport, hasTouch: touch, acceptDownloads: true });
+  await ctx.addInitScript(MOCK_SPEECH);
+  const page = await ctx.newPage();
+  page.on("console", (m) => { if (m.type() === "error" && !/favicon/.test(m.text())) errors.push(`console.error: ${m.text()}`); });
+  page.on("pageerror", (e) => errors.push(`pageerror: ${e.message}`));
+  page.on("requestfailed", (r) => { if (!OFFLINE && !/canvas-confetti|fonts\.g/.test(r.url()) && !/ERR_ABORTED/.test(r.failure()?.errorText || "")) errors.push(`requestfailed: ${r.url()} ${r.failure()?.errorText}`); });
+  return { ctx, page };
+}
+
+const wait = (page, ms) => page.waitForTimeout(ms);
+const step = (page) => page.evaluate(() => {
+  const s = window.__buho?.step();
+  const ex = document.querySelector(".lesson-body .ex:not(.step-leave)");
+  return { step: s ? JSON.parse(JSON.stringify(s)) : null, mode: window.__buho?.mode(), complete: !!document.querySelector(".screen.complete"), cls: ex ? [...ex.classList].join(" ") : "" };
+});
+const sheet = (page) => page.evaluate(() => { const s = document.querySelector(".feedback"); return s?.classList.contains("is-open") ? (s.classList.contains("is-wrong") ? "wrong" : "correct") : "closed"; });
+const overflow = (page) => page.evaluate(() => { const b = document.querySelector(".lesson-body"); return b ? b.scrollHeight - b.clientHeight : 0; });
+
+/** Press the number key for the option whose test() is true (keyboard play). */
+async function pickByKey(page, selector, test, { useKeys = true } = {}) {
+  const idx = await page.evaluate(([sel, src]) => {
+    const f = new Function("b", `return (${src})(b)`);
+    return [...document.querySelectorAll(sel)].findIndex((b) => f(b));
+  }, [selector, test.toString()]);
+  if (idx < 0) throw new Error(`no option matches in ${selector}`);
+  if (useKeys) await page.keyboard.press(String((idx + 1) % 10));
+  else if (selector.includes("map-pin")) await page.locator(selector).nth(idx).locator(".map-pin__label").click(); // the pin itself is a 0×0 anchor
+  else await page.locator(selector).nth(idx).click();
+  return idx;
+}
+
+/** Answer the current step. wrong = give a wrong answer if the type allows it. */
+async function answer(page, s, { wrong = false, keys = true } = {}) {
+  const t = s.type;
+  const enter = async () => { if (keys) await page.keyboard.press("Enter"); else await page.click('.lesson-foot [data-act="main"]'); };
+  if (["intro", "table", "storyintro", "storyline"].includes(t)) { await enter(); return "next"; }
+  if (t === "pick" || t === "listen" || t === "choose") {
+    const want = s.answer;
+    await pickByKey(page, ".lesson-body .ex:not(.step-leave) .option", wrong ? `(b) => +b.dataset.oi !== ${want}` : `(b) => +b.dataset.oi === ${want}`, { useKeys: keys });
+    await wait(page, 150); await enter(); return "graded";
+  }
+  if (t === "gap") {
+    const blank = s.blank.toLowerCase();
+    const want = s.optionsEs.findIndex((o) => o.toLowerCase() === blank);
+    await pickByKey(page, ".lesson-body .ex-gap .option", wrong ? `(b) => +b.dataset.oi !== ${want}` : `(b) => +b.dataset.oi === ${want}`, { useKeys: keys });
+    await wait(page, 150); await enter(); return "graded";
+  }
+  if (t === "maptap") {
+    await pickByKey(page, ".lesson-body .ex-maptap .map-pin", wrong ? `(b) => b.dataset.place !== ${JSON.stringify(s.target)}` : `(b) => b.dataset.place === ${JSON.stringify(s.target)}`, { useKeys: keys });
+    await wait(page, 150); await enter(); return "graded";
+  }
+  if (t === "tiles") {
+    const words = wrong ? [...s.answerEs].reverse() : s.answerEs;
+    for (const w of words) {
+      const idx = await page.evaluate((w) => [...document.querySelectorAll(".lesson-body .ex-tiles .bank .tile")].findIndex((b) => !b.classList.contains("is-ghost") && b.textContent.trim() === w), w);
+      if (idx < 0) throw new Error(`tile "${w}" not found`);
+      if (keys && idx < 9) await page.keyboard.press(String(idx + 1));
+      else await page.locator(".lesson-body .ex-tiles .bank .tile").nth(idx).click();
+      await wait(page, 300);
+    }
+    await enter(); return "graded";
+  }
+  if (t === "type" || t === "passport") {
+    const text = wrong ? "no sé" : s.answerEs;
+    await page.fill(".lesson-body .type-input", text);
+    await wait(page, 100); await enter(); return "graded";
+  }
+  if (t === "match") {
+    const exact = (t) => new RegExp(`^\\s*${t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*$`);
+    for (const p of s.pairs) {
+      await page.locator('.ex-match .match-card[data-side="es"]').filter({ hasText: exact(p.es) }).first().click();
+      await wait(page, 120);
+      await page.locator('.ex-match .match-card[data-side="en"]').filter({ hasText: exact(p.en) }).first().click();
+      await wait(page, 520);
+    }
+    await wait(page, 500); return "graded";
+  }
+  if (t === "sort") {
+    for (let k = 0; k < s.cards.length; k++) {
+      const text = await page.locator(".sort-card .sort-card__es").innerText();
+      const card = s.cards.find((c) => c.es === text);
+      if (wrong && k === 0) { await page.keyboard.press(String(((card.bucket + 1) % (s.bucketsEs || s.bucketsEn).length) + 1)); await wait(page, 600); }
+      await page.keyboard.press(String(card.bucket + 1));
+      await wait(page, 380);
+    }
+    await wait(page, 500); return "graded";
+  }
+  if (t === "speak") {
+    await page.evaluate((es) => { window.__heard = es; }, s.es);
+    await page.click(".lesson-body .ex-speak .mic-btn");
+    await wait(page, 1000); return "graded";
+  }
+  throw new Error(`unknown step type ${t}`);
+}
+
+/** Play the lesson that is on screen to the end. Returns stats. */
+async function playLesson(page, tag, { keys = true, wrongOnce = true, checkFit = false, shotTypes = new Set(), shotPrefix = "" } = {}) {
+  const seen = {};
+  let wrongDone = !wrongOnce, guard = 0, retried = false, wrongId = null, fitIssues = [];
+  while (guard++ < 80) {
+    await wait(page, 450);
+    const st = await step(page);
+    if (st.complete) break;
+    if (!st.step) { await wait(page, 500); continue; }
+    const s = st.step;
+    seen[s.type] = (seen[s.type] || 0) + 1;
+    if (checkFit) { const o = await overflow(page); if (o > 1) fitIssues.push(`${s.id} (${s.type}) +${o}px`); }
+    const shotName = `${shotPrefix}${s.type}${s.lines ? "-order" : ""}`;
+    if (shotTypes.has(s.type) && !shots.has(`${OUT}/${shotName}.png`)) await shot(page, shotName);
+    if (s.retry && s.id === wrongId) retried = true;
+    const canWrong = ["pick", "choose", "gap", "maptap", "tiles", "type", "listen"].includes(s.type) && !s.retry;
+    const doWrong = !wrongDone && canWrong;
+    const res = await answer(page, s, { wrong: doWrong, keys });
+    if (res === "graded") {
+      await wait(page, 700);
+      let sh = await sheet(page);
+      if (sh === "closed" && (await page.locator(".ex-fixup").count())) { // accent fix-up: "Show me"
+        await page.click("[data-show], [data-act='show']").catch(() => {});
+        await wait(page, 2200);
+        sh = await sheet(page);
+      }
+      if (doWrong) { ok(sh === "wrong", `${tag}: a wrong answer shows the kind "not yet" sheet (${s.type})`); wrongDone = true; wrongId = s.id; }
+      else if (sh !== "correct") errors.push(`${tag}: step ${s.id} (${s.type}) expected correct, got ${sh}`);
+      if (shotTypes.has(`${s.type}:feedback`) && !shots.has(`${OUT}/${shotPrefix}${s.type}-feedback.png`)) await shot(page, `${shotPrefix}${s.type}-feedback`);
+      if (keys) await page.keyboard.press("Enter"); else await page.click('.feedback [data-act="continue"]');
+    }
+  }
+  const complete = (await step(page)).complete;
+  return { seen, complete, retried: wrongOnce ? retried : true, fitIssues };
+}
+
+const LESSON_IDS = Array.from({ length: 11 }, (_, i) => `1.1-${i + 1}`);
+
+// ===================================================================== A. desktop 1366×768: the whole unit
+log("A. Chromebook 1366×768: every 1.1 lesson in order, keyboard play");
+{
+  const { ctx, page } = await newPage({ width: 1366, height: 768 });
+  await page.goto(BASE + "index.html");
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await wait(page, 1500);
+  ok(await page.locator('.node[data-unit="1.1"]').count() === 11, "the 1.1 path has 11 nodes");
+  ok(await page.locator(".node.is-current").count() === 1, "one current node");
+  ok(await page.locator(".tab-bar").isHidden(), "no tab bar on the Chromebook layout (sidebar instead)");
+  await shot(page, "d01-path-start");
+  await page.click('.node[data-node="1.1-3"]');
+  await wait(page, 400);
+  ok(/locked/i.test(await page.locator(".node-pop").innerText()), "a later lesson is locked until the one before is done");
+  await page.keyboard.press("Escape");
+
+  const shotTypes = new Set(["intro", "table", "choose", "gap", "sort", "maptap", "storyintro", "storyline", "tiles", "passport", "match", "type", "speak", "pick", "listen", "maptap:feedback", "gap:feedback"]);
+  for (const [i, id] of LESSON_IDS.entries()) {
+    await page.goto(BASE + "index.html#/");
+    await wait(page, 900);
+    const node = page.locator(`.node[data-node="${id}"]`);
+    ok(await node.evaluate((n) => n.classList.contains("is-current")), `${id} is the current node`);
+    await node.focus();
+    await page.keyboard.press("Enter");
+    await wait(page, 400);
+    await page.keyboard.press("Enter"); // START (focused in the popover)
+    await wait(page, 1300);
+    const r = await playLesson(page, id, { keys: true, wrongOnce: i !== 9, checkFit: true, shotTypes, shotPrefix: "d-" });
+    ok(r.complete, `${id} played to the end (${Object.entries(r.seen).map(([k, v]) => `${k}×${v}`).join(", ")})`);
+    ok(r.retried, `${id}: the missed question came back later`);
+    ok(r.fitIssues.length === 0, `${id}: every step fits 1366×768 without scrolling${r.fitIssues.length ? ": " + r.fitIssues.join("; ") : ""}`);
+    await wait(page, 700);
+    if (i === 0 || id === "1.1-9" || id === "1.1-11") await shot(page, `d-complete-${id}`);
+    await page.keyboard.press("Enter");
+    await wait(page, 1200);
+    ok(await page.locator(`.node[data-node="${id}"].is-done`).count() === 1, `${id} shows as done on the path`);
+  }
+  await shot(page, "d02-path-all-done");
+  const prog = await page.evaluate(() => JSON.parse(localStorage.getItem("buhisimo.prototype.v1")));
+  ok(Object.keys(prog.completed).length === 11, "progress saved: 11 lessons completed");
+  ok(Object.keys(prog.items).length >= 30, `Review knows ${Object.keys(prog.items).length} items`);
+
+  // ------------------------------------------------------------------- Review
+  log("A2. Review (spaced repetition)");
+  // Make a few items due (as if days had passed) and one weak.
+  await page.evaluate(() => {
+    const s = JSON.parse(localStorage.getItem("buhisimo.prototype.v1"));
+    for (const id of ["el-pais", "hispanohablante", "la-capital", "eres"]) s.items[id] = { ...s.items[id], due: Date.now() - 864e5, box: 1, wrong: 1 };
+    localStorage.setItem("buhisimo.prototype.v1", JSON.stringify(s));
+  });
+  await page.goto(BASE + "index.html#/review");
+  await page.reload();
+  await wait(page, 1200);
+  ok((await page.locator(".view-review .h-title").innerText()).includes("to refresh"), "Review says how many words are due");
+  ok(await page.locator(".kb-item:not(.is-locked)").count() >= 30, "My knowledge lists every word met");
+  ok(await page.locator('.side-item--review .tab__badge').count() === 1, "the sidebar Review item shows a due badge");
+  await shot(page, "d03-review");
+  const before = await page.evaluate(() => JSON.parse(localStorage.getItem("buhisimo.prototype.v1")).items["el-pais"]);
+  await page.click("[data-start-review]");
+  await wait(page, 1300);
+  const rr = await playLesson(page, "review", { keys: true, wrongOnce: true, checkFit: true, shotTypes: new Set(["pick", "choose", "type", "match"]), shotPrefix: "d-review-" });
+  ok(rr.complete, `review session played to the end (${Object.entries(rr.seen).map(([k, v]) => `${k}×${v}`).join(", ")})`);
+  ok(rr.fitIssues.length === 0, `review steps fit 1366×768${rr.fitIssues.length ? ": " + rr.fitIssues.join("; ") : ""}`);
+  ok((await page.locator(".complete-title").innerText()).includes("Review"), "“Review done!” screen");
+  await shot(page, "d04-review-done");
+  await page.keyboard.press("Enter");
+  await wait(page, 1000);
+  const after = await page.evaluate(() => JSON.parse(localStorage.getItem("buhisimo.prototype.v1")));
+  ok(after.items["el-pais"].seen >= before.seen, "items are re-scheduled after review");
+  ok(await page.evaluate(() => location.hash) === "#/review", "Continue goes back to Review");
+
+  // ------------------------------------------------------------------- Radio Búho
+  log("A3. Radio Búho karaoke");
+  await page.goto(BASE + "index.html#/radio");
+  await wait(page, 1500);
+  ok(await page.locator(".radio-demo").count() === 1, "the demo episode is labelled as a demo");
+  ok(await page.locator(".k-line").count() === 10, "the transcript shows 10 lines");
+  const ep = JSON.parse(readFileSync(join(PROTO, "radio/demo-1-1.json"), "utf8"));
+  await page.waitForFunction(() => window.__radio && window.__radio.audio.readyState >= 1, null, { timeout: 8000 }).catch(() => {});
+  for (const [li, wi] of [[3, 3], [7, 0], [8, 3]]) {
+    const w = ep.lines[li].words[wi];
+    await page.evaluate((t) => { window.__radio.audio.currentTime = t; window.__radio.render(); }, (w.start + w.end) / 2);
+    await wait(page, 250);
+    const now = await page.evaluate(() => window.__radio.now());
+    ok(now.line === li && now.word[0] === w.word, `seek to ${((w.start + w.end) / 2).toFixed(2)} s highlights line ${li + 1}, word “${w.word}” (got line ${now.line + 1}, ${JSON.stringify(now.word)})`);
+  }
+  await page.evaluate((t) => { window.__radio.audio.currentTime = t; }, ep.lines[3].start + 0.1);
+  await page.click('[data-radio="play"]');
+  await wait(page, 1600);
+  const playing = await page.evaluate(() => ({ t: window.__radio.audio.currentTime, paused: window.__radio.audio.paused, now: window.__radio.now() }));
+  ok(!playing.paused && playing.t > ep.lines[3].start + 0.6, `audio plays (t = ${playing.t.toFixed(2)} s)`);
+  ok(playing.now.line >= 3, `the highlight follows playback (line ${playing.now.line + 1})`);
+  await shot(page, "d05-radio-playing");
+  await page.keyboard.press("Space");
+  await wait(page, 300);
+  ok(await page.evaluate(() => window.__radio.audio.paused), "Space pauses");
+  await page.click(".k-line[data-line='6'] .k-w[data-w='0']");
+  await wait(page, 300);
+  ok((await page.evaluate(() => window.__radio.now())).line === 6, "tapping a word jumps there");
+  await page.keyboard.press("Space");
+
+  // ------------------------------------------------------------------- Me + progress file
+  log("A4. Me: progress file download and load");
+  await page.goto(BASE + "index.html#/profile");
+  await wait(page, 900);
+  await shot(page, "d06-me");
+  const [dl] = await Promise.all([page.waitForEvent("download"), page.click("[data-download]")]);
+  const file = join(OUT, "progress.txt");
+  await dl.saveAs(file);
+  const txt = readFileSync(file, "utf8");
+  ok(txt.startsWith("Buhísimo: progress file") && dl.suggestedFilename().startsWith("buhisimo-progress-") && dl.suggestedFilename().endsWith(".txt"), `progress downloads as ${dl.suggestedFilename()}`);
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await wait(page, 900);
+  await page.setInputFiles("[data-load]", file);
+  await wait(page, 400);
+  ok((await page.locator(".load-msg").innerText()).includes("11 of 11 lessons"), "loading the file summarises it");
+  await page.click("[data-load-yes]");
+  await wait(page, 900);
+  ok(await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("buhisimo.prototype.v1")).completed).length) === 11, "progress restored from the file");
+
+  // ------------------------------------------------------------------- service worker + offline
+  log("A5. Offline app (service worker)");
+  await page.goto(BASE + "index.html");
+  const sw = await page.evaluate(async () => {
+    const reg = await navigator.serviceWorker.ready;
+    await new Promise((r) => setTimeout(r, 1500));
+    return { state: reg.active?.state, scope: reg.scope, caches: await caches.keys() };
+  });
+  const swVersion = readFileSync(join(PROTO, "sw.js"), "utf8").match(/const VERSION = "([^"]+)"/)[1];
+  const appVersion = readFileSync(join(PROTO, "js/app.js"), "utf8").match(/APP_VERSION = "([^"]+)"/)[1];
+  ok(sw.state === "activated", `service worker registered and active (scope ${sw.scope})`);
+  ok(sw.caches.includes(`buhisimo-shell-${swVersion}`) && sw.caches.includes(`buhisimo-media-${swVersion}`), `versioned caches: ${sw.caches.join(", ")}`);
+  ok(swVersion === appVersion, `sw.js VERSION matches APP_VERSION (${swVersion})`);
+  const cached = await page.evaluate(async (v) => { const c = await caches.open(`buhisimo-media-${v}`); return (await c.keys()).filter((r) => r.url.endsWith(".mp3")).length; }, swVersion);
+  ok(cached >= 50, `${cached} audio files cached for offline`);
+  await page.reload();
+  await wait(page, 800);
+  ok(await page.evaluate(() => !!navigator.serviceWorker.controller), "the page is controlled by the service worker after reload");
+  OFFLINE = true;
+  await ctx.setOffline(true);
+  await page.goto(BASE + "index.html#/lesson/1.1-2");
+  await wait(page, 1800);
+  ok(await page.locator(".screen.lesson").count() === 1, "offline: a lesson still opens");
+  await page.goto(BASE + "index.html#/radio");
+  await wait(page, 1500);
+  ok(await page.locator(".k-line").count() === 10, "offline: Radio Búho still loads");
+  await ctx.setOffline(false);
+  OFFLINE = false;
+  await ctx.close();
+}
+
+// ===================================================================== B. story details + tap to hear
+log("B. Story lesson details (1366×768)");
+{
+  const { ctx, page } = await newPage({ width: 1366, height: 768 });
+  await page.addInitScript(() => { window.__spoken = []; const s = window.speechSynthesis; if (s) s.speak = (u) => { window.__spoken.push(u.text); setTimeout(() => u.onend && u.onend(), 50); }; });
+  await page.goto(BASE + "index.html");
+  await page.evaluate(() => { localStorage.clear(); localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ unlockAll: true, robotVoice: true })); });
+  await page.goto(BASE + "index.html#/lesson/1.1-9");
+  await page.reload();
+  await wait(page, 1500);
+  ok(await page.locator(".story-cover").count() === 1, "the story opens with its cover (plaza, cast)");
+  await page.keyboard.press("Enter");
+  let maxPanels = 0, checks = 0;
+  for (let g = 0; g < 40; g++) {
+    await wait(page, 500);
+    const st = await step(page);
+    if (st.complete) break;
+    const s = st.step;
+    if (s.type === "storyline") {
+      maxPanels = Math.max(maxPanels, await page.locator(".story-line").count());
+      if (s.line === 6) {
+        await shot(page, "d07-story-line");
+        await page.click(".story-line.is-new .story-en-btn");
+        await wait(page, 200);
+        ok(await page.locator(".story-line.is-new .story-en").isVisible(), "EN shows the line's English");
+        await page.click(".story-line.is-new .story-es");
+        await wait(page, 300);
+        ok((await page.evaluate(() => window.__spoken)).includes("¿Cocora? ¿Es Perú? ¿Es Cuba? ¿Es Chile?"), "tapping a line plays it");
+        await shot(page, "d08-story-en");
+        await page.evaluate(() => document.activeElement?.blur());
+      }
+    }
+    if (s.type === "choose" && s.story) checks++;
+    if (s.type === "tiles" && s.lines) await shot(page, "d09-story-order");
+    const res = await answer(page, s);
+    if (res === "graded") { await wait(page, 700); ok(await sheet(page) === "correct", `story ${s.type} answered`); await page.keyboard.press("Enter"); }
+  }
+  ok(maxPanels > 0 && maxPanels <= 3, `story shows at most 3 panels at a time (no scrolling): ${maxPanels}`);
+  ok(checks === 2, "two comprehension questions plus the ordering task");
+  ok((await step(page)).complete, "the story plays to the end");
+  await ctx.close();
+}
+
+// ===================================================================== C. phone 390×844
+log("C. Phone 390×844: tab bar, lessons with touch, views");
+{
+  const { ctx, page } = await newPage({ width: 390, height: 844 }, { touch: true });
+  await page.goto(BASE + "index.html");
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await wait(page, 1300);
+  ok(await page.locator(".tab-bar").isVisible(), "phone: the bottom tab bar is visible");
+  ok((await page.locator(".tab-bar .tab").allInnerTexts()).map((t) => t.trim().toUpperCase()).join("|") === "LEARN|REVIEW|RADIO|ME", "tabs: Learn / Review / Radio / Me");
+  await shot(page, "p01-path");
+  for (const [tab, view] of [["review", "review"], ["radio", "radio"], ["profile", "profile"], ["path", "path"]]) {
+    await page.click(`.tab-bar [data-view="${tab}"]`);
+    await wait(page, 900);
+    ok(await page.evaluate((v) => document.querySelector(".screen.path").dataset.view === v, view) && (await page.locator(`.tab-bar [data-view="${tab}"][aria-current="page"]`).count()) === 1, `tab ${tab} opens the ${view} view`);
+    if (tab !== "path") await shot(page, `p0${["review", "radio", "profile"].indexOf(tab) + 2}-${tab}`);
+  }
+  const hscroll = await page.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth);
+  ok(hscroll <= 0, "phone: no horizontal scrolling");
+  // Play lessons 1–3 and 9 by touch (unlock 9 via the teacher switch)
+  await page.evaluate(() => { const s = JSON.parse(localStorage.getItem("buhisimo.prototype.v1") || "{}"); s.unlockAll = true; localStorage.setItem("buhisimo.prototype.v1", JSON.stringify(s)); });
+  const pshots = new Set(["intro", "maptap", "gap", "sort", "table", "storyline", "passport", "choose", "tiles", "maptap:feedback"]);
+  for (const id of ["1.1-2", "1.1-3", "1.1-8", "1.1-9", "1.1-11"]) {
+    await page.goto(BASE + `index.html#/lesson/${id}`);
+    await wait(page, 1300);
+    const r = await playLesson(page, `phone ${id}`, { keys: false, wrongOnce: false, shotTypes: pshots, shotPrefix: "p-" });
+    ok(r.complete, `phone: ${id} played by touch (${Object.keys(r.seen).join(", ")})`);
+    const hs = await page.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth);
+    ok(hs <= 0, `phone: ${id} has no horizontal scrolling`);
+    await page.click("[data-done]");
+    await wait(page, 900);
+  }
+  await shot(page, "p06-path-progress");
+  await ctx.close();
+}
+
+// ===================================================================== D. tablet 820×1180: tab bar too
+log("D. Tablet 820×1180");
+{
+  const { ctx, page } = await newPage({ width: 820, height: 1180 }, { touch: true });
+  await page.goto(BASE + "index.html#/radio");
+  await wait(page, 1300);
+  ok(await page.locator(".tab-bar").isVisible(), "tablet: tab bar visible");
+  await ctx.close();
+}
+
+await browser.close();
+log(`\nScreenshots: ${shots.size} in ${OUT}`);
+if (errors.length) { log(`\n✗ ${errors.length} problem(s):\n  ` + errors.join("\n  ")); process.exit(1); }
+log("\n✓ PASS: Unit 1.1 end to end");

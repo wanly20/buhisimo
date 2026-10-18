@@ -13,15 +13,22 @@ export const unitsTextbookTitlesEs = {
 };
 
 // Each unit: colour theme + nodes. kind decides the icon.
-// Only "1.1-1" is playable in the prototype; every other node says "Coming soon".
+// Unit 1.1 is fully playable (unit-1-1.js: 11 lessons, docs/content_plan_1.1-1.6.md §4);
+// every node of 1.2–1.6 still says "Coming soon".
 export const units = [
   { id: "1.1", theme: "turquoise", subtitleEn: "Countries and where people are from",
     nodes: [
       { id: "1.1-1", kind: "lesson", labelEn: "Lesson 1" },
       { id: "1.1-2", kind: "lesson", labelEn: "Lesson 2" },
-      { id: "1.1-3", kind: "story", labelEn: "Story" },
-      { id: "1.1-4", kind: "practice", labelEn: "Practice" },
-      { id: "1.1-5", kind: "check", labelEn: "Unit check" },
+      { id: "1.1-3", kind: "lesson", labelEn: "Lesson 3" },
+      { id: "1.1-4", kind: "lesson", labelEn: "Lesson 4" },
+      { id: "1.1-5", kind: "practice", labelEn: "Practice" },
+      { id: "1.1-6", kind: "lesson", labelEn: "Lesson 6" },
+      { id: "1.1-7", kind: "lesson", labelEn: "Lesson 7" },
+      { id: "1.1-8", kind: "lesson", labelEn: "Lesson 8" },
+      { id: "1.1-9", kind: "story", labelEn: "Story" },
+      { id: "1.1-10", kind: "game", labelEn: "Game" },
+      { id: "1.1-11", kind: "check", labelEn: "Unit check" },
     ] },
   { id: "1.2", theme: "magenta", subtitleEn: "Greetings and feelings",
     nodes: [

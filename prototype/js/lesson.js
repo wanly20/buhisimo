@@ -6,16 +6,23 @@ import { $, $$, esc, es, rich, el, button, footBar, audioButtons, charImg, flagI
 import { tts, stt, fold, speechMatches } from "./speech.js";
 import { sfx } from "./sound.js";
 import { store } from "./store.js";
+import { mapFrame, wireMapPins, placeName } from "./worldmap.js";
 
 const MAX_RETRIES = 2;
 
-export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
+/** Does this Spanish line have a recorded clip? Lines without one show "audio coming"
+ *  (no computer voice, unless the teacher switches it on in Settings). */
+export const hasAudio = (text) => !!text && (tts.hasClip(text) || store.get().robotVoice);
+
+export function runLesson(app, lesson, { onExit, onComplete, openSettings, onGraded }) {
   // ------------------------------------------------------------ queue
   const unsupported = [];
   let queue = lesson.steps.filter((s) => {
     if (s.type === "speak" && !stt.available()) { unsupported.push("speaking"); return false; }
     if (s.type === "speak" && !store.speakOn()) return false;
-    if (s.type === "listen" && (!tts.available() || !store.listenOn())) return false;
+    // Listening is never audio-only without a recording: those steps become
+    // "read and choose" (see listen()). Snoozed listening drops recorded ones.
+    if (s.type === "listen" && hasAudio(s.sayEs) && (!tts.available() || !store.listenOn())) return false;
     return true;
   }).map((s) => ({ ...s, tries: 0 }));
   let total = queue.length;
@@ -81,19 +88,16 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
     complete(result) { showFeedback(result); },
     next() { advance(true); },
     skip(kind) { skipKind(kind); },
-    speak: (text, slow) => tts.speak(text, { slow, sayAs: lesson.sayAs, role: roleFor(queue[idx], idx) }),
+    speak: (text, slow, who) => (hasAudio(text) ? tts.speak(text, { slow, sayAs: lesson.sayAs, role: who ? roleOf(who) : roleFor(queue[idx], idx) }) : Promise.resolve(false)),
     lesson,
+    index: () => idx,
   };
 
   // Which recorded voice says this step: Buhísimo's own lines in his voice,
   // Matilda in María's and Max in Raúl's (no kid voices yet); everything else
   // alternates María / Raúl from one exercise to the next.
   function roleFor(step, i) {
-    const who = step?.character || "";
-    if (who.startsWith("owl")) return "buho";
-    if (who === "matilda") return "maria";
-    if (who === "max") return "raul";
-    return i % 2 ? "raul" : "maria";
+    return roleOf(step?.speaker || step?.character || "") || (i % 2 ? "raul" : "maria");
   }
   let praiseTimer = 0;
 
@@ -117,8 +121,10 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
     current = EXERCISES[step.type](step, api);
     const prev = body.firstElementChild;
     const next = current.el;
-    next.classList.add("step-enter");
-    if (prev) {
+    const calm = step.type === "storyline" && queue[idx - 1]?.type === "storyline";
+    if (!calm) next.classList.add("step-enter");
+    if (prev && calm) prev.remove();
+    else if (prev) {
       prev.classList.add("step-leave");
       prev.addEventListener("animationend", () => prev.remove(), { once: true });
       setTimeout(() => prev.remove(), 400);
@@ -166,6 +172,7 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
     mode = "feedback";
     const step = queue[idx];
     stats.graded++;
+    if (!step.retry && !result.skipped) onGraded?.(step, !!result.ok, result);
     if (result.ok) {
       stats.correct++;
       if (!step.retry) stats.firstTry++;
@@ -206,7 +213,7 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
     if (result.answerEs) {
       if (!result.ok) bodyHtml += `<span class="feedback__label">Correct answer:</span>`;
       bodyHtml += `<span class="feedback__answer">${es(result.answerEs)}
-        <button class="press icon-btn icon-btn--sm" data-say="${esc(result.answerEs)}" aria-label="Play answer"><span class="face">${icon("volume-2", 22)}</span></button></span>`;
+        ${hasAudio(result.answerEs) ? `<button class="press icon-btn icon-btn--sm" data-say="${esc(result.answerEs)}" aria-label="Play answer"><span class="face">${icon("volume-2", 22)}</span></button>` : ""}</span>`;
       if (result.answerEn) bodyHtml += `<span class="feedback__en">${esc(result.answerEn)}</span>`;
     }
     if (wrongAndRetry) bodyHtml += `<span class="feedback__later">${icon("rotate-ccw", 16, 2.75)} We'll come back to this one.</span>`;
@@ -308,6 +315,8 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
     onExit();
   }
 
+  // Test hook (headless e2e): the current step and mode. Harmless for students.
+  window.__buho = { step: () => queue[idx], mode: () => mode, lesson };
   setProgress();
   advance(false);
   if (unsupported.length) setTimeout(() => toast("Speaking practice isn't available in this browser, so it's skipped.", "mic-off", 3200), 500);
@@ -315,10 +324,41 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings }) {
 }
 
 // =================================================================== exercises
-const EXERCISES = { intro, pick: pickMeaning, listen, tiles, type: typeIt, match, speak };
+const EXERCISES = { intro, pick: pickMeaning, listen, tiles, type: typeIt, match, speak,
+  choose, gap, sort, maptap, table, storyintro, storyline, passport };
+
+/** Which recorded voice role says a line by this character. */
+export function roleOf(who = "") {
+  if (who === "owl" || who === "buho" || who.startsWith("owl")) return "buho";
+  if (who.startsWith("matilda")) return "maria";
+  if (who.startsWith("max") || who === "traveller") return "raul";
+  return "";
+}
 
 function head(title, badge = "") {
   return `<div class="ex-head">${badge}<h1 class="h-title">${title}</h1></div>`;
+}
+
+/** Picture for a step: a character, a noun picture, or a locator map. */
+function artHtml(step, cls = "intro-char") {
+  if (step.map) return `<div class="intro-map">${mapFrame({ focus: step.map, aspect: 1, pins: false })}</div>`;
+  if (step.art) return `<img class="${cls} intro-noun" src="assets/${step.art}.webp" alt="" draggable="false">`;
+  return `${charImg(step.character, cls)}${step.flag ? flagImg(step.flag, "flag intro-flag") : ""}`;
+}
+
+/** The "audio coming soon" chip shown where a recording doesn't exist yet. */
+export const audioSoon = (small = false) =>
+  `<span class="audio-soon ${small ? "audio-soon--sm" : ""}" title="The recording for this line is coming soon">${icon("clock", small ? 16 : 18, 2.5)}<span>${small ? "Audio soon" : "Audio coming soon"}</span></span>`;
+
+/** Replace audio buttons with the "coming soon" chip when `text` has no recording. */
+function markAudio(root, text) {
+  if (hasAudio(text)) return true;
+  const btns = $$("[data-audio]", root);
+  if (!btns.length) return false;
+  const group = btns[0].closest(".intro-audio, .listen-stage");
+  if (group) group.innerHTML = audioSoon();
+  else btns.forEach((b) => b.replaceWith(el(audioSoon(true))));
+  return false;
 }
 
 function wireAudio(root, api, text) {
@@ -336,10 +376,11 @@ function intro(step, api) {
   const isPhrase = /[.?!]$/.test(step.es); // a sentence or question, not a single word
   const art = step.flags
     ? `<div class="intro-flags">${step.flags.map((f, i) => flagImg(f, `flag flag--fan flag--${i}`)).join("")}</div>`
-    : `${charImg(step.character, "intro-char")}${step.flag ? flagImg(step.flag, "flag intro-flag") : ""}`;
+    : artHtml(step);
+  const badge = step.badgeEn ? `${icon("sparkles", 16, 2.75)} ${esc(step.badgeEn)}` : `${icon("sparkles", 16, 2.75)} New ${isPhrase ? "phrase" : step.map && step.map !== "hispanic" && !/^(el|la|las|los) /.test(step.es) ? "place" : "word"}`;
   const node = el(`
-    <div class="ex ex-intro">
-      ${head("", `<span class="badge">${icon("sparkles", 16, 2.75)} New ${isPhrase ? "phrase" : "word"}</span>`)}
+    <div class="ex ex-intro ${step.map ? "ex-intro--map" : ""}">
+      ${head("", `<span class="badge">${badge}</span>`)}
       ${step.contextEn ? `<p class="context">${rich(step.contextEn)}</p>` : ""}
       <div class="intro-card">
         <div class="intro-art">${art}</div>
@@ -353,12 +394,14 @@ function intro(step, api) {
       ${step.noteEn ? `<p class="note">${icon("lightbulb", 20, 2.5)}<span>${rich(step.noteEn)}</span></p>` : ""}
     </div>`);
   node.querySelector(".ex-head .h-title").remove();
+  const audible = markAudio(node, step.es);
   wireAudio(node, api, step.es);
+  if (step.exampleEs && !hasAudio(step.exampleEs)) node.querySelector("[data-ex]")?.replaceWith(el(audioSoon(true)));
   node.querySelector("[data-ex]")?.addEventListener("click", () => api.speak(step.exampleEs));
   return {
     el: node,
     footer: { label: "Continue", enabled: true },
-    mount() { setTimeout(() => node.querySelector('[data-audio="normal"]')?.click(), 420); },
+    mount() { if (audible) setTimeout(() => node.querySelector('[data-audio="normal"]')?.click(), 420); },
     onMain() { sfx.tap(); api.next(); },
   };
 }
@@ -378,7 +421,7 @@ function optionList(options, { spanish = false }) {
 
 function choiceController(node, step, api, extra = {}) {
   let chosen = null;
-  const btns = $$(".option", node);
+  const btns = $$(extra.selector || ".option", node);
   const choose = (b) => {
     btns.forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
     chosen = +b.dataset.oi;
@@ -421,15 +464,17 @@ function pickMeaning(step, api) {
       </div>
       ${html}
     </div>`);
+  const audible = markAudio(node, step.promptEs);
   wireAudio(node, api, step.promptEs);
   return choiceController(node, step, api, {
     result: (ok) => ({ ok, answerEs: step.promptEs, answerEn: step.options[step.answer] }),
-    ctrl: { mount() { setTimeout(() => api.speak(step.promptEs), 350); } },
+    ctrl: { mount() { if (audible) setTimeout(() => api.speak(step.promptEs), 350); } },
   });
 }
 
 // ------------------------------------------------------------ listen and choose
 function listen(step, api) {
+  if (!hasAudio(step.sayEs)) return readChoose(step, api);
   const { html } = optionList(step.optionsEs, { spanish: true });
   const node = el(`
     <div class="ex ex-listen">
@@ -453,12 +498,12 @@ function listen(step, api) {
 function tiles(step, api) {
   const order = shuffle(step.tilesEs.map((_, i) => i));
   const node = el(`
-    <div class="ex ex-tiles">
-      ${head("Write this in Spanish")}
-      <div class="speaker-row">
+    <div class="ex ex-tiles ${step.lines ? "ex-tiles--lines" : ""}">
+      ${head(esc(step.titleEn || "Write this in Spanish"))}
+      ${step.lines ? `<p class="context">Tap the lines in the order you heard them.</p>` : `<div class="speaker-row">
         ${charImg(step.character)}
         <div class="bubble"><span class="en">${esc(step.en)}</span></div>
-      </div>
+      </div>`}
       <div class="answer-lines" aria-label="Your answer" lang="es"></div>
       <div class="bank" aria-label="Word bank" lang="es">
         ${order.map((ti, k) => `<span class="tile-slot"><button class="press tile" data-ti="${ti}"><span class="face" data-key="${k + 1}">${esc(step.tilesEs[ti])}</span></button></span>`).join("")}
@@ -540,7 +585,8 @@ function tiles(step, api) {
       const ok = got === want;
       answer.classList.add(ok ? "is-correct" : "is-wrong");
       if (!ok && !skipped) restartAnim(answer, "shake");
-      return { ok, answerEs: step.fullEs, answerEn: ok ? step.en : "" };
+      return { ok, answerEs: step.lines ? undefined : step.fullEs, answerEn: ok ? step.en : "",
+        body: step.lines && !ok ? `<span class="feedback__tip">The order was: ${step.answerEs.map((l, i) => `${i + 1}. ${es(l)}`).join(" ")}</span>` : "" };
     },
   };
 }
@@ -548,7 +594,7 @@ function tiles(step, api) {
 // ------------------------------------------------------------ type it (+ accent fix-up)
 const ACCENT = { a: "á", e: "é", i: "í", o: "ó", u: "ú" };
 const ARTICLES = ["el", "la", "los", "las"];
-const normalize = (s) => s.normalize("NFC").toLowerCase().replace(/[¡!¿?.,;:"“”'‘’…]/g, " ").replace(/\s+/g, " ").trim();
+const normalize = (s) => s.normalize("NFC").toLowerCase().replace(/[¡!¿?.,;:"“”'‘’…—–]/g, " ").replace(/\s+/g, " ").trim();
 
 export function grade(input, target) {
   const a = normalize(input), t = normalize(target);
@@ -569,11 +615,11 @@ function typeIt(step, api) {
   const keys = ["á", "é", "í", "ó", "ú", "ñ", "ü", "¿", "¡"]; // ¿ and ¡ show from 700px wide
   const node = el(`
     <div class="ex ex-type">
-      ${head("Type this in Spanish")}
-      <div class="type-prompt">
+      ${head(esc(step.titleEn || "Type this in Spanish"))}
+      ${step.headHtml || `<div class="type-prompt">
         ${step.flag ? flagImg(step.flag, "flag type-flag") : `<span class="type-prompt__icon">${icon("type", 28, 2.5)}</span>`}
         <span class="type-prompt__en">${esc(step.en)}</span>
-      </div>
+      </div>`}
       <div class="type-field">
         <input class="type-input" type="text" lang="es" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
                aria-label="Type the Spanish for “${esc(step.en)}”" placeholder="Type in Spanish">
@@ -600,7 +646,7 @@ function typeIt(step, api) {
     el: node,
     footer: { label: "Check", enabled: false },
     aside: ["skip"],
-    mount() { setTimeout(() => input.focus({ preventScroll: true }), 300); },
+    mount() { step.onMount?.(node); setTimeout(() => input.focus({ preventScroll: true }), 300); },
     onSkip() {
       input.readOnly = true;
       input.blur();
@@ -612,6 +658,7 @@ function typeIt(step, api) {
       input.blur();
       if (g.verdict === "accents") return startFixup(g);
       const ok = g.verdict === "correct";
+      step.onResult?.(ok, node);
       node.querySelector(".type-field").classList.add(ok ? "is-correct" : "is-wrong");
       if (!ok) restartAnim(node.querySelector(".type-field"), "shake");
       api.complete({
@@ -668,6 +715,7 @@ function typeIt(step, api) {
     };
 
     function win(shown) {
+      step.onResult?.(true, fix);
       fix.classList.add("is-solved");
       api.setAside([]);
       $$(".fix-letter", fix).forEach((b, k) => { b.disabled = true; setTimeout(() => restartAnim(b, "pop"), k * 45); });
@@ -796,6 +844,7 @@ function speak(step, api) {
       </div>
       <div class="ex-escape"><button class="btn-text" data-cant="speak">${icon("mic-off", 20, 2.5)} Can't speak now</button></div>
     </div>`);
+  const audible = markAudio(node, step.es);
   wireAudio(node, api, step.es);
   const mic = $(".mic-btn", node);
   const status = $(".mic-status", node);
@@ -830,7 +879,294 @@ function speak(step, api) {
     onSkip() { stt.stop(); api.next(); },
     // After two tries the footer becomes "Skip for now": no penalty, speaking never blocks progress.
     onMain() { stt.stop(); api.next(); },
-    mount() { setTimeout(() => api.speak(step.es), 350); },
+    mount() { if (audible) setTimeout(() => api.speak(step.es), 350); },
     destroy() { stt.stop(); },
   };
+}
+
+// =================================================================== Unit 1.1 additions
+// ------------------------------------------------------------ read and choose
+// A listening step whose line isn't recorded yet: never audio-only, so the student
+// reads the English and picks the Spanish (a recognition question on the same line).
+function readChoose(step, api) {
+  return choose({ ...step, titleEn: "Which one means this?", promptEn: step.en, optionsEs: step.optionsEs, answer: step.answer,
+    answerEs: step.optionsEs[step.answer], answerEn: step.en, readOnly: true }, api);
+}
+
+// ------------------------------------------------------------ choose (generic)
+// Prompt: Spanish (promptEs, with audio) and/or English (promptEn), with a character,
+// noun picture or map. Options: Spanish (optionsEs), English (optionsEn) or pictures (optionsArt).
+function choose(step, api) {
+  const picture = !!step.optionsArt;
+  const opts = step.optionsEs || step.optionsEn || (step.optionsArt || []).map((o) => o.labelEn);
+  const { html } = picture ? { html: "" } : optionList(opts, { spanish: !!step.optionsEs });
+  const art = picture ? "" : step.map || step.art ? `<div class="choose-art">${artHtml(step, "char")}</div>` : step.character ? charImg(step.character) : "";
+  const sayable = step.sayEs || step.promptEs;
+  const bubble = step.promptEs || step.promptEn ? `
+      <div class="speaker-row ${art ? "" : "speaker-row--solo"}">
+        ${art}
+        <div class="bubble">
+          ${step.promptEs ? `<button class="press icon-btn icon-btn--primary icon-btn--sm" data-audio="normal" aria-label="Play audio"><span class="face">${icon("volume-2", 22)}</span></button>${es(step.promptEs)}` : ""}
+          ${step.promptEn ? `<span class="en ${step.promptEs ? "en--sub" : ""}">${esc(step.promptEn)}</span>` : ""}
+        </div>
+      </div>` : "";
+  const pics = picture ? `<div class="pic-options" role="group">${step.optionsArt.map((o, k) => `
+      <button class="press option pic-option" data-oi="${k}" aria-pressed="false" aria-label="${esc(o.labelEn)}">
+        <span class="face"><span class="key" aria-hidden="true">${k + 1}</span><img src="assets/${o.art}.webp" alt="" draggable="false"></span>
+      </button>`).join("")}</div>` : "";
+  const node = el(`
+    <div class="ex ex-choose ${step.story ? "ex-choose--story" : ""}">
+      ${head(esc(step.titleEn || "Choose"), step.story ? `<span class="badge badge--magenta">${icon("book-open", 16, 2.75)} Story check</span>` : "")}
+      ${bubble}
+      ${pics}${html}
+    </div>`);
+  const audible = step.promptEs ? markAudio(node, sayable) : false;
+  if (step.promptEs) wireAudio(node, api, sayable);
+  return choiceController(node, step, api, {
+    result: (ok) => ({ ok, answerEs: step.answerEs ?? (step.optionsEs ? step.optionsEs[step.answer] : undefined), answerEn: step.answerEn ?? (step.optionsEn ? step.optionsEn[step.answer] : undefined) }),
+    ctrl: { mount() { if (audible) setTimeout(() => api.speak(sayable), 350); } },
+  });
+}
+
+// ------------------------------------------------------------ gap fill
+const reEsc = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+function gapParts(sentence, word) {
+  const m = new RegExp(`(^|[\\s¿¡—])(${reEsc(word)})(?=[\\s.,?!…]|$)`, "u").exec(sentence);
+  if (!m) throw new Error(`gap: "${word}" is not in "${sentence}"`);
+  const at = m.index + m[1].length;
+  return [sentence.slice(0, at), sentence.slice(at + word.length)];
+}
+function gap(step, api) {
+  const [before, after] = gapParts(step.es, step.blank);
+  const answer = step.optionsEs.findIndex((o) => o.toLowerCase() === step.blank.toLowerCase());
+  const { html } = optionList(step.optionsEs, { spanish: true });
+  const node = el(`
+    <div class="ex ex-gap">
+      ${head("Fill the gap")}
+      <div class="gap-card">
+        <p class="gap-sentence" lang="es">${esc(before)}<span class="gap-slot" aria-label="gap"><span class="gap-slot__word">&nbsp;</span></span>${esc(after)}</p>
+        <p class="gap-en">${esc(step.en)}</p>
+      </div>
+      ${html}
+    </div>`);
+  const slot = $(".gap-slot__word", node);
+  return choiceController(node, { ...step, answer }, api, {
+    onChoose: (i) => { slot.textContent = step.optionsEs[i]; slot.parentElement.classList.add("is-filled"); restartAnim(slot.parentElement, "pop"); },
+    result: (ok) => {
+      slot.parentElement.classList.add(ok ? "is-correct" : "is-wrong");
+      return { ok, answerEs: step.es, answerEn: step.en };
+    },
+  });
+}
+
+// ------------------------------------------------------------ sort into buckets
+function sort(step, api) {
+  const cards = shuffle(step.cards.map((c, i) => ({ ...c, i })));
+  const labels = step.bucketsEs || step.bucketsEn;
+  let k = 0, mixups = 0, busy = false;
+  const counts = labels.map(() => 0);
+  const node = el(`
+    <div class="ex ex-sort">
+      ${head(esc(step.titleEn || "Sort them"))}
+      <div class="sort-stage">
+        <div class="sort-progress" aria-hidden="true">${cards.map(() => `<span class="sort-dot"></span>`).join("")}</div>
+        <div class="sort-card" aria-live="polite"></div>
+      </div>
+      <div class="sort-buckets" role="group" aria-label="Choose where it goes">
+        ${labels.map((b, j) => `<button class="press option sort-bucket" data-b="${j}"><span class="face"><span class="key" aria-hidden="true">${j + 1}</span>${step.bucketsEs ? es(b, "label") : `<span class="label">${esc(b)}</span>`}<span class="sort-count" aria-hidden="true">0</span></span></button>`).join("")}
+      </div>
+    </div>`);
+  const cardEl = $(".sort-card", node);
+  const dots = $$(".sort-dot", node);
+  const show = () => {
+    const c = cards[k];
+    cardEl.innerHTML = `${es(c.es, "sort-card__es")}${hasAudio(c.es) ? `<button class="press icon-btn icon-btn--secondary icon-btn--sm" data-say-card aria-label="Play audio"><span class="face">${icon("volume-2", 20)}</span></button>` : ""}`;
+    dots.forEach((d, j) => d.classList.toggle("is-now", j === k));
+    restartAnim(cardEl, "pop");
+  };
+  cardEl.addEventListener("click", (e) => { if (e.target.closest("[data-say-card]")) api.speak(cards[k].es); });
+  const pickBucket = (j) => {
+    if (busy || k >= cards.length) return;
+    const b = $$(".sort-bucket", node)[j];
+    if (j === cards[k].bucket) {
+      sfx.pair();
+      counts[j]++;
+      b.querySelector(".sort-count").textContent = counts[j];
+      restartAnim(b, "pop");
+      dots[k].classList.add("is-done");
+      k++;
+      if (k === cards.length) {
+        cardEl.innerHTML = `${icon("check", 28, 3)}<span>All sorted!</span>`;
+        cardEl.classList.add("is-done");
+        setTimeout(() => api.complete({ ok: true, title: es(api.lesson.praiseEs[0]),
+          body: mixups ? `<span class="feedback__tip">All sorted. You fixed ${mixups} mix-up${mixups > 1 ? "s" : ""} on the way.</span>` : `<span class="feedback__tip">All sorted on the first go!</span>` }), 450);
+      } else setTimeout(show, 160);
+    } else {
+      mixups++;
+      busy = true;
+      sfx.wrong();
+      b.classList.add("is-wrong");
+      restartAnim(b, "shake");
+      setTimeout(() => { b.classList.remove("is-wrong"); busy = false; }, 520);
+    }
+  };
+  $$(".sort-bucket", node).forEach((b, j) => b.addEventListener("click", () => pickBucket(j)));
+  show();
+  return {
+    el: node,
+    footer: { label: "Check", enabled: false },
+    aside: ["skip"],
+    onSkip() { api.next(); },
+    onKey(n) { if (n >= 1 && n <= labels.length) pickBucket(n - 1); },
+  };
+}
+
+// ------------------------------------------------------------ map tap
+function maptap(step, api) {
+  const choices = shuffle(step.choices);
+  const answer = choices.indexOf(step.target);
+  const node = el(`
+    <div class="ex ex-maptap">
+      ${head(api.lesson.game ? "Where is it?" : "Tap the place on the map")}
+      <div class="speaker-row speaker-row--solo">
+        <div class="bubble">
+          <button class="press icon-btn icon-btn--primary icon-btn--sm" data-audio="normal" aria-label="Play audio"><span class="face">${icon("volume-2", 22)}</span></button>
+          ${es(step.sayEs)}
+        </div>
+      </div>
+      ${mapFrame({ choices, highlight: choices, pins: true, aspect: window.innerWidth < 700 ? 1.2 : 1.6 })}
+    </div>`);
+  const audible = markAudio(node, step.sayEs);
+  wireAudio(node, api, step.sayEs);
+  const ctrl = choiceController(node, { ...step, answer }, api, {
+    selector: ".map-pin",
+    result: (ok) => ({ ok, answerEs: step.sayEs, answerEn: ok ? step.en : `${step.en} (${placeName(step.target)})` }),
+    ctrl: { mount() { wireMapPins(node); if (audible) setTimeout(() => api.speak(step.sayEs), 350); } },
+  });
+  return ctrl;
+}
+
+// ------------------------------------------------------------ table (worked example)
+function table(step, api) {
+  const node = el(`
+    <div class="ex ex-table">
+      ${head(esc(step.titleEn), `<span class="badge">${icon("lightbulb", 16, 2.75)} How it works</span>`)}
+      ${step.contextEn ? `<p class="context">${rich(step.contextEn)}</p>` : ""}
+      <div class="rule-card" role="table">
+        ${step.rows.map((r, i) => `
+          <div class="rule-row" role="row">
+            <span class="rule-es" role="cell">${es(r.es)}</span>
+            <span class="rule-en" role="cell">${esc(r.en)}</span>
+            <span class="rule-ex" role="cell">${hasAudio(r.exampleEs) ? `<button class="press icon-btn icon-btn--secondary icon-btn--sm" data-row="${i}" aria-label="Play example"><span class="face">${icon("volume-2", 20)}</span></button>` : ""}<span>${es(r.exampleEs, "rule-ex__es")}<span class="rule-ex__en">${esc(r.exampleEn)}</span></span></span>
+          </div>`).join("")}
+      </div>
+      ${step.noteEn ? `<p class="note">${icon("lightbulb", 20, 2.5)}<span>${rich(step.noteEn)}</span></p>` : ""}
+    </div>`);
+  node.addEventListener("click", (e) => { const b = e.target.closest("[data-row]"); if (b) api.speak(step.rows[+b.dataset.row].exampleEs); });
+  return { el: node, footer: { label: "Continue", enabled: true }, onMain() { sfx.tap(); api.next(); } };
+}
+
+// ------------------------------------------------------------ story
+const STORY_NAME = { buho: "Buhísimo", matilda: "Matilda", max: "Max" };
+function storyintro(step, api) {
+  const st = api.lesson.story;
+  const node = el(`
+    <div class="ex ex-story-intro">
+      <div class="story-cover">
+        <img class="story-cover__scene" src="assets/${st.scene}.webp" alt="The plaza in Salento">
+        <div class="story-cover__cast">${st.cast.map((c) => `<img src="assets/${c.art}.webp" alt="${esc(c.nameEn)}" draggable="false">`).join("")}</div>
+      </div>
+      <span class="badge badge--magenta">${icon("book-open", 16, 2.75)} Story</span>
+      <h1 class="h-title story-title">${esc(st.titleEn)}</h1>
+      <p class="context">${esc(st.sceneEn)}</p>
+      <p class="story-help">${icon("volume-2", 18, 2.5)}<span>Tap a line to hear it. Tap <b>EN</b> to check what it means.</span></p>
+    </div>`);
+  return { el: node, footer: { label: "Start the story", enabled: true }, onMain() { sfx.tap(); api.next(); } };
+}
+
+function storyPanel(line, n, { isNew }) {
+  const audible = hasAudio(line.es);
+  return `
+    <article class="story-line story-line--${line.who} ${isNew ? "is-new" : "is-old"}" data-line="${n}">
+      <img class="story-line__art" src="assets/${line.art}.webp" alt="" draggable="false">
+      <div class="story-line__body">
+        <span class="story-line__name">${esc(STORY_NAME[line.who] || "")}</span>
+        ${line.actionEn ? `<p class="story-line__action">${icon("sparkles", 14, 2.75)} ${esc(line.actionEn)}</p>` : ""}
+        <div class="bubble story-bubble">
+          ${audible ? `<button class="press icon-btn icon-btn--primary icon-btn--sm" data-say-line="${n}" aria-label="Play line"><span class="face">${icon("volume-2", 20)}</span></button>` : audioSoon(true)}
+          <span class="story-es-wrap">${es(line.es, "story-es")}<span class="story-en" hidden>${esc(line.en)}</span></span>
+          <button class="story-en-btn" data-en="${n}" aria-pressed="false" aria-label="Show the English">EN</button>
+        </div>
+      </div>
+    </article>`;
+}
+
+function storyline(step, api) {
+  const lines = api.lesson.story.lines.filter((l) => l.es);
+  const from = Math.max(0, step.line - 2); // the last three lines: no scrolling, even at 1366×768
+  const node = el(`
+    <div class="ex ex-story">
+      <p class="story-head">${icon("book-open", 16, 2.75)}<span>${esc(api.lesson.story.titleEn)}</span><span class="story-head__n">Line ${step.line + 1} of ${lines.length}</span></p>
+      <div class="story-feed">
+        ${from > 0 ? `<p class="story-earlier">${icon("book-open", 14, 2.75)} ${from} earlier line${from > 1 ? "s" : ""}</p>` : ""}
+        ${lines.slice(from, step.line + 1).map((l, k) => storyPanel(l, from + k, { isNew: from + k === step.line })).join("")}
+      </div>
+    </div>`);
+  const say = (n) => api.speak(lines[n].es, false, lines[n].who);
+  node.addEventListener("click", (e) => {
+    const en = e.target.closest("[data-en]");
+    if (en) {
+      const on = en.getAttribute("aria-pressed") !== "true";
+      en.setAttribute("aria-pressed", String(on));
+      en.closest(".story-bubble").querySelector(".story-en").hidden = !on;
+      return;
+    }
+    const b = e.target.closest("[data-say-line]");
+    if (b) { say(+b.dataset.sayLine); return; }
+    const es_ = e.target.closest(".story-es");
+    if (es_) say(+es_.closest("[data-line]").dataset.line);
+  });
+  return {
+    el: node,
+    footer: { label: "Continue", enabled: true },
+    mount() { if (hasAudio(lines[step.line].es)) setTimeout(() => say(step.line), 300); },
+    onMain() { sfx.tap(); api.next(); },
+    onKey(n) { if (n === 0 || n > 3) return; }, // story lines have no options
+  };
+}
+
+// ------------------------------------------------------------ passport control (unit check finale)
+function passport(step, api) {
+  const listenable = hasAudio(step.answerEs);
+  const who = step.character === "traveller"
+    ? `<span class="passport__traveller">${icon("user", 44, 2.25)}</span>`
+    : charImg(step.character, "passport__char");
+  const headHtml = `
+    <div class="passport">
+      <div class="passport__scene">
+        <div class="passport__ask">${charImg("owl-explaining", "passport__owl")}
+          <div class="bubble"><button class="press icon-btn icon-btn--primary icon-btn--sm" data-ask aria-label="Play question"><span class="face">${icon("volume-2", 20)}</span></button>${es(step.askEs)}</div></div>
+        <div class="passport__who">${who}<span class="passport__name">${esc(step.nameEn)}</span></div>
+      </div>
+      <div class="passport__book" aria-hidden="true">
+        <span class="passport__label">Passport</span>
+        <span class="passport__stamp" lang="es">${esc(step.stampEs)}</span>
+      </div>
+      <p class="passport__task">${listenable
+        ? `<button class="press icon-btn icon-btn--primary icon-btn--sm" data-answer aria-label="Play the answer"><span class="face">${icon("volume-2", 20)}</span></button><span>Listen to ${esc(step.nameEn)}'s answer and type it.</span>`
+        : `<span class="type-prompt__en type-prompt__en--sm">“${esc(step.en)}”</span><span>Type ${esc(step.nameEn === "A traveller" ? "the traveller's" : step.nameEn + "'s")} answer in Spanish.</span>`}</p>
+    </div>`;
+  const ctrl = typeIt({
+    ...step, titleEn: "Passport control", headHtml,
+    onResult(ok, node) { if (ok) { const p = node.querySelector(".passport__book") || document.querySelector(".ex-passport .passport__book"); p?.classList.add("is-stamped"); sfx.pair(); } },
+    onMount(node) {
+      node.classList.add("ex-passport");
+      node.addEventListener("click", (e) => {
+        if (e.target.closest("[data-ask]")) api.speak(step.askEs, false, "owl");
+        if (e.target.closest("[data-answer]")) api.speak(step.answerEs, false, step.character);
+      });
+      if (hasAudio(step.askEs)) setTimeout(async () => { await api.speak(step.askEs, false, "owl"); if (listenable) api.speak(step.answerEs, false, step.character); }, 350);
+    },
+  }, api);
+  return ctrl;
 }

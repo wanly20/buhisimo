@@ -1,0 +1,282 @@
+{
+ "audio": "demo-1-1.mp3",
+ "language": "es",
+ "model": "estimated",
+ "separated": false,
+ "duration": 23.789,
+ "title": "¿De dónde eres?",
+ "demo": true,
+ "note": "Built from the prototype's test recordings. The word timings are estimated, not aligned.",
+ "lines": [
+  {
+   "text": "¡Buhísimo!",
+   "section": null,
+   "start": 2.202,
+   "end": 2.996,
+   "words": [
+    {
+     "word": "¡Buhísimo!",
+     "start": 2.202,
+     "end": 2.996
+    }
+   ],
+   "speaker": "Buhísimo",
+   "voice": "buho_profesor",
+   "en": "Buhísimo! (That's me!)"
+  },
+  {
+   "text": "¿De dónde eres?",
+   "section": null,
+   "start": 3.721,
+   "end": 4.737,
+   "words": [
+    {
+     "word": "¿De",
+     "start": 3.721,
+     "end": 3.895
+    },
+    {
+     "word": "dónde",
+     "start": 3.91,
+     "end": 4.256
+    },
+    {
+     "word": "eres?",
+     "start": 4.286,
+     "end": 4.737
+    }
+   ],
+   "speaker": "Buhísimo",
+   "voice": "buho_profesor",
+   "en": "Where are you from?"
+  },
+  {
+   "text": "Soy de Colombia.",
+   "section": null,
+   "start": 5.779,
+   "end": 6.99,
+   "words": [
+    {
+     "word": "Soy",
+     "start": 5.779,
+     "end": 5.988
+    },
+    {
+     "word": "de",
+     "start": 6.006,
+     "end": 6.216
+    },
+    {
+     "word": "Colombia.",
+     "start": 6.234,
+     "end": 6.99
+    }
+   ],
+   "speaker": "Caller 1",
+   "voice": "maria_bogota",
+   "en": "I'm from Colombia."
+  },
+  {
+   "text": "Colombia es el país de Buhísimo.",
+   "section": null,
+   "start": 7.715,
+   "end": 9.498,
+   "words": [
+    {
+     "word": "Colombia",
+     "start": 7.715,
+     "end": 8.153
+    },
+    {
+     "word": "es",
+     "start": 8.191,
+     "end": 8.337
+    },
+    {
+     "word": "el",
+     "start": 8.35,
+     "end": 8.496
+    },
+    {
+     "word": "país",
+     "start": 8.509,
+     "end": 8.655
+    },
+    {
+     "word": "de",
+     "start": 8.667,
+     "end": 8.813
+    },
+    {
+     "word": "Buhísimo.",
+     "start": 8.826,
+     "end": 9.498
+    }
+   ],
+   "speaker": "Caller 1",
+   "voice": "maria_bogota",
+   "en": "Colombia is Buhísimo's country."
+  },
+  {
+   "text": "¿De dónde eres?",
+   "section": null,
+   "start": 10.562,
+   "end": 11.578,
+   "words": [
+    {
+     "word": "¿De",
+     "start": 10.562,
+     "end": 10.736
+    },
+    {
+     "word": "dónde",
+     "start": 10.751,
+     "end": 11.097
+    },
+    {
+     "word": "eres?",
+     "start": 11.127,
+     "end": 11.578
+    }
+   ],
+   "speaker": "Buhísimo",
+   "voice": "buho_profesor",
+   "en": "Where are you from?"
+  },
+  {
+   "text": "Soy de Australia.",
+   "section": null,
+   "start": 12.62,
+   "end": 13.839,
+   "words": [
+    {
+     "word": "Soy",
+     "start": 12.62,
+     "end": 12.831
+    },
+    {
+     "word": "de",
+     "start": 12.85,
+     "end": 13.061
+    },
+    {
+     "word": "Australia.",
+     "start": 13.079,
+     "end": 13.839
+    }
+   ],
+   "speaker": "Caller 2",
+   "voice": "raul",
+   "en": "I'm from Australia."
+  },
+  {
+   "text": "Max es de Australia.",
+   "section": null,
+   "start": 14.933,
+   "end": 16.342,
+   "words": [
+    {
+     "word": "Max",
+     "start": 14.933,
+     "end": 15.139
+    },
+    {
+     "word": "es",
+     "start": 15.156,
+     "end": 15.362
+    },
+    {
+     "word": "de",
+     "start": 15.38,
+     "end": 15.585
+    },
+    {
+     "word": "Australia.",
+     "start": 15.603,
+     "end": 16.342
+    }
+   ],
+   "speaker": "Buhísimo",
+   "voice": "buho_profesor",
+   "en": "Max is from Australia."
+  },
+  {
+   "text": "Matilda es de Melbourne.",
+   "section": null,
+   "start": 17.083,
+   "end": 18.564,
+   "words": [
+    {
+     "word": "Matilda",
+     "start": 17.083,
+     "end": 17.575
+    },
+    {
+     "word": "es",
+     "start": 17.618,
+     "end": 17.782
+    },
+    {
+     "word": "de",
+     "start": 17.796,
+     "end": 17.96
+    },
+    {
+     "word": "Melbourne.",
+     "start": 17.974,
+     "end": 18.564
+    }
+   ],
+   "speaker": "Buhísimo",
+   "voice": "buho_profesor",
+   "en": "Matilda is from Melbourne."
+  },
+  {
+   "text": "Él es de Colombia.",
+   "section": null,
+   "start": 19.623,
+   "end": 20.675,
+   "words": [
+    {
+     "word": "Él",
+     "start": 19.623,
+     "end": 19.776
+    },
+    {
+     "word": "es",
+     "start": 19.79,
+     "end": 19.943
+    },
+    {
+     "word": "de",
+     "start": 19.956,
+     "end": 20.11
+    },
+    {
+     "word": "Colombia.",
+     "start": 20.123,
+     "end": 20.675
+    }
+   ],
+   "speaker": "Caller 2",
+   "voice": "raul",
+   "en": "He's from Colombia."
+  },
+  {
+   "text": "¡Buhísimo!",
+   "section": null,
+   "start": 21.726,
+   "end": 22.52,
+   "words": [
+    {
+     "word": "¡Buhísimo!",
+     "start": 21.726,
+     "end": 22.52
+    }
+   ],
+   "speaker": "Buhísimo",
+   "voice": "buho_profesor",
+   "en": "Buhísimo!"
+  }
+ ]
+}
