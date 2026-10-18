@@ -96,20 +96,35 @@ Students switch pairings in Settings (the slider icon in a lesson, or the gear o
 
 Cut out with rembg (`isnet-general-use`) by `tools/process_art.py`, which never modifies the sources. Every file is WebP and ≤150 KB (largest: family, 39 KB).
 
+**Style (fixed 18 Oct):** flat, chunky rounded shapes, no outlines, one soft shadow tone, the look of `max.webp`. Made with Z-Image Turbo, 8 steps, **NAG off** (no negative prompt); the palette line lists colours only. Matilda, her poses, Max's poses and the four 1.1 nouns were remade in this style on 18 Oct (sources and prompts: `characters/remake_flat/`, review page `remake_flat/index.html`); they replace the softer round-5 (NAG 3) art. Paths below are under `spanish_app/design/`.
+
 | Asset | Source | Used for |
 |---|---|---|
 | `owl-explaining` | `characters/owl_fix/pose_explaining_s3.png` | New words, path peek, brand avatar |
 | `owl-celebrating` | `…/pose_celebrating_s3.png` | Correct sheet, lesson complete |
 | `owl-encouraging` | `…/pose_encouraging_s3.png` | Wrong sheet, quit dialog |
 | `owl-thinking` | `…/pose_thinking_s3.png` | Accent fix-up |
-| `matilda` | `prototype_art/matilda_s2.png` (houses painted out first) | Intro, tiles, speaking |
-| `max` | `prototype_art/max_s1.png` | Intro, path |
+| `matilda` | `characters/remake_flat/matilda_stand_s4.png` (Juan's pick from `matilda_girl/balaca_style/`: balaca wayuu, soft lashes, striped ruana) | Intro, tiles, speaking |
+| `matilda-wave` | `remake_flat/matilda_wave_s4.png` | Story cast and lines |
+| `matilda-celebrate` | `remake_flat/matilda_celebrate_s4.png` | Story |
+| `matilda-surprised` | `remake_flat/matilda_surprised_s4.png` | Story |
+| `matilda-thinking` | `remake_flat/matilda_thinking_s1.png` | Story |
+| `max` | `prototype_art/max_s1.png` (the style reference) | Intro, path |
+| `max-wave` | `remake_flat/max_wave_s1.png` | Story cast and lines |
+| `max-jump` | `remake_flat/max_jump_s1.png` | Story |
+| `max-celebrate` | `remake_flat/max_celebrate_s3.png` (fists up; was a thumbs-up) | Story |
+| `max-surprised` | `remake_flat/max_surprised_s1.png` | Story |
+| `max-thinking` | `remake_flat/max_thinking_s2.png` | Story |
+| `noun-mapa` | `remake_flat/noun_mapa_s4.png` (paper map, route, pin) | New-word card, picture choice |
+| `noun-mundo` | `remake_flat/noun_mundo_s2.png` (globe on a stand) | New-word card, picture choice |
+| `noun-capital` | `remake_flat/noun_capital_s2.png` (skyline with a gold star) | New-word card |
+| `noun-monumento` | `remake_flat/noun_monumento_s4.png` (stone obelisk on steps) | New-word card |
 | `family` | `prototype_art/family_s1.png` (s2 has houses directly behind them) | Design system only (arrives in 1.3) |
 | `map-background` | `prototype_art/map_background_s2.png` | Path background, under a light cream veil |
 | `salento-street` | `prototype_art/salento_street_s1.png` (more magenta) | Lesson complete |
 | `flags/*.svg` | flag-icons 7.2.3 (MIT) | Country cards |
 
-Buhísimo is the species-accurate seed-3 set (round head, no ear tufts). The celebrating pose carries a teal bag while the other three carry a pink one; fix that when the final art is made.
+Buhísimo is the species-accurate seed-3 set (round head, no ear tufts). The celebrating pose carries a teal bag while the other three carry a pink one; fix that when the final art is made. Checked against `max_s1` on 18 Oct: the owl poses were made with NAG 3 and are slightly softer (gradient glasses, textured belly), close enough to keep for now; `family` was made with NAG off and is on-style.
 
 ## 7. Voice and tone
 
@@ -190,7 +205,7 @@ prototype/
   tools/check_vocab.mjs      vocabulary validator (unit and lesson level; --todo writes audio/TODO_lines.json)
   tools/e2e-unit.mjs         headless Chromium test of all of Unit 1.1 (plus e2e.mjs, e2e-keyboard.mjs for lesson 1)
   tools/contrast.py          contrast table from tokens.css
-  tools/process_art.py       art cut-out pipeline (rembg) · process_art_l2.py (flood fill, no model)
+  tools/process_art.py       art cut-out pipeline (rembg; all character, pose and noun art) · process_art_l2.py (PWA icons)
   tools/make_worldmap.mjs · make_radio_demo.py · import_design_clips.py
 ```
 

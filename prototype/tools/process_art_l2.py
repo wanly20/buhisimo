@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Cut out the round-5 expression and noun art for Unit 1.1 (stories, new-word cards)
-and make the PWA icons. NO models: the generated art sits on a plain white
+"""Make the PWA icons (and, historically, cut out the round-5 expression and noun art;
+that art was replaced on 18 Oct, see ART below). NO models: the generated art sits on a plain white
 background, so a flood fill from the border (the same "flood" mask as
 process_art.py, without rembg) is enough. CPU only, numpy + scipy + Pillow:
 
@@ -23,22 +23,11 @@ OUT = PROTO / "assets"
 ICONS = PROTO / "icons"
 MAX_BYTES = 120 * 1024
 
-# name -> (source, max side)
-ART = {
-    "matilda-wave": ("matilda_wave_s1.png", 520),
-    "matilda-surprised": ("matilda_surprised_s1.png", 520),
-    "matilda-celebrate": ("matilda_celebrate_s1.png", 520),
-    "matilda-thinking": ("matilda_thinking_s1.png", 520),
-    "max-wave": ("max_wave_s1.png", 520),
-    "max-jump": ("max_jump_s1.png", 520),
-    "max-surprised": ("max_surprised_s1.png", 520),
-    "max-celebrate": ("max_celebrate_s1.png", 520),
-    "max-thinking": ("max_thinking_s1.png", 520),
-    "noun-mapa": ("noun_mapa_s1.png", 420),
-    "noun-mundo": ("noun_mundo_s1.png", 420),
-    "noun-capital": ("noun_capital_s1.png", 420),
-    "noun-monumento": ("noun_monumento_s2.png", 420),
-}
+# name -> (source, max side). Empty since 18 Oct: the expression poses and nouns were
+# remade in the flat max_s1 style (design/characters/remake_flat/) and are now cut out by
+# process_art.py (FLAT_PICKS). This script still makes the PWA icons; add round-5 entries
+# here only to rebuild the old art.
+ART: dict[str, tuple[str, int]] = {}
 
 
 def background_flood(rgb: np.ndarray) -> np.ndarray:
