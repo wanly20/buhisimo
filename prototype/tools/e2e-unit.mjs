@@ -1,4 +1,4 @@
-// End-to-end test for the Unit 1.1 level of the prototype (headless Chromium only,
+// End-to-end test for Units 1.1 and 1.2 of the prototype (headless Chromium only,
 // software rendering, never the GPU, never a visible window).
 //
 // Setup (outside the repo):  mkdir -p $PW && cd $PW && npm i playwright-core@1.48.2
@@ -34,7 +34,7 @@ for (const m of ["manifest.json", "manifest-extra.json", "manifest-l2.json"]) {
 const hasClip = (t) => !!CLIPS[t];
 // "Audio coming soon" badges seen while playing: { where, texts } (texts = the lines the badge could stand for).
 const badges = [];
-const listenSteps = { audio: 0, readOnly: [] }; // listening steps: real (audio) vs fallen back to read-and-choose
+const listenSteps = { audio: 0, readOnly: [], read12: 0 }; // listening steps: real (audio) vs fallen back to read-and-choose
 async function collectBadges(page, where, s) {
   const found = await page.evaluate(() => [...document.querySelectorAll(".lesson-body .ex:not(.step-leave) .audio-soon")].map((b) => {
     const line = b.closest(".story-line");
@@ -70,9 +70,9 @@ async function newPage(viewport, { touch = false } = {}) {
   await ctx.addInitScript(MOCK_SPEECH);
   const page = await ctx.newPage();
   // A missing file is reported by its URL (below); optional art may be missing (the scene falls back to a character).
-  page.on("console", (m) => { if (m.type() === "error" && !/favicon|Failed to load resource: the server responded with a status of 404/.test(m.text())) errors.push(`console.error: ${m.text()}`); });
+  page.on("console", (m) => { if (m.type() === "error" && !/favicon|Failed to load resource: the server responded with a status of 404/.test(m.text()) && !(OFFLINE && /ERR_INTERNET_DISCONNECTED/.test(m.text()))) errors.push(`console.error: ${m.text()} (${m.location()?.url || ""})`); });
   page.on("response", (r) => { if (r.status() === 404 && !/favicon|assets\/cocora-valley\.webp$/.test(r.url())) errors.push(`404: ${r.url()}`); });
-  page.on("pageerror", (e) => errors.push(`pageerror: ${e.message}`));
+  page.on("pageerror", (e) => errors.push(`pageerror: ${e.message} (${(e.stack || "").split("\n").slice(1, 3).join(" ").trim()})`));
   page.on("requestfailed", (r) => { if (!OFFLINE && !/canvas-confetti|fonts\.g/.test(r.url()) && !/ERR_ABORTED/.test(r.failure()?.errorText || "")) errors.push(`requestfailed: ${r.url()} ${r.failure()?.errorText}`); });
   return { ctx, page };
 }
@@ -105,7 +105,22 @@ async function pickByKey(page, selector, test, { useKeys = true } = {}) {
 async function answer(page, s, { wrong = false, keys = true } = {}) {
   const t = s.type;
   const enter = async () => { if (keys) await page.keyboard.press("Enter"); else await page.click('.lesson-foot [data-act="main"]'); };
-  if (["intro", "table", "storyintro", "storyline", "mapstudy"].includes(t)) { await enter(); return "next"; }
+  if (["intro", "table", "storyintro", "storyline", "mapstudy", "letters", "clip", "transcript"].includes(t)) { await enter(); return "next"; }
+  if (t === "letterpick") {
+    await pickByKey(page, ".lesson-body .ex-letterpick .option", wrong ? `(b) => +b.dataset.oi !== ${s.answer}` : `(b) => +b.dataset.oi === ${s.answer}`, { useKeys: keys });
+    await wait(page, 150); await enter(); return "graded";
+  }
+  if (t === "radio") {
+    for (const [k, r] of s.rows.entries()) {
+      if (s.mode === "faces") {
+        const f = wrong && k === 0 ? s.options.find((o) => o !== r.answer) : r.answer;
+        if (keys) await page.keyboard.press(String(s.options.indexOf(f) + 1));
+        else await page.click(`.lesson-body .ex-radio .face-pick[data-row="${k}"][data-face="${f}"]`);
+      } else await page.fill(`.lesson-body .ex-radio .radio-input[data-row="${k}"]`, wrong && k === 0 ? "no sé" : r.answerEs);
+      await wait(page, 150);
+    }
+    await enter(); return "graded";
+  }
   if (t === "pick" || t === "listen" || t === "choose") {
     const want = s.answer;
     await pickByKey(page, ".lesson-body .ex:not(.step-leave) .option", wrong ? `(b) => +b.dataset.oi !== ${want}` : `(b) => +b.dataset.oi === ${want}`, { useKeys: keys });
@@ -132,7 +147,7 @@ async function answer(page, s, { wrong = false, keys = true } = {}) {
     }
     await enter(); return "graded";
   }
-  if (t === "type" || t === "passport") {
+  if (t === "type" || t === "passport" || t === "spell") {
     const text = wrong ? "no sé" : s.answerEs;
     await page.fill(".lesson-body .type-input", text);
     await wait(page, 100); await enter(); return "graded";
@@ -177,12 +192,14 @@ async function playLesson(page, tag, { keys = true, wrongOnce = true, checkFit =
     const s = st.step;
     seen[s.type] = (seen[s.type] || 0) + 1;
     await collectBadges(page, tag, s);
-    if (s.type === "listen") { if (/\bex-listen\b/.test(st.cls)) listenSteps.audio++; else listenSteps.readOnly.push(`${tag} ${s.id}`); }
+    // 1.1 lines are recorded: listening must be real. 1.2 isn't recorded yet: read-and-choose is expected.
+    if (s.type === "listen" && !tag.includes("1.2")) { if (/\bex-listen\b/.test(st.cls)) listenSteps.audio++; else listenSteps.readOnly.push(`${tag} ${s.id}`); }
+    if (s.type === "listen" && tag.includes("1.2")) listenSteps.read12++;
     if (checkFit) { const o = await overflow(page); if (o > 1) fitIssues.push(`${s.id} (${s.type}) +${o}px`); }
-    const shotName = `${shotPrefix}${s.type}${s.lines ? "-order" : ""}`;
+    const shotName = `${shotPrefix}${s.type}${s.lines ? "-order" : ""}${s.time ? "-scene" : ""}${s.face ? "-face" : ""}${s.optionsFace ? "-faces" : ""}${s.type === "radio" ? `-${s.mode}` : ""}`;
     if (shotTypes.has(s.type) && !shots.has(`${OUT}/${shotName}.png`)) await shot(page, shotName);
     if (s.retry && s.id === wrongId) retried = true;
-    const canWrong = ["pick", "choose", "gap", "maptap", "tiles", "type", "listen"].includes(s.type) && !s.retry;
+    const canWrong = ["pick", "choose", "gap", "maptap", "tiles", "type", "listen", "letterpick", "spell", "radio"].includes(s.type) && !s.retry;
     const doWrong = !wrongDone && canWrong;
     const res = await answer(page, s, { wrong: doWrong, keys });
     if (res === "graded") {
@@ -322,7 +339,7 @@ if (RUN("A")) {
   await wait(page, 900);
   await page.setInputFiles("[data-load]", file);
   await wait(page, 400);
-  ok((await page.locator(".load-msg").innerText()).includes("11 of 11 lessons"), "loading the file summarises it");
+  ok(/11 of \d+ lessons/.test(await page.locator(".load-msg").innerText()), "loading the file summarises it");
   await page.click("[data-load-yes]");
   await wait(page, 900);
   ok(await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("buhisimo.prototype.v1")).completed).length) === 11, "progress restored from the file");
@@ -613,6 +630,102 @@ if (RUN("M")) for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width:
   await ctx.close();
 }
 
+// ===================================================================== U. Unit 1.2 «¿Qué tal?»
+const U12 = Array.from({ length: 13 }, (_, i) => `1.2-${i + 1}`);
+const NEW_TYPES = new Set(["letters", "letterpick", "spell", "clip", "radio", "transcript", "intro", "choose", "table", "sort", "tiles", "gap", "storyintro", "storyline", "type", "match", "pick", "listen", "radio:feedback", "spell:feedback", "letterpick:feedback", "choose:feedback"]);
+const all11Done = () => { const c = {}; for (let i = 1; i <= 11; i++) c[`1.1-${i}`] = { xp: 10, accuracy: 100, at: Date.now(), plays: 1 }; return c; };
+log("U. Unit 1.2: locked after 1.1, every lesson in order (keyboard, 1366×768), every lesson by touch (390×844), the Radio tab");
+if (RUN("U")) {
+  // U1. Chromebook, keyboard: 1.2 opens only after the 1.1 check.
+  {
+    const { ctx, page } = await newPage({ width: 1366, height: 768 });
+    await page.goto(BASE + "index.html");
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+    await wait(page, 1300);
+    ok(await page.locator('.node[data-unit="1.2"]').count() === 13, "the 1.2 section has 13 nodes");
+    ok(await page.locator('.node[data-unit="1.2"].is-locked').count() === 13, "fresh start: all of 1.2 is locked");
+    await page.goto(BASE + "index.html#/lesson/1.2-1");
+    await wait(page, 1200);
+    ok(await page.locator(".screen.lesson").count() === 0, "#/lesson/1.2-1 is refused before 1.1 is done");
+    await page.evaluate((c) => localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ completed: c })), all11Done());
+    await page.goto(BASE + "index.html#/");
+    await page.reload();
+    await wait(page, 1300);
+    ok(await page.locator('.node[data-node="1.2-1"].is-current').count() === 1 && await page.locator('.node[data-unit="1.2"].is-locked').count() === 12, "after the 1.1 check, 1.2 L1 is the current lesson and the rest of 1.2 is locked");
+    await page.evaluate(() => document.querySelector('.node[data-node="1.2-1"]').scrollIntoView({ block: "center" }));
+    await wait(page, 400);
+    await shot(page, "u-d-path-1.2");
+    for (const [i, id] of U12.entries()) {
+      await page.goto(BASE + "index.html#/");
+      await wait(page, 900);
+      const node = page.locator(`.node[data-node="${id}"]`);
+      ok(await node.evaluate((n) => n.classList.contains("is-current")), `${id} is the current node`);
+      await node.focus();
+      await page.keyboard.press("Enter");
+      await wait(page, 450);
+      if (i === 0) await shot(page, "u-d-popover-1.2-1");
+      await page.keyboard.press("Enter");
+      await wait(page, 1300);
+      const r = await playLesson(page, id, { keys: true, wrongOnce: true, checkFit: true, shotTypes: NEW_TYPES, shotPrefix: "u-d-" });
+      ok(r.complete, `${id} played to the end with the keyboard (${Object.entries(r.seen).map(([k, v]) => `${k}×${v}`).join(", ")})`);
+      ok(r.retried, `${id}: the missed question came back later`);
+      ok(r.fitIssues.length === 0, `${id}: every step fits 1366×768 without scrolling${r.fitIssues.length ? ": " + r.fitIssues.join("; ") : ""}`);
+      await wait(page, 700);
+      if (i === 6 || i === 12) await shot(page, `u-d-complete-${id}`);
+      await page.keyboard.press("Enter");
+      await wait(page, 1200);
+      ok(await page.locator(`.node[data-node="${id}"].is-done`).count() === 1, `${id} shows as done`);
+    }
+    // Review knows the 1.2 words, including letter groups (asked as a letter pick).
+    const prog = await page.evaluate(() => JSON.parse(localStorage.getItem("buhisimo.prototype.v1")));
+    ok(["hola", "que-tal", "esta", "letters-vowels", "letter-uve"].every((k) => prog.items[k]), "Review has met the 1.2 words and letters");
+    await page.goto(BASE + "index.html#/review");
+    await wait(page, 1200);
+    ok(await page.locator(".kb-lesson").filter({ hasText: "¿Cómo se escribe Max?" }).count() === 1, "My knowledge lists the 1.2 lessons");
+    await shot(page, "u-d-knowledge");
+    // The Radio tab: the 1.1 demo first, then the 1.2 episodes (open now).
+    await page.goto(BASE + "index.html#/radio");
+    await wait(page, 1500);
+    ok(await page.locator(".radio-ep-chip:not([disabled])").count() === 3, "Radio tab: the demo and two 1.2 episodes");
+    await page.click('.radio-ep-chip[data-ep="2"]');
+    await wait(page, 600);
+    ok(await page.locator(".radio-ep .k-line").count() === 11 && await page.locator(".radio-ep .audio-soon").count() >= 1, "the spelling show: 11 lines to read, audio coming soon");
+    await shot(page, "u-d-radio-tab");
+    await page.goto(BASE + "index.html#/profile");
+    await wait(page, 900);
+    ok((await page.locator(".me-card").filter({ hasText: "Unit 1.2" }).innerText()).includes("13 of 13"), "Me: Unit 1.2, 13 of 13 lessons done");
+    await ctx.close();
+  }
+  // U2. Phone, touch: every 1.2 lesson.
+  {
+    const { ctx, page } = await newPage({ width: 390, height: 844 }, { touch: true });
+    await page.goto(BASE + "index.html");
+    await page.evaluate(() => { localStorage.clear(); localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ unlockAll: true })); });
+    await page.reload();
+    await wait(page, 1000);
+    await page.evaluate(() => document.querySelector('.node[data-node="1.2-1"]').scrollIntoView({ block: "center" }));
+    await wait(page, 300);
+    await shot(page, "u-m-path-1.2");
+    for (const id of U12) {
+      await page.goto(BASE + `index.html#/lesson/${id}`);
+      await wait(page, 1300);
+      const r = await playLesson(page, `phone ${id}`, { keys: false, wrongOnce: id === "1.2-8" || id === "1.2-12", shotTypes: NEW_TYPES, shotPrefix: "u-m-" });
+      ok(r.complete, `phone: ${id} played by touch (${Object.keys(r.seen).join(", ")})`);
+      const hs = await page.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth);
+      ok(hs <= 0, `phone: ${id} has no horizontal scrolling`);
+      await page.click("[data-done]");
+      await wait(page, 900);
+    }
+    await page.goto(BASE + "index.html#/radio");
+    await wait(page, 1500);
+    await page.click('.radio-ep-chip[data-ep="1"]');
+    await wait(page, 500);
+    await shot(page, "u-m-radio-tab");
+    await ctx.close();
+  }
+}
+
 // ===================================================================== K. capital letters in typed answers
 log("K. Capital letters: names and sentences need them; languages, days and months don't");
 if (RUN("K")) for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width: 390, height: 844, tag: "m" }]) {
@@ -657,7 +770,8 @@ if (RUN("E")) {
   ok(wrongBadges.length === 0, `no "Audio coming soon" badge for a line that has a recording${wrongBadges.length ? ": " + [...new Set(wrongBadges.map((b) => `${b.where}: ${b.texts.join(" / ")}`))].join("; ") : ""}`);
   const still = [...new Set(badges.filter((b) => !b.texts.every(hasClip)).flatMap((b) => b.texts.filter((t) => !hasClip(t))))];
   log(`  lines still showing "Audio coming soon": ${still.length ? still.join(" | ") : "none"} (${badges.length} badge(s) seen in all)`);
-  ok(listenSteps.audio > 0 && listenSteps.readOnly.length === 0, `listening steps are real listening (${listenSteps.audio} with audio${listenSteps.readOnly.length ? "; read-only: " + listenSteps.readOnly.join(", ") : ""})`);
+  if (RUN("A") || RUN("C")) ok(listenSteps.audio > 0 && listenSteps.readOnly.length === 0, `1.1 listening steps are real listening (${listenSteps.audio} with audio${listenSteps.readOnly.length ? "; read-only: " + listenSteps.readOnly.join(", ") : ""})`);
+  log(`  1.2 listening steps shown as read-and-choose until they are recorded: ${listenSteps.read12}`);
   const missingFiles = Object.values(CLIPS).flatMap((by) => Object.values(by)).filter((p) => { try { readFileSync(join(PROTO, p)); return false; } catch { return true; } });
   ok(missingFiles.length === 0, `every clip in the manifests exists on disk${missingFiles.length ? ": " + missingFiles.join(", ") : ""}`);
 }
@@ -665,4 +779,4 @@ if (RUN("E")) {
 await browser.close();
 log(`\nScreenshots: ${shots.size} in ${OUT}`);
 if (errors.length) { log(`\n✗ ${errors.length} problem(s):\n  ` + errors.join("\n  ")); process.exit(1); }
-log("\n✓ PASS: Unit 1.1 end to end");
+log("\n✓ PASS: Units 1.1 and 1.2 end to end");

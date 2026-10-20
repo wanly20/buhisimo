@@ -7,17 +7,17 @@
 // Updates: bump VERSION (and APP_VERSION in js/app.js) on every release. The new worker
 // installs in the background, then the page tells it to take over (SKIP_WAITING) as
 // soon as no lesson is running (js/app.js); old caches are deleted on activate.
-const VERSION = "2026-10-21.caps";
+const VERSION = "2026-10-21.u12";
 const SHELL = `buhisimo-shell-${VERSION}`;
 const MEDIA = `buhisimo-media-${VERSION}`;
 const RUNTIME = "buhisimo-runtime";
 
 const CODE = [
   "./", "index.html", "manifest.webmanifest",
-  "css/tokens.css", "css/base.css", "css/components.css", "css/app.css", "css/layout.css", "css/unit.css",
+  "css/tokens.css", "css/base.css", "css/components.css", "css/app.css", "css/layout.css", "css/unit.css", "css/unit-1-2.css",
   "js/app.js", "js/fonts.js", "js/icons.js", "js/lesson.js", "js/radio.js", "js/review.js", "js/shell.js",
-  "js/sound.js", "js/speech.js", "js/store.js", "js/ui.js", "js/worldmap.js", "js/worldmap-data.js",
-  "lesson-1-1.js", "unit-1-1.js", "path-data.js",
+  "js/sound.js", "js/speech.js", "js/store.js", "js/ui.js", "js/worldmap.js", "js/worldmap-data.js", "js/art.js", "js/exercises-1-2.js",
+  "lesson-1-1.js", "unit-1-1.js", "unit-1-2.js", "course.js", "path-data.js", "audio/TODO_songs.json",
   "audio/manifest.json", "audio/manifest-extra.json", "audio/manifest-l2.json", "radio/episodes.json", "radio/demo-1-1.json",
 ];
 const PICTURES = [

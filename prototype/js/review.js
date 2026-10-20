@@ -1,7 +1,7 @@
 // Review (spaced repetition) and "My knowledge", the same engine family as the
 // Spreadsheets practice app (ict_teaching/spreadsheet_app): Leitner boxes in
 // store.js, weakest/due items first, one matching game per session.
-import { ITEMS, LESSONS } from "../unit-1-1.js";
+import { ITEMS, LESSONS } from "../course.js";
 import { store } from "./store.js";
 import { icon } from "./icons.js";
 import { esc, es, button, shuffle, charImg } from "./ui.js";
@@ -9,12 +9,17 @@ import { hasAudio } from "./lesson.js";
 
 // ------------------------------------------------------------------ item matching
 const toks = (s) => String(s).normalize("NFC").toLowerCase().replace(/[¡!¿?.,;:"“”'‘’…—–()]/g, " ").split(/\s+/).filter(Boolean);
-const FORMS = ITEMS.map((it) => ({ id: it.id, forms: (it.formsEs || [it.es]).map(toks) }));
+// Letter groups (1.2) are matched only in spelling lines: "de" is a letter there, a word elsewhere.
+const FORMS = ITEMS.map((it) => ({ id: it.id, spellOnly: !!it.letters, forms: (it.letters ? it.letters.map((x) => x[1]) : it.formsEs || [it.es]).map(toks) }));
+const isSpelling = (text) => /se escribe|alfabeto/i.test(text);
+/** A letter group's letters (A E I O U) and names (a, e, i, o, u). */
+export const lettersOf = (it) => it.letters.map((x) => x[0]).join(" ");
+const displayEs = (it) => (it.letters ? it.letters.map((x) => x[1]).join(", ") : it.formsEs ? it.formsEs[0] : it.es);
 
 /** The item ids that appear in a Spanish text (longest match first, so "soy de" beats "es"). */
-export function itemsIn(text) {
+export function itemsIn(text, { spell = isSpelling(text) } = {}) {
   const t = toks(text), found = new Set();
-  const cands = FORMS.flatMap((f) => f.forms.map((form) => ({ id: f.id, form }))).sort((a, b) => b.form.length - a.form.length);
+  const cands = FORMS.filter((f) => spell || !f.spellOnly).flatMap((f) => f.forms.map((form) => ({ id: f.id, form }))).sort((a, b) => b.form.length - a.form.length);
   const used = new Array(t.length).fill(false);
   for (const { id, form } of cands) {
     for (let i = 0; i + form.length <= t.length; i++) {
@@ -37,19 +42,21 @@ function gradedTexts(step) {
     case "sort": return step.cards.map((c) => c.es);
     case "maptap": return [step.sayEs];
     case "speak": return [step.es];
+    case "letterpick": return [step.sayEs];
+    case "spell": return [step.answerEs];
     default: return [];
   }
 }
 
 /** Called by the lesson runner for each first-try answer. */
 export function gradeStep(step, ok) {
-  const ids = new Set(gradedTexts(step).flatMap(itemsIn));
+  const ids = new Set(gradedTexts(step).flatMap((t) => itemsIn(t, { spell: !!step.spell || isSpelling(t) })));
   for (const id of ids) store.grade(id, ok);
 }
 
 /** New-word cards: the items a lesson introduces enter Review. */
 export function meetLesson(lesson) {
-  for (const it of ITEMS) if (it.lesson === lesson.n) store.meet(it.id);
+  for (const it of ITEMS) if (it.unit === lesson.unit && it.lesson === lesson.n) store.meet(it.id);
 }
 
 export const metItems = () => ITEMS.filter((it) => store.get().items[it.id]);
@@ -75,9 +82,18 @@ function sentenceBank() {
 // ------------------------------------------------------------------ session
 const pickN = (arr, n, not) => shuffle(arr.filter((x) => !not.includes(x))).slice(0, n);
 
+function letterExercise(it, pool, k) {
+  const [letter, name] = it.letters[Math.floor(Math.random() * it.letters.length)];
+  const others = shuffle(pool.filter((o) => o.letters).flatMap((o) => o.letters.map((x) => x[0])).filter((l) => l !== letter)).slice(0, 3);
+  const fill = shuffle("ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split("").filter((l) => l !== letter && !others.includes(l))).slice(0, 3 - others.length);
+  const letters = shuffle([letter, ...others, ...fill]);
+  return [{ id: `r-letter-${it.id}-${k}`, type: "letterpick", spell: true, sayEs: name, letters, answer: letters.indexOf(letter) }];
+}
+
 function exercisesFor(it, pool, bank, k) {
-  const others = pool.filter((o) => o.id !== it.id);
-  const allOthers = ITEMS.filter((o) => o.id !== it.id);
+  if (it.letters) return letterExercise(it, pool, k);
+  const others = pool.filter((o) => o.id !== it.id && !o.letters);
+  const allOthers = ITEMS.filter((o) => o.id !== it.id && !o.letters);
   const distract = (n) => pickN(others.length >= n ? others : allOthers, n, []);
   const display = it.formsEs ? it.formsEs[0] : it.es;
   const list = [];
@@ -109,16 +125,16 @@ export function buildReview({ count = 9 } = {}) {
     const ex = exercisesFor(chosen[i], met, bank, i + 50);
     steps.push(ex[Math.floor(Math.random() * ex.length)]);
   }
-  const matchable = chosen.filter((it) => it.en.length < 26);
+  const matchable = chosen.filter((it) => !it.letters && it.en.length < 26);
   if (matchable.length >= 4) {
     steps.splice(Math.min(steps.length, 3), 0, { id: "r-match", type: "match",
       pairs: shuffle(matchable).slice(0, 5).map((it) => ({ es: it.formsEs ? it.formsEs[0] : it.es, en: it.en })) });
   }
   const first = LESSONS[0];
   return {
-    id: null, unit: "1.1", n: 0, kind: "review", titleEn: "Review", xpBase: 5,
+    id: null, unit: chosen[0]?.unit || "1.1", n: 0, kind: "review", titleEn: "Review", xpBase: 5,
     sayAs: first.sayAs, praiseEs: first.praiseEs, praiseEn: first.praiseEn, encourageEn: first.encourageEn, kindEn: first.kindEn,
-    canDoEn: "Every review makes these words stronger.", learnedEs: chosen.slice(0, 6).map((it) => it.formsEs ? it.formsEs[0] : it.es),
+    canDoEn: "Every review makes these words stronger.", learnedEs: chosen.filter((it) => !it.letters).slice(0, 6).map((it) => it.formsEs ? it.formsEs[0] : it.es),
     steps,
   };
 }
@@ -136,12 +152,13 @@ export function reviewViewHtml() {
   met.forEach((it) => counts[store.strength(it.id)]++);
   const row = (it) => {
     const s = store.strength(it.id);
-    const say = hasAudio(it.es) ? `<button class="kb-say" data-say="${esc(it.es)}" aria-label="Play ${esc(it.es)}">${icon("volume-2", 18, 2.5)}</button>` : "";
-    const shown = it.formsEs ? it.formsEs.join(" · ") : it.es;
-    if (!s) return `<li class="kb-item is-locked"><span class="kb-term">${icon("lock", 15, 2.75)} <span class="kb-hidden">${esc(shown.replace(/[^\s·]/g, "•"))}</span></span><span class="kb-def">${esc(it.en)}</span><span class="kb-strength kb-strength--locked">Lesson ${it.lesson}</span></li>`;
+    const say = !it.letters && hasAudio(it.es) ? `<button class="kb-say" data-say="${esc(it.es)}" aria-label="Play ${esc(it.es)}">${icon("volume-2", 18, 2.5)}</button>` : "";
+    const shown = it.letters ? `${lettersOf(it)}: ${displayEs(it)}` : it.formsEs ? it.formsEs.join(" · ") : it.es;
+    if (!s) return `<li class="kb-item is-locked"><span class="kb-term">${icon("lock", 15, 2.75)} <span class="kb-hidden">${esc(shown.replace(/[^\s·]/g, "•"))}</span></span><span class="kb-def">${esc(it.en)}</span><span class="kb-strength kb-strength--locked">Lesson ${it.unit} · ${it.lesson}</span></li>`;
     return `<li class="kb-item"><span class="kb-term">${say}${es(shown)}</span><span class="kb-def">${esc(it.en)}</span><span class="kb-strength kb-strength--${s}">${icon(STRENGTH[s].icon, 14, 3)} ${STRENGTH[s].label}</span></li>`;
   };
-  const byLesson = LESSONS.filter((l) => ITEMS.some((it) => it.lesson === l.n));
+  const inLesson = (l) => ITEMS.filter((it) => it.unit === l.unit && it.lesson === l.n);
+  const byLesson = LESSONS.filter((l) => inLesson(l).length);
   return `
     <div class="view view-review">
       <header class="view-hero view-hero--review">
@@ -164,8 +181,8 @@ export function reviewViewHtml() {
         </div>
         ${byLesson.map((l) => `
           <div class="kb-lesson">
-            <h3 class="kb-lesson__title"><span class="kb-lesson__n">${l.n}</span>${l.titleEs ? es(l.titleEs) : esc(l.titleEn)}</h3>
-            <ul class="kb-list">${ITEMS.filter((it) => it.lesson === l.n).map(row).join("")}</ul>
+            <h3 class="kb-lesson__title"><span class="kb-lesson__n" title="Unit ${l.unit}, lesson ${l.n}">${l.unit === "1.1" ? l.n : `${l.unit}·${l.n}`}</span>${l.titleEs ? es(l.titleEs) : esc(l.titleEn)}</h3>
+            <ul class="kb-list">${inLesson(l).map(row).join("")}</ul>
           </div>`).join("")}
       </section>
     </div>`;

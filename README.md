@@ -5,7 +5,7 @@ Spanish practice app for Year 7 students learning with *Claro 1*: a home-practic
 **Live:** https://wanly20.github.io/buhisimo/
 
 ## Layout
-- `prototype/` is the design prototype used to agree the look and feel before the full app is built: all 11 lessons of Unit 1.1, Review (spaced repetition), Radio Búho and offline install. Lines without a recording yet are listed in `prototype/audio/TODO_lines.json`.
+- `prototype/` is the design prototype used to agree the look and feel before the full app is built: all 11 lessons of Unit 1.1 and all 13 of Unit 1.2 «¿Qué tal?» (greetings, feelings, the alphabet and spelling; `docs/build_plan_1.2.md`), Review (spaced repetition), Radio Búho and offline install. Lines without a recording yet are listed in `prototype/audio/TODO_lines.json`, song clips in `prototype/audio/TODO_songs.json`.
   - Lessons unlock one after the other. **Teacher override:** open `prototype/?unlock=all` to open every lesson (and show the teacher settings); `?unlock=off` locks them again. Details: `docs/content_plan_1.1-1.6.md`, decisions of 20 October.
 - `data/` holds the vocabulary data. **Don't edit these here.** The masters live in `spanish_app/` and are copied in by `spanish_app/sync_vocab.py`:
   - `vocabulary_database.csv` is the textbook vocabulary (Spanish, English, Section, Source, capitals).

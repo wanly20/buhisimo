@@ -7,6 +7,8 @@
 import { icon } from "./icons.js";
 import { $, $$, esc, charImg } from "./ui.js";
 import { tts } from "./speech.js";
+import { RADIO } from "../course.js";
+import { audioSoon, hasAudio } from "./lesson.js";
 
 let episodes = null;
 async function loadEpisodes() {
@@ -39,16 +41,69 @@ let player = null; // the one live player (paused when the view goes away)
 
 export function stopRadio() { player?.dispose(); player = null; }
 
-/** Render Radio Búho into `host` (the view area of the path screen). */
-export async function mountRadio(host) {
+/**
+ * Render Radio Búho into `host` (the view area of the path screen): a list of episodes (the 1.1
+ * demo, then each lesson episode, e.g. 1.2 «¡Hola, Buhísimo!», shown once its lesson is open:
+ * isOpen(lessonId) comes from the path's locks) and the chosen one.
+ */
+export async function mountRadio(host, { isOpen = () => true, titleOf = (id) => id } = {}) {
   stopRadio();
   host.innerHTML = `<div class="view view-radio"><p class="radio-loading">${icon("radio", 20, 2.5)} Tuning in…</p></div>`;
-  const eps = await loadEpisodes();
+  const recorded = await loadEpisodes();
   if (!host.isConnected) return;
+  const lessonEps = RADIO.filter((e) => e.inTab !== false).map((e) => ({ ...e, kind: "lesson", open: isOpen(e.lesson) }));
+  const eps = [...recorded.map((e) => ({ ...e, kind: "audio", open: true })), ...lessonEps];
   if (!eps.length) { host.innerHTML = `<div class="view view-radio"><p class="radio-loading">Radio Búho can't load right now. Check the internet and try again.</p></div>`; return; }
-  const ep = eps[0];
+  const outer = $(".view-radio", host);
+  outer.innerHTML = `${eps.length > 1 ? `<nav class="radio-eps" aria-label="Radio Búho episodes">${eps.map((e, i) => `
+      <button class="radio-ep-chip" data-ep="${i}" aria-pressed="${i === 0}" ${e.open ? "" : "disabled"}>${icon(e.open ? "radio" : "lock", 16, 2.5)}<span>${e.kind === "audio" ? `Unit ${esc(e.unit)} · demo` : `Unit ${esc(e.unit)} · ${e.titleEs ? `<span lang="es">${esc(e.titleEs)}</span>` : esc(e.titleEn)}`}</span></button>`).join("")}</nav>` : ""}
+    <div class="radio-ep"></div>`;
+  const show = (i) => {
+    stopRadio();
+    $$(".radio-ep-chip", outer).forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.ep === i)));
+    const box = $(".radio-ep", outer);
+    if (eps[i].kind === "audio") renderAudioEpisode(box, eps[i]);
+    else renderLessonEpisode(box, eps[i], titleOf);
+  };
+  outer.addEventListener("click", (e) => { const b = e.target.closest(".radio-ep-chip"); if (b && !b.disabled) show(+b.dataset.ep); });
+  const locked = lessonEps.filter((e) => !e.open);
+  if (locked.length) outer.querySelector(".radio-eps")?.insertAdjacentHTML("beforeend", `<p class="radio-eps__note">${icon("lock", 14, 2.75)} New episodes open with their lessons.</p>`);
+  show(0);
+}
+
+/** A lesson episode that isn't recorded yet: the transcript to read, a play button per recorded line. */
+function renderLessonEpisode(view, ep, titleOf) {
+  const NAME = { buho: "Buhísimo", matilda: "Matilda", max: "Max", song: "Song", caller: "Caller" };
+  view.innerHTML = `
+    <header class="view-hero view-hero--radio">
+      ${charImg("owl-explaining", "view-hero__owl")}
+      <div class="view-hero__text">
+        <span class="panel-kicker">${icon("radio", 16, 2.75)} Radio Búho · Unit ${esc(ep.unit)}</span>
+        <h1 class="h-title" tabindex="-1">${ep.titleEs ? `<span lang="es" class="es">${esc(ep.titleEs)}</span>` : esc(ep.titleEn)}</h1>
+        <p class="view-sub">“${esc(ep.titleEn)}” From the lesson ${esc(titleOf(ep.lesson))}. Read along; tap EN for the English.</p>
+        <p class="radio-demo">${audioSoon(true)}<span>This episode isn't recorded yet. ${ep.lines.some((l) => l.who === "song") ? "The song is on its way too." : ""}</span></p>
+      </div>
+    </header>
+    <div class="tr-tools"><button class="radio-chip" data-radio="en" aria-pressed="false">EN</button></div>
+    <ol class="karaoke karaoke--read" aria-label="Transcript">
+      ${ep.lines.map((l, i) => `
+        <li class="k-line" data-line="${i}">
+          <span class="k-speaker">${SPEAKER_ART[NAME[l.who]] ? charImg(SPEAKER_ART[NAME[l.who]], "k-speaker__img") : `<span class="k-speaker__icon">${icon(l.who === "song" ? "radio" : "user", 16, 2.5)}</span>`}${esc(l.nameEn || NAME[l.who] || "")}</span>
+          <p class="k-words" lang="es">${hasAudio(l.es) ? `<button class="radio-chip" data-say="${i}" aria-label="Play line ${i + 1}">${icon("volume-2", 16, 2.5)}</button> ` : ""}${esc(l.es)}</p>
+          <p class="k-en" hidden>${esc(l.en)}</p>
+        </li>`).join("")}
+    </ol>`;
+  view.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-radio=en]");
+    if (b) { const on = b.getAttribute("aria-pressed") !== "true"; b.setAttribute("aria-pressed", String(on)); $$(".k-en", view).forEach((p) => (p.hidden = !on)); return; }
+    const s = e.target.closest("[data-say]");
+    if (s) { const l = ep.lines[+s.dataset.say]; tts.speak(l.es, { role: l.who === "buho" ? "buho" : l.who === "max" ? "raul" : "maria" }); }
+  });
+}
+
+/** A recorded episode: the player with the karaoke transcript. */
+function renderAudioEpisode(view, ep) {
   const { data } = ep;
-  const view = $(".view-radio", host);
   view.innerHTML = `
     <header class="view-hero view-hero--radio">
       ${charImg(ep.art || "owl-explaining", "view-hero__owl")}

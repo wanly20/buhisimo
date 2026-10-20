@@ -1,26 +1,28 @@
 #!/usr/bin/env node
-// Vocabulary checker for the Buhísimo prototype (all of Unit 1.1).
+// Vocabulary checker for the Buhísimo prototype (every playable unit: 1.1 and 1.2).
 //
 //   node prototype/tools/check_vocab.mjs             (from the buhisimo repo root)
 //   node prototype/tools/check_vocab.mjs --todo      also write prototype/audio/TODO_lines.json
+//                                                    and prototype/audio/TODO_songs.json
 //
 // Collects every Spanish string the prototype can show:
-//   * lesson-1-1.js and unit-1-1.js: keys named `es` or ending in `Es` (strings, arrays,
-//     and objects inside arrays), plus [[double-bracketed]] Spanish inside English text;
-//   * radio/*.json episodes (line text);
+//   * lesson-1-1.js, unit-1-1.js, unit-1-2.js (through course.js): keys named `es` or ending in
+//     `Es` (strings, arrays, and objects inside arrays), plus [[double-bracketed]] Spanish inside
+//     English text; `spell: true` on a step or object marks a spelling line (bare letter names);
+//   * the Radio Búho episodes of the lessons (course.js RADIO) and radio/*.json (the 1.1 demo);
 //   * *.html in prototype/: text inside elements marked lang="es";
 //   * path-data.js textbook unit titles are listed but exempt (they are titles); map section
-//     titles (split units) must match content/lessons_1.1-1.6.json "parts", which the repo
-//     validator checks at their own unit.
-// Then runs two checks:
-//   1. Unit level (this file): every token is a word of a 1.1 row of
-//      vocabulary_database.csv, helper_words.csv or names.csv (o/a words: -o/-a/-os/-as).
-//   2. Lesson level: the strings are written to a temporary sentences file, tagged with
-//      the lesson that shows them, and checked by the repo validator tools/check_vocab.mjs
-//      (introduced-before-use, determiners: nouns are never bare, plural rules).
+//     titles (split units) must match content/lessons_1.1-1.6.json "parts", and each lesson's
+//     titleEs must equal the manifest's titleEs (which the repo validator checks at its lesson).
+// Every string is tagged with its unit and lesson and checked by the repo validator,
+// tools/check_vocab.mjs: the unit-level rule (only rows of that unit or before), the lesson-level
+// rule (introduced before use), determiners (nouns are never bare), plural rules, and letter
+// names only while spelling. Strings shown outside a lesson (tips, design-system examples, the
+// Radio tab's demo) are checked at the last lesson of their unit.
 // It also reports where each line comes from: a sentence of content/sentences_1.1-1.6.json,
 // part of one, a lesson item, or "other" (not in the content plan: listed for Juan).
-// With --todo it writes the manifest of every spoken line that has no recording yet.
+// With --todo it writes the manifest of every spoken line that has no recording yet, and the
+// list of song clips (A0–A7) that the GPU run still has to make.
 import { readFileSync, readdirSync, writeFileSync, mkdtempSync, existsSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { tmpdir } from "node:os";
@@ -31,181 +33,115 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PROTO = join(HERE, "..");
 const ROOT = join(PROTO, "..");
-const DATA = join(ROOT, "data");
-const SECTION = "1.1";
-const MAX_PHRASE = 6;
 const WRITE_TODO = process.argv.includes("--todo");
-
-// ---------------------------------------------------------------- CSV parsing
-function parseCSV(text) {
-  const rows = [];
-  let row = [], field = "", q = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (q) {
-      if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
-      else if (c === '"') q = false;
-      else field += c;
-    } else if (c === '"') q = true;
-    else if (c === ",") { row.push(field); field = ""; }
-    else if (c === "\n" || c === "\r") {
-      if (c === "\r" && text[i + 1] === "\n") i++;
-      row.push(field); field = "";
-      if (row.some((f) => f !== "")) rows.push(row);
-      row = [];
-    } else field += c;
-  }
-  if (field || row.length) { row.push(field); rows.push(row); }
-  const [head, ...body] = rows;
-  return body.map((r) => Object.fromEntries(head.map((h, i) => [h.trim(), (r[i] ?? "").trim()])));
-}
-
-// ---------------------------------------------------------------- tokeniser
-export function tokens(text) {
-  return text.normalize("NFC").toLowerCase().replace(/[¡!¿?.,;:"“”'‘’…()\[\]—–\-·=]/g, " ").split(/\s+/).filter(Boolean);
-}
-
-function expandForms(spanish) {
-  const m = spanish.match(/^(.*)o\/a$/);
-  if (m) return ["o", "a", "os", "as"].map((e) => m[1] + e);
-  return [spanish];
-}
-
-function buildDictionary() {
-  const entries = new Map();
-  const add = (spanish, source) => {
-    for (const form of expandForms(spanish)) {
-      const key = tokens(form).join(" ");
-      if (key && !entries.has(key)) entries.set(key, source);
-    }
-  };
-  const load = (file) => parseCSV(readFileSync(join(DATA, file), "utf8")).filter((r) => (r.Section || "").startsWith(SECTION));
-  for (const r of load("vocabulary_database.csv")) add(r.Spanish, "vocabulary");
-  for (const r of load("helper_words.csv")) add(r.Spanish, "helper");
-  for (const r of load("names.csv")) add(r.Name, "name");
-  return entries;
-}
-
-export function check(text, dict) {
-  const t = tokens(text);
-  const bad = [], used = [];
-  let i = 0;
-  while (i < t.length) {
-    let matched = 0;
-    for (let n = Math.min(MAX_PHRASE, t.length - i); n >= 1; n--) {
-      const phrase = t.slice(i, i + n).join(" ");
-      if (dict.has(phrase)) { matched = n; used.push(phrase); break; }
-    }
-    if (matched) i += matched;
-    else { if (!/^\d+$/.test(t[i])) bad.push(t[i]); i++; }
-  }
-  return { bad, used };
-}
+const isSpellText = (t) => /se escribe|alfabeto/i.test(t);
 
 // ---------------------------------------------------------------- collectors
-// Each string: { where, text, lesson, key, who, spoken, unitOnly }
-const NOT_SPOKEN = new Set(["tilesEs", "optionsEs", "bucketsEs", "titleEs", "stampEs", "examplesEs", "specimenEs", "formsEs", "learnedEs"]);
+// Each string: { where, text, unit, lesson, key, who, spoken, unitOnly, spell }
+const NOT_SPOKEN = new Set(["tilesEs", "optionsEs", "bucketsEs", "titleEs", "stampEs", "examplesEs", "specimenEs", "formsEs", "learnedEs", "maskEs", "linesEs"]);
 function collect(obj, path, out, ctx) {
   if (obj == null || typeof obj !== "object") return;
   if (Array.isArray(obj)) { obj.forEach((v, i) => collect(v, `${path}[${i}]`, out, ctx)); return; }
   const who = obj.speaker || obj.character || obj.who || ctx.who;
+  const spell = !!(obj.spell || ctx.spell);
   for (const [k, v] of Object.entries(obj)) {
     const p = path ? `${path}.${k}` : k;
-    if (k === "sayAs") continue; // pronunciation spellings, never displayed
+    if (k === "sayAs" || k === "story") continue; // pronunciation spellings; the story is collected on its own
     const isEs = k === "es" || /Es$/.test(k);
     if (isEs) {
       const list = Array.isArray(v) ? v : [v];
       const unitOnly = !!ctx.unitOnly || k === "examplesEs" || k === "specimenEs";
       list.forEach((s, i) => {
         const where = Array.isArray(v) ? `${p}[${i}]` : p;
-        const spoken = !NOT_SPOKEN.has(k) && !(k === "answerEs" && Array.isArray(v)) && !unitOnly;
-        if (typeof s === "string") out.push({ where, text: s, lesson: ctx.lesson, key: k, who, spoken, unitOnly });
+        const spoken = !NOT_SPOKEN.has(k) && !(k === "answerEs" && Array.isArray(v)) && !unitOnly && !ctx.song;
+        if (typeof s === "string") out.push({ where, text: s, unit: ctx.unit, lesson: ctx.lesson, key: k, who, spoken, unitOnly, spell: spell || isSpellText(s) });
+        else if (s && typeof s === "object") collect(s, `${where}`, out, { ...ctx, who, spell });
       });
     } else if (typeof v === "string") {
-      for (const m of v.matchAll(/\[\[(.+?)\]\]/g)) out.push({ where: `${p} [[…]]`, text: m[1], lesson: ctx.lesson, key: "inline", who, spoken: false, unitOnly: k === "tipEn" });
-    } else collect(v, p, out, { ...ctx, who });
+      for (const m of v.matchAll(/\[\[(.+?)\]\]/g)) out.push({ where: `${p} [[…]]`, text: m[1], unit: ctx.unit, lesson: ctx.lesson, key: "inline", who, spoken: false, unitOnly: k === "tipEn", spell: spell || isSpellText(m[1]) });
+    } else collect(v, p, out, { ...ctx, who, spell });
   }
 }
 
-function collectFromHTML(file, out) {
+function collectFromHTML(file, out, unit, lesson) {
   const html = readFileSync(file, "utf8");
   const re = /<([a-z0-9]+)[^>]*\blang="es"[^>]*>([\s\S]*?)<\/\1>/gi;
   for (const m of html.matchAll(re)) {
     const text = m[2].replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").trim();
-    if (text && !text.includes("${")) out.push({ where: relative(PROTO, file), text, lesson: 11, key: "html", spoken: false, unitOnly: true });
+    if (text && !text.includes("${")) out.push({ where: relative(PROTO, file), text, unit, lesson, key: "html", spoken: false, unitOnly: true, spell: false });
   }
 }
 
 // ---------------------------------------------------------------- gather
-const dict = buildDictionary();
-const { LESSONS, ITEMS, STORY } = await import(pathToFileURL(join(PROTO, "unit-1-1.js")).href);
+const { LESSONS, ITEMS, RADIO, UNITS } = await import(pathToFileURL(join(PROTO, "course.js")).href);
 const { unitsTextbookTitlesEs, units: pathUnits } = await import(pathToFileURL(join(PROTO, "path-data.js")).href);
+const lastLesson = (unit) => Math.max(...LESSONS.filter((l) => l.unit === unit).map((l) => l.n));
 
 const strings = [];
 for (const l of LESSONS) {
-  const { story, ...rest } = l;
-  collect(rest, `lesson ${l.id}`, strings, { lesson: l.n });
+  const { story, steps, ...rest } = l;
+  collect(rest, `lesson ${l.id}`, strings, { unit: l.unit, lesson: l.n });
+  steps.forEach((s, i) => collect(s, `lesson ${l.id}.steps[${i}]`, strings, { unit: l.unit, lesson: l.n, song: s.type === "clip" }));
+  if (story) collect(story, `${l.id} story`, strings, { unit: l.unit, lesson: l.n });
 }
-collect(STORY, "STORY", strings, { lesson: 9 });
-for (const it of ITEMS) collect(it, `ITEMS.${it.id}`, strings, { lesson: it.lesson });
-// Radio Búho episodes: reachable from the Radio tab at any time, so checked at the end of 1.1.
+for (const it of ITEMS) {
+  if (it.letters) it.letters.forEach(([, name]) => strings.push({ where: `ITEMS.${it.id} (letters)`, text: name, unit: it.unit, lesson: it.lesson, key: "letter", spoken: false, unitOnly: false, spell: true }));
+  else collect(it, `ITEMS.${it.id}`, strings, { unit: it.unit, lesson: it.lesson });
+}
+for (const ep of RADIO) {
+  const [unit, n] = ep.lesson.split("-");
+  ep.lines.forEach((ln, i) => strings.push({ where: `radio ${ep.id} line ${i + 1}`, text: ln.es, unit, lesson: +n, key: "radio", who: ln.who, spoken: ln.who !== "song", unitOnly: false, spell: !!ep.spell || isSpellText(ln.es), clip: ln.clip }));
+  if (ep.titleEs) strings.push({ where: `radio ${ep.id} title`, text: ep.titleEs, unit, lesson: +n, key: "titleEs", spoken: false, unitOnly: false, spell: false });
+}
+// The 1.1 Radio Búho demo episode (radio/*.json): reachable from the Radio tab after 1.1.
 const radioDir = join(PROTO, "radio");
 for (const f of existsSync(radioDir) ? readdirSync(radioDir) : []) {
   if (!f.endsWith(".json") || f === "episodes.json") continue;
   const ep = JSON.parse(readFileSync(join(radioDir, f), "utf8"));
-  if (ep.title) strings.push({ where: `radio/${f} title`, text: ep.title, lesson: 11, key: "radio", spoken: false });
-  ep.lines.forEach((l, i) => strings.push({ where: `radio/${f} line ${i + 1}`, text: l.text ?? l.words.map((w) => w.word ?? w.w).join(" "), lesson: 11, key: "radio", spoken: false }));
+  const unit = ep.unit || "1.1";
+  if (ep.title) strings.push({ where: `radio/${f} title`, text: ep.title, unit, lesson: lastLesson(unit), key: "radio", spoken: false, unitOnly: true });
+  ep.lines.forEach((l, i) => strings.push({ where: `radio/${f} line ${i + 1}`, text: l.text ?? l.words.map((w) => w.word ?? w.w).join(" "), unit, lesson: lastLesson(unit), key: "radio", spoken: false, unitOnly: true }));
 }
-for (const f of readdirSync(PROTO)) if (f.endsWith(".html")) collectFromHTML(join(PROTO, f), strings);
+for (const f of readdirSync(PROTO)) if (f.endsWith(".html")) collectFromHTML(join(PROTO, f), strings, "1.1", lastLesson("1.1"));
 
-// ---------------------------------------------------------------- 1. unit level
 let failures = 0;
-const usage = new Map();
-for (const s of strings) {
-  const { bad, used } = check(s.text, dict);
-  used.forEach((u) => usage.set(u, (usage.get(u) || 0) + 1));
-  if (bad.length) { failures++; console.log(`FAIL  ${s.where}: "${s.text}"  ->  not allowed: ${bad.join(", ")}`); }
-}
 const unique = [...new Set(strings.map((s) => s.text))];
-console.log(`Buhísimo prototype vocabulary check: unit ${SECTION}`);
-console.log(`  dictionary: ${dict.size} allowed forms (vocabulary + helpers + names, Section ${SECTION}*)`);
-console.log(`  checked:    ${strings.length} Spanish strings (${unique.length} different) in lesson-1-1.js, unit-1-1.js, radio/*.json and lang="es" in *.html`);
-console.log(`  words used: ${[...usage.keys()].sort((a, b) => a.localeCompare(b, "es")).join(", ")}`);
+console.log(`Buhísimo prototype vocabulary check: units ${UNITS.map((u) => u.id).join(", ")}`);
+console.log(`  checked: ${strings.length} Spanish strings (${unique.length} different) in lesson-1-1.js, unit-1-1.js, unit-1-2.js, the Radio Búho episodes and lang="es" in *.html`);
 console.log(`  exempt textbook unit titles (path-data.js): ${Object.values(unitsTextbookTitlesEs).join(" | ")}`);
-// Map sections of a split unit (path-data.js titleEs): the repo validator checks each title at
-// its own unit through content/lessons_1.1-1.6.json "parts"; here they must match that manifest.
-const manifestParts = JSON.parse(readFileSync(join(ROOT, "content", "lessons_1.1-1.6.json"), "utf8")).parts ?? [];
+
+// ---------------------------------------------------------------- titles
+const manifest = JSON.parse(readFileSync(join(ROOT, "content", "lessons_1.1-1.6.json"), "utf8"));
 for (const u of pathUnits.filter((x) => x.titleEs)) {
-  const part = manifestParts.find((p) => p.id === u.id);
+  const part = (manifest.parts ?? []).find((p) => p.id === u.id);
   if (!part || part.titleEs !== u.titleEs || part.unit !== u.unit) { failures++; console.log(`FAIL  path-data.js section ${u.id}: "${u.titleEs}" doesn't match a part in content/lessons_1.1-1.6.json`); }
 }
-// Lesson titles (decision 2026-10-21): each prototype lesson's titleEs must be the manifest's titleEs
-// (which the repo validator checks at its own lesson), so the two never drift apart.
-const manifestLessons = JSON.parse(readFileSync(join(ROOT, "content", "lessons_1.1-1.6.json"), "utf8")).lessons;
+// Lesson titles (decision 2026-10-21): each prototype lesson's titleEs must be the manifest's titleEs.
 for (const l of LESSONS) {
-  const m = manifestLessons.find((x) => x.unit === l.unit && x.lesson === l.n);
+  const m = manifest.lessons.find((x) => x.unit === l.unit && x.lesson === l.n);
   if (!m) { failures++; console.log(`FAIL  lesson ${l.id}: not in content/lessons_1.1-1.6.json`); continue; }
   if ((l.titleEs || null) !== (m.titleEs || null)) { failures++; console.log(`FAIL  lesson ${l.id}: titleEs «${l.titleEs ?? "—"}» but the manifest says «${m.titleEs ?? "—"}»`); }
 }
-console.log(`  lesson titles: ${LESSONS.filter((l) => l.titleEs).length} Spanish titles, all equal to the manifest's titleEs (checked at their lesson below)`);
-console.log(`  map section titles (path-data.js = lessons manifest "parts", checked at their unit by tools/check_vocab.mjs): ${pathUnits.filter((x) => x.titleEs).map((x) => `${x.id} ${x.titleEs}`).join(" | ") || "none"}`);
-console.log(failures ? `  ✗ unit level: ${failures} string(s) use words outside unit ${SECTION}` : `  ✓ unit level: every Spanish token is an allowed ${SECTION} word`);
+// Path nodes: every playable lesson has a node in its unit's section.
+for (const l of LESSONS) if (!pathUnits.some((u) => (u.unit ?? u.id) === l.unit && u.nodes.some((n) => n.id === l.id))) { failures++; console.log(`FAIL  lesson ${l.id}: no node on the path (path-data.js)`); }
+console.log(`  lesson titles: ${LESSONS.filter((l) => l.titleEs).length} Spanish titles, each equal to the manifest's titleEs; map sections: ${pathUnits.filter((x) => x.titleEs).map((x) => `${x.id} ${x.titleEs}`).join(" | ") || "none"}`);
 
 // ---------------------------------------------------------------- provenance
-const plan = JSON.parse(readFileSync(join(ROOT, "content", "sentences_1.1-1.6.json"), "utf8")).filter((s) => s.unit === "1.1");
+const plan = JSON.parse(readFileSync(join(ROOT, "content", "sentences_1.1-1.6.json"), "utf8")).filter((s) => UNITS.some((u) => u.id === s.unit));
 const norm = (t) => t.normalize("NFC").trim();
 const planSet = new Set(plan.map((s) => norm(s.es)));
 const planEn = new Map(plan.map((s) => [norm(s.es), s.en]));
-const itemSet = new Set(ITEMS.flatMap((it) => [it.es, ...(it.formsEs || [])]).map(norm));
+const titleSet = new Set(manifest.lessons.flatMap((l) => (l.titleEs ? [norm(l.titleEs)] : [])));
+const itemSet = new Set(ITEMS.flatMap((it) => [it.es, ...(it.formsEs || []), ...(it.letters || []).map((x) => x[1])]).filter(Boolean).map(norm));
 const fragments = new Set();
 for (const s of plan) {
   for (const side of s.es.split(/\s+—\s+/)) {
     fragments.add(norm(side));
-    for (const q of side.split(/(?<=[.!?])\s+(?=[¿¡A-ZÁÉÍÓÚ])/)) fragments.add(norm(q));
+    for (const q of side.split(/(?<=[.!?…])\s+(?=[¿¡A-ZÁÉÍÓÚ])/)) fragments.add(norm(q));
   }
-  for (const t of s.es.split(/\s+/)) fragments.add(t.replace(/[¡!¿?.,;:…—]/g, "").toLowerCase());
+  for (const t of s.es.split(/\s+/)) fragments.add(t.replace(/[¡!¿?.,;:…—«»]/g, "").toLowerCase());
 }
-const origin = (t) => (planSet.has(norm(t)) ? "sentence" : itemSet.has(norm(t)) ? "item"
+const origin = (t) => (planSet.has(norm(t)) ? "sentence" : itemSet.has(norm(t)) || titleSet.has(norm(t)) ? "item"
   : fragments.has(norm(t)) || fragments.has(norm(t).toLowerCase()) ? "part" : "other");
 const counts = { sentence: 0, item: 0, part: 0, other: 0 };
 const others = new Map();
@@ -214,31 +150,31 @@ for (const t of unique) {
   counts[o]++;
   if (o === "other") others.set(t, [...new Set(strings.filter((s) => s.text === t).map((s) => s.where.replace(/\.steps.*|\.\w+(\[\d+\])?$/, "")))]);
 }
-console.log(`  where the ${unique.length} lines come from: ${counts.sentence} plan sentences, ${counts.item} lesson items, ${counts.part} parts of plan sentences (one side of a "—", one sentence of two, a word-bank tile), ${counts.other} other`);
+console.log(`  where the ${unique.length} lines come from: ${counts.sentence} plan sentences, ${counts.item} lesson items or titles, ${counts.part} parts of plan sentences (one side of a "—", one sentence of two, a word-bank tile), ${counts.other} other`);
 for (const [t, w] of others) console.log(`    other: "${t}"  (${w.join(", ")})`);
 
-// ---------------------------------------------------------------- 2. lesson level (repo validator)
+// ---------------------------------------------------------------- the repo validator (unit and lesson level)
 const tmp = mkdtempSync(join(tmpdir(), "buho-vocab-"));
 const tmpFile = join(tmp, "prototype_sentences.json");
 const seen = new Set();
 const forValidator = [];
 for (const s of strings) {
-  if (s.unitOnly) continue; // design-system examples and tips: unit level only
-  const k = `${s.lesson}|${s.text}`;
+  const lesson = s.unitOnly ? lastLesson(s.unit) : s.lesson; // tips and examples: at the end of their unit
+  const k = `${s.unit}|${lesson}|${s.spell ? 1 : 0}|${s.text}`;
   if (seen.has(k)) continue;
   seen.add(k);
-  forValidator.push({ unit: SECTION, lesson: s.lesson, kind: "prototype", es: s.text, en: planEn.get(norm(s.text)) || s.where });
+  forValidator.push({ unit: s.unit, lesson, kind: "prototype", es: s.text, en: planEn.get(norm(s.text)) || s.where, ...(s.spell ? { spell: true } : {}) });
 }
 writeFileSync(tmpFile, JSON.stringify(forValidator, null, 1));
 const r = spawnSync(process.execPath, [join(ROOT, "tools", "check_vocab.mjs"), "--sentences", tmpFile], { encoding: "utf8" });
 const out = (r.stdout || "") + (r.stderr || "");
 for (const l of out.split("\n").filter((x) => /^FAIL/.test(x))) console.log(`  ${l}`);
 const summary = out.split("\n").find((l) => /^(✓ PASS|✗ FAIL)/.test(l)) || "(no summary)";
-console.log(`  lesson level (tools/check_vocab.mjs --sentences, ${forValidator.length} lesson-tagged lines): ${summary}`);
+console.log(`  unit and lesson level (tools/check_vocab.mjs --sentences, ${forValidator.length} lines tagged with unit and lesson): ${summary}`);
 if (r.status !== 0) failures++;
 
 // ---------------------------------------------------------------- audio TODO
-if (WRITE_TODO) writeTodo();
+if (WRITE_TODO) { writeTodo(); writeSongs(); }
 
 function writeTodo() {
   const clips = {};
@@ -247,36 +183,39 @@ function writeTodo() {
     if (existsSync(p)) for (const [t, by] of Object.entries(JSON.parse(readFileSync(p, "utf8")).clips)) clips[t] = { ...clips[t], ...by };
   }
   // Voice rules (Juan, Oct 2026; lesson_audio.py): every neutral line in both Marías and Raúl;
-  // él / él es only in Raúl (and ella only in the Marías); Buhísimo's on-screen lines also in
-  // his two voices; story lines and passport answers in the speaker's voice: Matilda = the
-  // Marías, Max and the traveller = Raúl (no kid voices yet).
+  // él / él es only in Raúl (and ella only in the Marías); Buhísimo's lines (and the Spanish praise)
+  // also in his two voices; story, radio and passport lines in the speaker's voice: Matilda = the
+  // Marías, Max and the traveller = Raúl (no kid voices yet); Radio Búho callers are neutral.
   const NEUTRAL = ["maria_bogota", "maria_paisa", "raul"], MARIA = ["maria_bogota", "maria_paisa"], RAUL = ["raul"], BUHO = ["buho_profesor", "buho_abuelo"];
-  const SPEAKER = { buho: "Buhísimo", matilda: "Matilda", max: "Max", traveller: "A traveller" };
-  const want = new Map(); // text -> { voices, where, speaker }
-  const add = (text, voices, where, speaker) => {
-    if (!want.has(text)) want.set(text, { voices: new Set(), where: new Set(), speaker: new Set() });
+  const SPEAKER = { buho: "Buhísimo", matilda: "Matilda", max: "Max", traveller: "A traveller", caller: "a Radio Búho caller" };
+  const want = new Map(); // text -> { voices, where, speaker, unit }
+  const add = (text, voices, where, speaker, unit) => {
+    if (!want.has(text)) want.set(text, { voices: new Set(), where: new Set(), speaker: new Set(), unit: new Set() });
     const w = want.get(text);
     voices.forEach((v) => w.voices.add(v));
     w.where.add(where);
+    w.unit.add(unit);
     if (speaker) w.speaker.add(speaker);
   };
-  const voicesOf = (who) => (who.startsWith("owl") || who === "buho" ? BUHO : who.startsWith("matilda") ? MARIA : RAUL);
+  const base = (who) => (who.startsWith("owl") || who === "buho" ? "buho" : who.startsWith("matilda") ? "matilda" : who.startsWith("max") ? "max" : who);
+  const voicesOf = (who) => ({ buho: BUHO, matilda: MARIA, max: RAUL, traveller: RAUL }[base(who)] || NEUTRAL);
   for (const s of strings) {
     if (!s.spoken) continue;
     const who = String(s.who || "");
     const step = s.where.match(/^lesson (\S+)\.steps\[(\d+)\]/);
     const where = step ? `${step[1]} step ${+step[2] + 1}` : s.where.replace(/\.(es|\w+Es)(\[\d+\])?$/, "");
     const t = s.text, low = t.toLowerCase();
-    const isPassport = step && /passport/.test(JSON.stringify(LESSONS.find((l) => l.id === step[1])?.steps[+step[2]]?.type || ""));
-    if (s.where.startsWith("STORY")) add(t, voicesOf(who), where, SPEAKER[who]);
-    else if (s.key === "askEs") add(t, BUHO, where, "Buhísimo");
-    else if (isPassport && s.key === "answerEs") add(t, voicesOf(who), where, SPEAKER[who] || who);
-    else if (s.key === "praiseEs") add(t, BUHO, where, "Buhísimo");
-    else if (low === "él" || low === "él es") add(t, RAUL, where);
-    else if (low === "ella") add(t, MARIA, where);
+    const stepObj = step && LESSONS.find((l) => l.id === step[1])?.steps[+step[2]];
+    const isPassport = stepObj?.type === "passport";
+    if (/ story/.test(s.where) || s.key === "radio") add(t, voicesOf(who), where, SPEAKER[base(who)], s.unit);
+    else if (s.key === "askEs") add(t, BUHO, where, "Buhísimo", s.unit);
+    else if (isPassport && s.key === "answerEs") add(t, voicesOf(who), where, SPEAKER[base(who)] || who, s.unit);
+    else if (s.key === "praiseEs") add(t, BUHO, where, "Buhísimo", s.unit);
+    else if (low === "él" || low === "él es") add(t, RAUL, where, "", s.unit);
+    else if (low === "ella") add(t, MARIA, where, "", s.unit);
     else {
-      add(t, NEUTRAL, where);
-      if (who.startsWith("owl") && ["es", "promptEs"].includes(s.key)) add(t, BUHO, where, "Buhísimo");
+      add(t, NEUTRAL, where, "", s.unit);
+      if (who.startsWith("owl") && ["es", "promptEs"].includes(s.key)) add(t, BUHO, where, "Buhísimo", s.unit);
     }
   }
   const sayAs = LESSONS[0].sayAs || {};
@@ -284,34 +223,63 @@ function writeTodo() {
     let x = t;
     for (const [w, say] of Object.entries(sayAs)) x = x.replaceAll(w, say);
     x = /^[a-záéíóúñ]/.test(x) ? x[0].toUpperCase() + x.slice(1) : x;
-    return /[.?!…]$/.test(x) ? x : `${x}.`;
-  };
-  // Same slug as lesson_audio.py: ascii-folded words + the first 6 hex of sha1(text).
-  const slug = (text) => {
-    const a = text.normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[^\x00-\x7f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
-    return `${a}-${createHash("sha1").update(text, "utf8").digest("hex").slice(0, 6)}`;
+    return /[.?!…,]$/.test(x) ? x.replace(/,$/, ".") : `${x}.`;
   };
   const lines = [];
   let none = 0;
+  const byUnit = {};
   for (const [text, w] of [...want].sort((a, b) => a[0].localeCompare(b[0], "es"))) {
     const voices = [...w.voices].sort();
     const missing = voices.filter((v) => !clips[text]?.[v]);
     if (missing.length === voices.length && !clips[text]) none++;
     for (const voice of missing) {
+      const unit = [...w.unit].sort()[0];
+      byUnit[unit] = (byUnit[unit] || 0) + 1;
       lines.push({ text, tts: ttsText(text), voice, role: voice.startsWith("buho") ? "buho" : voice === "raul" ? "raul" : "maria",
-        speaker: [...w.speaker].join(", ") || "(any: lesson voice)", slug: slug(text), file: `audio/${voice}/${slug(text)}.mp3`, where: [...w.where].sort() });
+        speaker: [...w.speaker].join(", ") || "(any: lesson voice)", unit, slug: slug(text), file: `audio/${voice}/${slug(text)}.mp3`, where: [...w.where].sort() });
     }
   }
   const texts = new Set(lines.map((l) => l.text)).size;
   const outFile = join(PROTO, "audio", "TODO_lines.json");
   writeFileSync(outFile, JSON.stringify({
-    _about: "Every Spanish line the Unit 1.1 prototype can say that has no recording yet, one entry per voice. Same fields as video_generation/scripts/voice_tools/lesson_audio.py clips.json (text, tts, voice, slug), plus the target file, the role, who says it and where it is used. Generated by prototype/tools/check_vocab.mjs --todo; do not edit by hand. Recording needs the GPU (Qwen3-TTS): ask Juan first.",
+    _about: "Every Spanish line the prototype (Units 1.1 and 1.2) can say that has no recording yet, one entry per voice. Same fields as video_generation/scripts/voice_tools/lesson_audio.py clips.json (text, tts, voice, slug), plus the target file, the role, who says it, the unit and where it is used. Letter names (efe, eme…) and spellings (Ese, a, ele…) are said as letter names. Songs and chants are in TODO_songs.json, not here. Generated by prototype/tools/check_vocab.mjs --todo; do not edit by hand. Recording needs the GPU (Qwen3-TTS): ask Juan first.",
     voices: { maria_bogota: "co_f_adult_bogota.wav", maria_paisa: "co_f_adult_paisa.wav", raul: "co_m_30.wav", buho_profesor: "co_m_old_profesor.wav", buho_abuelo: "co_m_old_abuelo.wav" },
-    summary: { linesWithNoRecordingAtAll: none, linesMissingAtLeastOneVoice: texts, clipsToRecord: lines.length },
+    summary: { linesWithNoRecordingAtAll: none, linesMissingAtLeastOneVoice: texts, clipsToRecord: lines.length, clipsToRecordByUnit: byUnit },
     lines,
   }, null, 1) + "\n");
-  console.log(`  audio TODO: ${none} lines have no recording at all; ${texts} lines miss at least one voice; ${lines.length} clips to record -> ${relative(ROOT, outFile)}`);
+  console.log(`  audio TODO: ${none} lines have no recording at all; ${texts} lines miss at least one voice; ${lines.length} clips to record (${Object.entries(byUnit).map(([u, n]) => `${u}: ${n}`).join(", ")}) -> ${relative(ROOT, outFile)}`);
+}
+
+// Song clips (content plan §11.3 A): each `clip` step and each clip-tagged radio line, with its lines.
+function writeSongs() {
+  const songs = new Map();
+  const add = (clip, lines, where, unit, lesson) => {
+    if (!songs.has(clip)) songs.set(clip, { clip, lines: [], usedIn: new Set(), unit, lesson });
+    const s = songs.get(clip);
+    for (const l of lines) if (!s.lines.includes(l)) s.lines.push(l);
+    s.usedIn.add(where);
+    if (lesson < s.lesson) s.lesson = lesson;
+  };
+  for (const l of LESSONS) l.steps.forEach((s) => { if (s.type === "clip") add(s.clip, s.linesEs, `${l.id} (${s.id})`, l.unit, l.n); });
+  for (const ep of RADIO) ep.lines.forEach((ln) => { if (ln.clip) add(ln.clip, [ln.es], `radio ${ep.id}`, ep.unit, +ep.lesson.split("-")[1]); });
+  const KIND = { A0: "spoken intro (Buhísimo), over the Radio Búho jingle", A6: "spoken call-in (callers, Matilda, Max)", A7: "spoken outro (Buhísimo)" };
+  const list = [...songs.values()].sort((a, b) => a.clip.localeCompare(b.clip, "en", { numeric: true })).map((s) => ({
+    clip: s.clip, kind: KIND[s.clip] || "sung: a simple repeated tune at about 90 BPM (A5 twice, the second time with gaps); a slow 70 BPM version for the first listen",
+    file: `audio/songs/${s.clip}.mp3`, exists: existsSync(join(PROTO, "audio", "songs", `${s.clip}.mp3`)), unit: s.unit, firstLesson: s.lesson, lines: s.lines, usedIn: [...s.usedIn],
+  }));
+  const outFile = join(PROTO, "audio", "TODO_songs.json");
+  writeFileSync(outFile, JSON.stringify({
+    _about: "Radio Búho song and chant clips for «El alfabeto» (docs/content_plan_1.1-1.6.md §11.3 A). Juan chose sung versions in the style of the ACE-Step counting-song samples (20 Oct 2026). Colombian Spanish; letter names uve, doble ve and ye. Until a file exists at `file`, the prototype lights the words up on a 90 BPM beat and shows 'Song coming soon'. Generated by prototype/tools/check_vocab.mjs --todo.",
+    clips: list,
+  }, null, 1) + "\n");
+  console.log(`  song TODO: ${list.filter((c) => !c.exists).length} of ${list.length} clips still to make (${list.map((c) => c.clip).join(", ")}) -> ${relative(ROOT, outFile)}`);
+}
+
+function slug(text) {
+  // Same slug as lesson_audio.py: ascii-folded words + the first 6 hex of sha1(text).
+  const a = text.normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[^\x00-\x7f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+  return `${a}-${createHash("sha1").update(text, "utf8").digest("hex").slice(0, 6)}`;
 }
 
 if (failures) { console.log(`\n✗ FAIL`); process.exit(1); }
-console.log(`\n✓ PASS: every Spanish line in the prototype uses allowed 1.1 words, introduced by its lesson.`);
+console.log(`\n✓ PASS: every Spanish line in the prototype uses allowed words of its unit, introduced by its lesson.`);

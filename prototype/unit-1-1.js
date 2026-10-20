@@ -511,7 +511,7 @@ const L9 = {
   steps: buildStorySteps(STORY),
 };
 
-function buildStorySteps(story) {
+export function buildStorySteps(story) {
   const steps = [{ id: "s-intro", type: "storyintro" }];
   const said = [];
   story.lines.forEach((l, i) => {

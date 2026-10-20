@@ -83,6 +83,7 @@
 {"unit":"1.1","lesson":11,"kind":"check","es":"La lengua de Perú es el español.","en":"The language of Peru is Spanish."},
 
 {"unit":"1.2","lesson":1,"kind":"repaso","es":"¿De dónde es Max? — Es de Australia.","en":"Where is Max from? — He's from Australia."},
+{"unit":"1.2","lesson":1,"kind":"repaso","es":"Ella es de Colombia.","en":"She's from Colombia."},
 
 {"unit":"1.2","lesson":2,"kind":"intro","speaker":"Max","es":"¡Hola, Matilda!","en":"Hi, Matilda!"},
 {"unit":"1.2","lesson":2,"kind":"intro","speaker":"Matilda","es":"Buenos días, Buhísimo.","en":"Good morning, Buhísimo."},
@@ -96,6 +97,7 @@
 {"unit":"1.2","lesson":3,"kind":"intro","speaker":"Matilda","es":"Regular. ¿Y tú?","en":"So-so. And you?"},
 {"unit":"1.2","lesson":3,"kind":"intro","es":"¿Qué tal, Matilda? — Mal.","en":"How's it going, Matilda? — Not good."},
 {"unit":"1.2","lesson":3,"kind":"practice","es":"Bien. ¿Y tú, Buhísimo?","en":"Good. And you, Buhísimo?"},
+{"unit":"1.2","lesson":3,"kind":"praise","speaker":"Buhísimo","es":"¡Bien!","en":"Good! (Buhísimo's praise from 1.2 L3)"},
 
 {"unit":"1.2","lesson":4,"kind":"intro","es":"¿Cómo estás? — Muy bien, gracias.","en":"How are you? — Very well, thank you."},
 {"unit":"1.2","lesson":4,"kind":"intro","speaker":"Buhísimo","es":"Buenos días, Matilda. ¿Cómo estás?","en":"Good morning, Matilda. How are you?"},
@@ -103,6 +105,8 @@
 {"unit":"1.2","lesson":4,"kind":"intro","es":"Buenas tardes. ¿Cómo estás? — Fatal.","en":"Good afternoon. How are you? — Awful."},
 {"unit":"1.2","lesson":4,"kind":"intro","speaker":"Max","es":"¡Fantástico, gracias!","en":"Fantastic, thanks!"},
 {"unit":"1.2","lesson":4,"kind":"practice","es":"Muy mal.","en":"Very bad."},
+{"unit":"1.2","lesson":4,"kind":"practice","es":"fatal, mal, regular, bien, fenomenal","en":"awful, bad, so-so, good, great (worst to best)"},
+{"unit":"1.2","lesson":4,"kind":"praise","speaker":"Buhísimo","es":"¡Muy bien!","en":"Very good! (Buhísimo's praise from 1.2 L4, with ¡Fenomenal! and ¡Fantástico!)"},
 
 {"unit":"1.2","lesson":5,"kind":"practice","es":"¡Hola! ¿Qué tal? — Muy bien, gracias. ¿Y tú?","en":"Hi! How's it going? — Very well, thanks. And you?"},
 {"unit":"1.2","lesson":5,"kind":"practice","es":"Buenas tardes. ¿De dónde eres? — Soy de Perú.","en":"Good afternoon. Where are you from? — I'm from Peru."},
@@ -147,7 +151,7 @@
 {"unit":"1.2","lesson":10,"kind":"song","es":"Be, ce, de, ge, pe, te.","en":"B, C, D, G, P, T.","clip":"A3","spell":true},
 {"unit":"1.2","lesson":10,"kind":"intro","speaker":"Buhísimo","es":"¿Cómo se escribe «hola»? — Hache, o, ele, a.","en":"How do you spell \"hola\"? — H, O, L, A."},
 {"unit":"1.2","lesson":10,"kind":"practice","speaker":"Matilda","es":"¿Cómo se escribe Matilda? — Eme, a, te, i, ele, de, a.","en":"How do you spell Matilda? — M, A, T, I, L, D, A."},
-{"unit":"1.2","lesson":10,"kind":"practice","es":"¿Cómo se escribe Cuba? — Cu, u, be, a.","en":"How do you spell Cuba? — C, U, B, A."},
+{"unit":"1.2","lesson":10,"kind":"practice","es":"¿Cómo se escribe Cuba? — Ce, u, be, a.","en":"How do you spell Cuba? — C, U, B, A."},
 {"unit":"1.2","lesson":10,"kind":"practice","es":"¿Cómo se escribe Perú? — Pe, e, erre, u.","en":"How do you spell Perú? — P, E, R, U (with an accent on the U)."},
 {"unit":"1.2","lesson":10,"kind":"practice","speaker":"Buhísimo","es":"¿Cómo se escribe Buhísimo? — Be, u, hache, i, ese, i, eme, o.","en":"How do you spell Buhísimo? — B, U, H, I, S, I, M, O (accent on the first I)."},
 {"unit":"1.2","lesson":10,"kind":"intro","es":"¿Cómo se escribe «escribir»? — E, ese, ce, erre, i, be, i, erre.","en":"How do you spell \"escribir\" (to write)? — E, S, C, R, I, B, I, R."},
@@ -175,6 +179,7 @@
 {"unit":"1.2","lesson":13,"kind":"check","es":"Matilda está muy bien.","en":"Matilda is very well."},
 {"unit":"1.2","lesson":13,"kind":"check","es":"¡Adiós! ¡Hasta luego!","en":"Goodbye! See you later!"},
 {"unit":"1.2","lesson":13,"kind":"check","es":"¿Cómo se escribe España? — E, ese, pe, a, eñe, a.","en":"How do you spell España? — E, S, P, A, Ñ, A."},
+{"unit":"1.2","lesson":13,"kind":"check","es":"¡Hola! ¿Qué tal? — Regular. ¿Y tú?","en":"Hi! How's it going? — So-so. And you?"},
 
 {"unit":"1.3","lesson":1,"kind":"repaso","es":"Buenas tardes, Matilda. ¿Cómo estás? — Regular.","en":"Good afternoon, Matilda. How are you? — So-so."},
 

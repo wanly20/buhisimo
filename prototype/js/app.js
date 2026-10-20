@@ -1,6 +1,6 @@
 // Buhísimo v2 prototype: screens (path, lesson, complete), the Review, Radio Búho
 // and Me views, settings, and the offline app (service worker).
-import { LESSONS, lessonById } from "../unit-1-1.js";
+import { LESSONS, lessonById, UNITS } from "../course.js";
 import { units, unitsTextbookTitlesEs } from "../path-data.js";
 import { icon } from "./icons.js";
 import { $, $$, esc, es, el, button, footBar, charImg, toast, openModal, countUp, reducedMotion, restartAnim } from "./ui.js";
@@ -14,13 +14,13 @@ import { gradeStep, meetLesson, buildReview, reviewViewHtml, dueItems, metItems 
 import { mountRadio, stopRadio } from "./radio.js";
 
 // Bump together with VERSION in sw.js for every release (tools/e2e-unit.mjs checks they match).
-export const APP_VERSION = "2026-10-21.caps";
+export const APP_VERSION = "2026-10-21.u12";
 
 const app = document.getElementById("app");
 applyFont(store.get().font);
 const lesson1 = LESSONS[0];
 
-const NODE_ICON = { lesson: "star", story: "book-open", practice: "dumbbell", check: "trophy", listen: "headphones", game: "gamepad-2", speak: "mic", boss: "crown" };
+const NODE_ICON = { lesson: "star", repaso: "repeat", story: "book-open", practice: "dumbbell", check: "trophy", listen: "headphones", game: "gamepad-2", speak: "mic", boss: "crown" };
 const OFFSETS = [0, -56, -84, -56, 0, 56, 84, 56];
 const PEEKS = {
   "1.1": { img: "owl-explaining", side: "right", at: 1 },
@@ -60,7 +60,7 @@ let reloadWhenFree = false;
 
 // =================================================================== progress helpers
 const isDone = (id) => !!store.get().completed[id];
-/** Index of the first unfinished 1.1 lesson (the "current" node). */
+/** Index of the first unfinished lesson of the whole course (the "current" node): 1.2 L1 opens after 1.1 L11. */
 const currentIndex = () => { const i = LESSONS.findIndex((l) => !isDone(l.id)); return i < 0 ? LESSONS.length : i; };
 /** Open = the current lesson, any lesson before it, or one already finished (replay). Everything after the current one is locked. */
 const isOpen = (id) => {
@@ -159,7 +159,7 @@ function showPath(view = "path") {
       </header>
       <main class="path-scroll">
         <div class="path-inner">${unitHtml}
-          <p class="path-end">${icon("sparkles", 18, 2.5)} Units 2 and 3 are on their way.</p>
+          <p class="path-end">${icon("sparkles", 18, 2.5)} Units 1.3 to 3 are on their way.</p>
         </div>
         <div class="view-area" hidden></div>
       </main>
@@ -266,7 +266,7 @@ function setView(screen, view, { first = false } = {}) {
   scroller.scrollTop = 0;
   if (view === "review") area.innerHTML = reviewViewHtml();
   if (view === "profile") { area.innerHTML = profileHtml(); wireProfile(area); }
-  if (view === "radio") mountRadio(area);
+  if (view === "radio") mountRadio(area, { isOpen, titleOf: (id) => { const l = lessonById(id); return l ? `${l.unit} L${l.n} «${l.titleEs || l.titleEn}»` : id; } });
   if (!first && area.firstElementChild) restartAnim(area.firstElementChild, "step-enter");
 }
 
@@ -304,7 +304,8 @@ async function showReview() {
 }
 
 // =================================================================== complete
-const COMPLETE_TITLE = { learn: "Lesson complete!", practice: "Practice complete!", story: "Story complete!", game: "Game complete!", check: "Unit 1.1 complete!", review: "Review done!" };
+const COMPLETE_TITLE = { learn: "Lesson complete!", repaso: "Review complete!", practice: "Practice complete!", story: "Story complete!", game: "Game complete!", listen: "Radio Búho complete!", review: "Review done!" };
+const completeTitle = (l) => (l.kind === "check" ? `Unit ${l.unit} complete!` : COMPLETE_TITLE[l.kind] || "Lesson complete!");
 
 async function showComplete(lesson, { xp, accuracy }) {
   activeLesson = null;
@@ -314,14 +315,14 @@ async function showComplete(lesson, { xp, accuracy }) {
   const back = lesson.kind === "review" ? "#/review" : "#/";
   const chips = lesson.learnedEs || [];
   const screen = el(`
-    <section class="screen complete complete--${lesson.kind}" aria-label="${esc(COMPLETE_TITLE[lesson.kind] || "Lesson complete!")}">
+    <section class="screen complete complete--${lesson.kind}" aria-label="${esc(completeTitle(lesson))}">
       <canvas class="confetti" aria-hidden="true"></canvas>
       <div class="complete-hero">
         <img class="complete-scene" src="assets/salento-street.webp" alt="A colourful street in Salento, Colombia">
         <img class="complete-owl" src="assets/owl-celebrating.webp" alt="Buhísimo the owl, celebrating">
       </div>
       <div class="complete-body">
-        <h1 class="complete-title">${esc(COMPLETE_TITLE[lesson.kind] || "Lesson complete!")}</h1>
+        <h1 class="complete-title">${esc(completeTitle(lesson))}</h1>
         <p class="complete-sub">${es(lesson.praiseEs[0], "complete-es")} ${esc(lesson.canDoEn || "")}</p>
         <div class="stat-cards">
           <div class="stat stat--xp"><span class="stat__label">Total XP</span><span class="stat__value">${icon("zap", 22, 2.5)}<b data-count="${xp}">0</b></span></div>
@@ -350,6 +351,7 @@ async function showComplete(lesson, { xp, accuracy }) {
   if (!reducedMotion()) {
     try {
       const { default: confetti } = await import("https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm");
+      if (!screen.isConnected) return; // already continued: no canvas to draw on
       const fire = confetti.create($(".confetti", screen), { resize: true, useWorker: true });
       const colors = ["#14a39e", "#d6247a", "#f7b928", "#17a35a", "#d9643a", "#ffffff"];
       fire({ particleCount: 90, spread: 75, startVelocity: 42, origin: { y: 0.35 }, colors, scalar: 1.1 });
@@ -365,7 +367,6 @@ window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); inst
 
 function profileHtml() {
   const s = store.get();
-  const done = LESSONS.filter((l) => isDone(l.id)).length;
   const words = metItems().length;
   const standalone = window.matchMedia?.("(display-mode: standalone)").matches;
   return `
@@ -383,12 +384,15 @@ function profileHtml() {
         <div class="pstat pstat--xp">${icon("zap", 26, 2.25)}<span><b>${s.xp}</b><small>total XP</small></span></div>
         <div class="pstat pstat--words">${icon("book-open", 26, 2.25)}<span><b>${words}</b><small>words met</small></span></div>
       </div>
-      <section class="me-card" aria-labelledby="me-unit">
-        <h2 class="panel-title" id="me-unit">Unit 1.1 · <span lang="es">${esc(unitsTextbookTitlesEs["1.1"])}</span></h2>
-        <div class="me-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${LESSONS.length}" aria-valuenow="${done}" aria-label="${done} of ${LESSONS.length} lessons done"><span style="--p:${done / LESSONS.length}"></span></div>
-        <p class="panel-small">${done} of ${LESSONS.length} lessons done${done === LESSONS.length ? ". The whole unit. Brilliant!" : ""}</p>
-        <ol class="me-lessons">${LESSONS.map((l) => `<li class="${isDone(l.id) ? "is-done" : ""}">${icon(isDone(l.id) ? "check" : NODE_ICON[l.kind === "learn" ? "lesson" : l.kind], 16, 2.75)}<span>${titleHtml(l)}</span></li>`).join("")}</ol>
-      </section>
+      ${UNITS.map((u) => {
+        const ls = u.lessons, n = ls.filter((l) => isDone(l.id)).length;
+        return `<section class="me-card" aria-labelledby="me-unit-${u.id}">
+        <h2 class="panel-title" id="me-unit-${u.id}">Unit ${u.id} · <span lang="es">${esc(unitsTextbookTitlesEs[u.id])}</span></h2>
+        <div class="me-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${ls.length}" aria-valuenow="${n}" aria-label="${n} of ${ls.length} lessons done"><span style="--p:${n / ls.length}"></span></div>
+        <p class="panel-small">${n} of ${ls.length} lessons done${n === ls.length ? ". The whole unit. Brilliant!" : ""}</p>
+        <ol class="me-lessons">${ls.map((l) => `<li class="${isDone(l.id) ? "is-done" : ""}">${icon(isDone(l.id) ? "check" : NODE_ICON[l.kind === "learn" ? "lesson" : l.kind], 16, 2.75)}<span>${titleHtml(l)}</span></li>`).join("")}</ol>
+      </section>`;
+      }).join("")}
       <section class="me-card" aria-labelledby="me-file">
         <h2 class="panel-title" id="me-file">Your progress file</h2>
         <p class="panel-small">There are no accounts and nothing is sent anywhere. To keep your progress safe, or move it to another device, download it and load it there.</p>

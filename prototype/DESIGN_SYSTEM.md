@@ -8,7 +8,7 @@
 2. **Everything you can press looks pressable.** Chunky 3D buttons have a darker bottom edge and sink when tapped.
 3. **Kind feedback.** Right answers are emerald, and "not yet" answers are a warm terracotta (never alarm red). An icon and words always go with the colour. Wrong answers come back later; there are no hearts and no "failed" screens.
 4. **Nothing jumps.** The bottom button bar has a fixed height. The feedback sheet slides over it, so CONTINUE lands exactly where CHECK was. Only `transform` and `opacity` animate.
-5. **One source for Spanish.** All Spanish shown on screen comes from `lesson-1-1.js` and `unit-1-1.js` (plus Radio Búho transcripts) and is checked by `tools/check_vocab.mjs`.
+5. **One source for Spanish.** All Spanish shown on screen comes from `lesson-1-1.js`, `unit-1-1.js` and `unit-1-2.js` (plus Radio Búho transcripts) and is checked by `tools/check_vocab.mjs`.
 
 ## 2. Colour (Salento palette)
 
@@ -128,7 +128,7 @@ Buhísimo is the species-accurate seed-3 set (round head, no ear tufts). The cel
 
 ## 7. Voice and tone
 
-- Praise is short. Spanish praise uses only known words: in 1.1 that is **"¡Buhísimo!"**, plus English ("Great job!", "Nailed it!").
+- Praise is short. Spanish praise uses only known words: in 1.1 that is **"¡Buhísimo!"**; in 1.2 *¡Bien!* joins from L3 and *¡Muy bien! ¡Fenomenal! ¡Fantástico!* from L4; plus English ("Great job!", "Nailed it!").
 - Wrong-answer titles are kind: "Not quite", "Almost!", "Good try!", followed by "Mistakes help you learn." and "We'll come back to this one."
 - The accent fix-up is Buhísimo's thing: "So close! Tap the letters that need an accent or ñ."
 - Never: "Wrong!", buzzers, lost hearts, streak guilt or mockery.
@@ -180,20 +180,40 @@ All 11 lessons of Unit 1.1 are playable (`unit-1-1.js`, following `docs/content_
 
 **Offline:** `sw.js` caches the app shell, pictures and every recorded clip. Code is network-first (an online student always gets the newest version); media is cache-first. Bump `VERSION` in `sw.js` and `APP_VERSION` in `js/app.js` together; a new version takes over as soon as no lesson is running.
 
-## 11. Files
+## 11. Unit 1.2 level (21 October 2026)
+
+All 13 lessons of Unit 1.2 «¿Qué tal?» (`unit-1-2.js`, `docs/build_plan_1.2.md`) run on the same lesson runner; `course.js` lists the units in path order (locks run across units: 1.2 L1 opens after the 1.1 check). New pieces, in `css/unit-1-2.css` with the same tokens and press recipe:
+
+| Piece | Class | Notes |
+|---|---|---|
+| Time of day, feelings | `.art-scene`, `.art-face` (`js/art.js`) | Flat SVG: the Cocora hills in the morning (sun low, 8:00) and the afternoon (sun high, fog, 15:00); five faces from *fatal* to *fenomenal*. On intro cards, as a choose prompt, and as picture options. |
+| Letter card | `.letter-grid`, `.letter-card` | A letter group: big letter, Spanish name; tap to hear. Notes point out sound-alike letters (*be/uve*, *ce/ese/zeta*, *ge/jota*). |
+| Letter pick | `.ex-letterpick`, `.letter-option` | Hear (or read) a letter name, tap the letter; keys 1–4. |
+| Spelling dictation | `.ex-spell`, `.spell-prompt` | Hear (or read) *Ese, a, ele…*, type the word; the typing engine's accent and capital-letter fix-ups apply. |
+| Song clip | `.ex-clip`, `.clip-card` | The words light up on a 90 BPM beat (beat dots) so students chant along; the song plays with them once `audio/songs/<clip>.mp3` exists ("Song coming soon" until then). |
+| Radio Búho grid | `.ex-radio`, `.radio-row`, `.face-pick`, `.radio-input` | Call-in grid: one row per caller, a face to tap or a word to write; first listen without the words (read them while unrecorded); after CHECK each row shows its answer. Keys 1–4 fill the next row. |
+| Transcript | `.ex-transcript`, `.tr-line` | Listen again with the words: tap a line, EN toggle. |
+| Radio tab episodes | `.radio-eps`, `.radio-ep-chip` | The 1.1 demo plus each lesson episode, padlocked until its lesson is open. |
+
+## 12. Files
 ```
 prototype/
   index.html                 app shell (phone, tablet and desktop) · manifest.webmanifest · sw.js (offline)
   design-system.html         living style guide
   lesson-1-1.js              lesson 1 content (the original prototype lesson)
   unit-1-1.js                lessons 2–11, the story, Unit 1.1 items (all Spanish)
+  unit-1-2.js                Unit 1.2: 13 lessons, the story, Radio Búho episodes, items and letter groups
+  course.js                  the playable units in path order (lessons, items, radio episodes)
   path-data.js               units 1.1–1.6 (textbook titles)
   css/tokens.css             design tokens  ← start here
   css/base.css · components.css · app.css · design-system.css
   css/layout.css             tablet + Chromebook/desktop layouts, keyboard hints
   css/unit.css               Unit 1.1 exercise types, views, tab bar
+  css/unit-1-2.css           Unit 1.2 exercise types and pictures
   js/app.js                  router, path, views, lesson complete, settings, service worker
   js/lesson.js               lesson runner + exercise types + accent fix-up
+  js/exercises-1-2.js        letters, letterpick, spell, clip, radio, transcript
+  js/art.js                  SVG time-of-day scenes and feeling faces
   js/review.js               spaced repetition, Review sessions, My knowledge
   js/radio.js                Radio Búho player (align_lyrics.py JSON format)
   js/worldmap.js · worldmap-data.js   maps

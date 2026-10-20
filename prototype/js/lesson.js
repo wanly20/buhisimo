@@ -7,6 +7,8 @@ import { tts, stt, fold, speechMatches } from "./speech.js";
 import { sfx } from "./sound.js";
 import { store } from "./store.js";
 import { mapFrame, wireMapPins, wireMapQuiz, placeName, PLACES } from "./worldmap.js";
+import { timeScene, face, faceEn } from "./art.js";
+import { EXERCISES_1_2 } from "./exercises-1-2.js";
 
 const MAX_RETRIES = 2;
 
@@ -328,24 +330,28 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings, onGra
 }
 
 // =================================================================== exercises
+// Unit 1.2 adds letters, letterpick, spell, clip, radio and transcript (js/exercises-1-2.js).
 const EXERCISES = { intro, pick: pickMeaning, listen, tiles, type: typeIt, match, speak,
-  choose, gap, sort, maptap, mapstudy, table, storyintro, storyline, passport };
+  choose, gap, sort, maptap, mapstudy, table, storyintro, storyline, passport, ...EXERCISES_1_2 };
 
 /** Which recorded voice role says a line by this character. */
 export function roleOf(who = "") {
   if (who === "owl" || who === "buho" || who.startsWith("owl")) return "buho";
   if (who.startsWith("matilda")) return "maria";
   if (who.startsWith("max") || who === "traveller") return "raul";
+  // Radio Búho callers have no fixed voice: the lesson alternates María and Raúl.
   return "";
 }
 
-function head(title, badge = "") {
+export function head(title, badge = "") {
   return `<div class="ex-head">${badge}<h1 class="h-title">${title}</h1></div>`;
 }
 
 /** Picture for a step: a character, a noun picture, or a locator map. */
 function artHtml(step, cls = "intro-char") {
   if (step.map) return `<div class="intro-map">${mapFrame({ focus: step.map, aspect: 1, pins: false })}</div>`;
+  if (step.time) return timeScene(step.time);
+  if (step.face) return face(step.face, { label: faceEn(step.face) });
   if (step.art) return `<img class="${cls} intro-noun" src="assets/${step.art}.webp" alt="" draggable="false">`;
   // A scene picture (e.g. the Cocora Valley); if the file isn't there yet, the character shows instead.
   if (step.scene) return `<img class="${cls} intro-scene" src="assets/${step.scene}.webp" alt="${esc(step.sceneAltEn || "")}" draggable="false" data-fallback="${esc(step.character || "owl-explaining")}">`;
@@ -385,7 +391,7 @@ function intro(step, api) {
     : artHtml(step);
   const badge = step.badgeEn ? `${icon("sparkles", 16, 2.75)} ${esc(step.badgeEn)}` : `${icon("sparkles", 16, 2.75)} New ${isPhrase ? "phrase" : step.map && step.map !== "hispanic" && !/^(el|la|las|los) /.test(step.es) ? "place" : "word"}`;
   const node = el(`
-    <div class="ex ex-intro ${step.map ? "ex-intro--map" : ""}">
+    <div class="ex ex-intro ${step.map ? "ex-intro--map" : ""} ${step.time ? "ex-intro--scene" : ""} ${step.face ? "ex-intro--face" : ""}">
       ${head("", `<span class="badge">${badge}</span>`)}
       ${step.contextEn ? `<p class="context">${rich(step.contextEn)}</p>` : ""}
       <div class="intro-card">
@@ -431,7 +437,7 @@ function optionList(options, { spanish = false }) {
   };
 }
 
-function choiceController(node, step, api, extra = {}) {
+export function choiceController(node, step, api, extra = {}) {
   let chosen = null;
   const btns = $$(extra.selector || ".option", node);
   const choose = (b) => {
@@ -669,7 +675,7 @@ export function grade(input, target) {
   return { verdict: accents ? "accents" : "caps", full, typed, want, sentence, caps, missingArticle };
 }
 
-function typeIt(step, api) {
+export function typeIt(step, api) {
   const keys = ["á", "é", "í", "ó", "ú", "ñ", "ü", "¿", "¡"]; // ¿ and ¡ show from 700px wide
   const node = el(`
     <div class="ex ex-type">
@@ -996,10 +1002,10 @@ function readChoose(step, api) {
 // Prompt: Spanish (promptEs, with audio) and/or English (promptEn), with a character,
 // noun picture or map. Options: Spanish (optionsEs), English (optionsEn) or pictures (optionsArt).
 function choose(step, api) {
-  const picture = !!step.optionsArt;
-  const opts = step.optionsEs || step.optionsEn || (step.optionsArt || []).map((o) => o.labelEn);
+  const picture = !!(step.optionsArt || step.optionsFace);
+  const opts = step.optionsEs || step.optionsEn || (step.optionsArt || []).map((o) => o.labelEn) || [];
   const { html } = picture ? { html: "" } : optionList(opts, { spanish: !!step.optionsEs });
-  const art = picture ? "" : step.map || step.art ? `<div class="choose-art">${artHtml(step, "char")}</div>` : step.character ? charImg(step.character) : "";
+  const art = picture ? "" : step.time ? `<div class="choose-art choose-art--scene">${timeScene(step.time)}</div>` : step.map || step.art ? `<div class="choose-art">${artHtml(step, "char")}</div>` : step.character ? charImg(step.character) : "";
   const sayable = step.sayEs || step.promptEs;
   const bubble = step.promptEs || step.promptEn ? `
       <div class="speaker-row ${art ? "" : "speaker-row--solo"}">
@@ -1009,7 +1015,11 @@ function choose(step, api) {
           ${step.promptEn ? `<span class="en ${step.promptEs ? "en--sub" : ""}">${esc(step.promptEn)}</span>` : ""}
         </div>
       </div>` : "";
-  const pics = picture ? `<div class="pic-options" role="group">${step.optionsArt.map((o, k) => `
+  const pics = step.optionsFace ? `<div class="pic-options pic-options--faces" role="group" style="--n:${step.optionsFace.length}">${step.optionsFace.map((f, k) => `
+      <button class="press option pic-option" data-oi="${k}" aria-pressed="false" aria-label="${esc(faceEn(f))}">
+        <span class="face"><span class="key" aria-hidden="true">${k + 1}</span>${face(f)}</span>
+      </button>`).join("")}</div>`
+    : picture ? `<div class="pic-options" role="group">${step.optionsArt.map((o, k) => `
       <button class="press option pic-option" data-oi="${k}" aria-pressed="false" aria-label="${esc(o.labelEn)}">
         <span class="face"><span class="key" aria-hidden="true">${k + 1}</span><img src="assets/${o.art}.webp" alt="" draggable="false"></span>
       </button>`).join("")}</div>` : "";
@@ -1219,7 +1229,7 @@ function storyintro(step, api) {
   const node = el(`
     <div class="ex ex-story-intro">
       <div class="story-cover">
-        <img class="story-cover__scene" src="assets/${st.scene}.webp" alt="The plaza in Salento">
+        <img class="story-cover__scene" src="assets/${st.scene}.webp" alt="${esc(st.sceneAltEn || "The plaza in Salento")}">
         <div class="story-cover__cast">${st.cast.map((c) => `<img src="assets/${c.art}.webp" alt="${esc(c.nameEn)}" draggable="false">`).join("")}</div>
       </div>
       <span class="badge badge--magenta">${icon("book-open", 16, 2.75)} Story</span>

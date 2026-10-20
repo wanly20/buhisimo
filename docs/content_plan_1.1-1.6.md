@@ -5,7 +5,7 @@
 | File | What it is |
 |---|---|
 | `content/lessons_1.1-1.6.json` | The lesson order and the items, letters and rule cards each lesson introduces (machine-readable version of this plan) |
-| `content/sentences_1.1-1.6.json` | Every Spanish sentence or phrase in this plan (468), tagged with the unit and lesson where it is first used. Song and podcast lines carry a `clip` id (§11) |
+| `content/sentences_1.1-1.6.json` | Every Spanish sentence or phrase in this plan (506 on 21 Oct), tagged with the unit and lesson where it is first used. Song and podcast lines carry a `clip` id (§11) |
 | `content/proposals_1.1-1.6.json` | The proposals in §9. P1–P12 are **approved** and live in the CSVs; P13 was rejected (21 Oct) |
 | `content/plurals.json` | Plural rules and the irregular plurals of the whole master CSV; read by the validator |
 | `docs/irregular_plurals.md` | The irregular-plural list for Juan (all units), with where each plural is taught |
@@ -18,16 +18,16 @@
 | Unit | Lessons | Learn lessons | New items (CSV + helper + name) | Sentences |
 |---|---|---|---|---|
 | 1.1 El español global | 11 | 7 | 24 + 11 + 7 | 72 |
-| 1.2 ¿Qué tal? | 13 | 7 | 17 + 31 + 0 | 81 |
-| 1.3 Mi carnet de identidad (map: 1.3a + 1.3b) | 20 (11 + 9) | 10 | 38 + 10 + 3 | 99 |
-| 1.4 ¡…y que cumplas muchos más! | 13 | 7 | 27 + 2 + 0 | 62 |
-| 1.5 Mis preferencias | 13 | 7 | 26 + 1 + 0 | 69 |
-| 1.6 ¡Tod@s a clase! | 15 | 8 | 12 + 9 + 0, plus 6 plural rule cards | 85 |
-| **Total** | **85** (was 74) | **46** (was 40) | **218** (was 184) + 6 rule cards | **468** (was 376) |
+| 1.2 ¿Qué tal? | 13 | 7 | 17 + 31 + 0 | 86 |
+| 1.3 Mi carnet de identidad (map: 1.3a + 1.3b) | 20 (11 + 9) | 10 | 39 + 10 + 3 | 106 |
+| 1.4 ¡…y que cumplas muchos más! | 13 | 7 | 27 + 2 + 0 | 74 |
+| 1.5 Mis preferencias | 13 | 7 | 26 + 1 + 0 | 73 |
+| 1.6 ¡Tod@s a clase! | 15 | 8 | 12 + 11 + 0, plus 6 plural rule cards and 1 agreement card | 95 |
+| **Total** | **85** (was 74) | **46** (was 40) | **221** (was 184) + 7 rule cards | **506** (was 376) |
 
 - 1.2's 31 helper items are *muy, gracias, está, ¿Cómo se escribe?* and the 27 letter names (taught as 9 letter groups, see 1.2 L9–L11). `llamarse` is now taught in 1.2, its CSV section (decision 2).
 - **Lesson size:** the average learn lesson now has 4.3 counted items; the largest has 6. No lesson is above 6, so the hard limit of 8 is never used.
-- **The validator passes:** all 468 sentences use only approved words at their unit and at their lesson, with a determiner before every noun that has lost its *el/la* and with every plural rule taught first. The 63 sentences that used to wait on a proposal are now ordinary sentences. Nothing is pending.
+- **The validator passes:** all 506 sentences use only approved words at their unit and at their lesson, with a determiner before every noun that has lost its *el/la* and with every plural rule taught first. The 63 sentences that used to wait on a proposal are now ordinary sentences. Nothing is pending.
 
 ### Decisions applied on 18 October 2026
 
@@ -230,6 +230,8 @@ X:  (a crowd is watching him) ¡Soy famoso!
 ## 5. Unit 1.2 · ¿Qué tal? (13 lessons)
 
 **Unit goal:** greet and say goodbye at the right time of day; ask how someone is and answer; say how someone else is (*está*); say and spell with the Spanish alphabet.
+**Built in the prototype (21 October 2026)** as the section after 1.1 (`prototype/unit-1-2.js`, plan: `docs/build_plan_1.2.md`). As built: lesson titles follow the title rule (headings below); praise in Spanish grows with the unit (*¡Buhísimo!*; *¡Bien!* from L3; *¡Muy bien! ¡Fenomenal! ¡Fantástico!* from L4); greetings are chosen against a morning or afternoon scene and feelings against faces (SVG, no new art); L8 and L12 are Radio Búho call-in grids (faces; the spelling show) followed by the transcript; L9–L11 have letter cards, letter picks, spelling dictations (typed, with the accent and capital-letter fix-ups) and song clips A1–A4 that light up on a 90 BPM beat until the songs exist. *El alfabeto* only (P13 rejected). Fixed on the way: *¿Cómo se escribe Cuba?* is spelt *Ce, u, be, a* (it said *Cu*). False friends pointed out: *regular* (so-so), *fatal* (awful).
+
 **Infinitives (decision 2):** *escribir* and *llamarse* are 1.2 CSV rows and are taught here, in the alphabet lessons, as spelling targets with their meaning (*escribir* = to write, *llamarse* = to be called). Their forms come later (*me llamo…* in 1.3).
 
 ### 1.2 L1 · repaso · ¿De dónde es Max? *(title until 21 Oct: «¿De dónde eres?»)*
@@ -763,33 +765,35 @@ node tools/check_vocab.mjs --plurals              # every CSV noun's plural and 
 ```
 **Spot checks that behave as intended:** *Nombre: Samuel.* fails at 1.3 (bare noun) while *Mi nombre es Samuel.* passes; *Mochila.* and *No hay tijeras.* fail at 1.6 (bare); *Una libro.* fails (agreement); *Dos lápiz.* fails; *Hay tres lápices.* fails in 1.6 L6 ("z-ces taught in 1.6 L7") and passes from L7; *Dos bolígrafos marrones.* fails in 1.6 L7 and passes from L8; *Dos lunes.* fails at 1.5; *Los jóvenes.* fails at 2.2 and passes at 2.5; *Tengo años.* fails (needs a number) while *Tengo doce años.* passes; *Eme, a, equis.* fails as a normal line and passes as a spelling line; *¿Cómo se escribe Max? — Eme, a, equis.* fails in 1.2 L9 ("equis introduced in 1.2 L11").
 
-**Output of the final run** (20 October 2026):
+**Output of the final run** (21 October 2026):
 ```
 Buhísimo vocabulary check: content/sentences_1.1-1.6.json
-  data: 426 vocabulary rows, 79 helper rows, 62 names (19 names have no Section and are never allowed)
-  proposals: 13 in content/proposals_1.1-1.6.json (10 approved, 3 pending); approved for this run: none
-  plural rules and where they are first taught: regular 1.6, z-ces 1.6, unchanged 1.6, plural-only 1.6, accent-loss 1.6, compound 1.6, mixed-masculine 2.2, accent-gain 2.5, y-yes 2.5, loanword 3.5, el-feminine 3.7
+  data: 427 vocabulary rows, 81 helper rows, 62 names (19 names have no Section and are never allowed)
+  proposals: 13 in content/proposals_1.1-1.6.json (12 approved, 1 rejected, 0 pending); approved for this run: none
+  plural rules and where they are first taught: regular 1.6, z-ces 1.6, unchanged 1.6, plural-only 1.6, accent-loss 1.6, compound 1.6, agreement:possessive 1.6, mixed-masculine 2.2, accent-gain 2.5, y-yes 2.5, loanword 3.5, el-feminine 3.7
 
 Unit-level check: rows with Section ≤ the sentence's unit; a determiner before every noun that lost its el/la; plural rules taught by that unit
   unit  sentences  ready  pending  fail
   1.1          72     72        0     0
-  1.2          81     81        0     0
-  1.3          99     99        0     0
-  1.4          62     62        0     0
-  1.5          69     69        0     0
-  1.6          85     85        0     0
-  all         468    468        0     0
+  1.2          86     86        0     0
+  1.3         106    106        0     0
+  1.4          74     74        0     0
+  1.5          73     73        0     0
+  1.6          95     95        0     0
+  all         506    506        0     0
   singular nouns after a determiner other than their own el/la (P7): amiga, amigo, apellido, bolígrafo, carnet de identidad, cuaderno, cumpleaños, estuche, goma, libro, lugar de nacimiento, lápiz, mochila, nombre, regla, sacapuntas
-  noun plurals used (P8) [rules]: años [regular], bolígrafos [regular], cuadernos [regular], hojas de papel [compound], libros de texto [compound], libros [regular], lunes [unchanged], lápices [z-ces], martes [unchanged], miércoles [unchanged], países [regular], reglas [regular], sacapuntas [unchanged]
+  noun plurals used (P8) [rules]: años [regular], bolígrafos [regular], cuadernos [regular], gomas [regular], hojas de papel [compound], libros de texto [compound], libros [regular], lunes [unchanged], lápices [z-ces], martes [unchanged], miércoles [unchanged], países [regular], reglas [regular], sacapuntas [unchanged], tijeras [plural-only]
 
 Lesson-level check (content/lessons_1.1-1.6.json): only items, letters and plural rules introduced in the sentence's lesson or before
-  lessons: 85 (1.1: 11, 1.2: 13, 1.3: 20, 1.4: 13, 1.5: 13, 1.6: 15); items introduced: 218; plural rules taught: regular, z-ces, unchanged, plural-only, accent-loss, compound
-  lessons with new items: 46, average 4.3 counted items, largest 6
+  lessons: 85 (1.1: 11, 1.2: 13, 1.3: 20, 1.4: 13, 1.5: 13, 1.6: 15); items introduced: 221; plural rules taught: regular, z-ces, unchanged, plural-only, accent-loss, compound, agreement:possessive
+  lessons with new items: 46, average 4.4 counted items, largest 6
+  look-alike pairs practised side by side (only after both are taught): seis/siete 1.3 L5, 1.3 L6, 1.3 L11, 1.3 L12; junio/julio 1.4 L5, 1.4 L8, 1.4 L10, 1.4 L13, 1.5 L1; nombre/noviembre 1.4 L6, 1.4 L8, 1.4 L10, 1.4 L13, 1.5 L1; pero/Perú 1.5 L8, 1.5 L10, 1.5 L13, 1.6 L1
+  lesson titles: 68 Spanish titles checked at their own lesson, 0 failing; 17 lessons have an English title only
   lesson-level failures: 0; lessons above 6 items: 0 (warning); above 8: 0 (failure)
   coverage: every vocabulary, helper, letter and name row in 1.1–1.6 is introduced
 
 Map sections (parts): contiguous lesson ranges of one unit; each opens with a repaso and closes with a check or boss
-  1.3a  L1–L11: 11 lessons, 30 counted items, «¿Cómo te llamas?» (Names, numbers 1–20 and age)
+  1.3a  L1–L11: 11 lessons, 31 counted items, «¿Cómo te llamas?» (Names, numbers 1–20 and age)
   1.3b  L12–L20: 9 lessons, 18 counted items, «Mi carnet de identidad» (Numbers 21–31 and the ID card)
 
 Conjugation lessons (rule: once ≥ 4 forms of a Lemma are introduced; the infinitive counts when it is a row)
@@ -802,7 +806,7 @@ Conjugation lessons (rule: once ≥ 4 forms of a Lemma are introduced; the infin
   tener     tengo (1.3 L8, yo), tienes (1.3 L8, tú), tiene (1.3 L8, él/ella)
             -> 3 forms by 1.6: no conjugation lesson yet
 
-✓ PASS: 468 of 468 sentences use only approved words, determiners and taught plural rules.
+✓ PASS: 506 of 506 sentences use only approved words, determiners and taught plural rules.
 ```
 `--plurals` also passes: "Every irregular noun plural is listed in content/plurals.json." The prototype's own checker (`prototype/tools/check_vocab.mjs`) passes on the revised lesson 1.1-1.
 
