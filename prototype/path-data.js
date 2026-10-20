@@ -12,7 +12,8 @@ export const unitsTextbookTitlesEs = {
   "1.6": "¡Tod@s a clase!",
 };
 
-// Each unit: colour theme + nodes. kind decides the icon.
+// Each map section: colour theme + nodes. kind decides the icon. A section is a whole
+// unit, or (with `unit` and `titleEs`) one part of a long unit.
 // Unit 1.1 is fully playable (unit-1-1.js: 11 lessons, docs/content_plan_1.1-1.6.md §4);
 // every node of 1.2–1.6 still says "Coming soon".
 export const units = [
@@ -37,12 +38,23 @@ export const units = [
       { id: "1.2-3", kind: "story", labelEn: "Story" },
       { id: "1.2-4", kind: "check", labelEn: "Unit check" },
     ] },
-  { id: "1.3", theme: "emerald", subtitleEn: "Numbers, names and ages",
+  // Unit 1.3 has 20 lessons, so the map shows it as two sections (decision 2026-10-20,
+  // content/lessons_1.1-1.6.json "parts"; tools/check_vocab.mjs checks the ranges and the
+  // titles, and prototype/tools/check_vocab.mjs checks these titles match the manifest).
+  // The CSV section stays 1.3. Node ids are the real lesson numbers (placeholders for now).
+  { id: "1.3a", unit: "1.3", theme: "emerald", titleEs: "¿Cómo te llamas?", subtitleEn: "Names, numbers 1–20 and age",
     nodes: [
-      { id: "1.3-1", kind: "lesson", labelEn: "Lesson 1" },
       { id: "1.3-2", kind: "lesson", labelEn: "Lesson 2" },
-      { id: "1.3-3", kind: "game", labelEn: "Game" },
-      { id: "1.3-4", kind: "check", labelEn: "Unit check" },
+      { id: "1.3-4", kind: "lesson", labelEn: "Lesson 4" },
+      { id: "1.3-6", kind: "game", labelEn: "Game" },
+      { id: "1.3-11", kind: "check", labelEn: "Section check" },
+    ] },
+  { id: "1.3b", unit: "1.3", theme: "emerald", titleEs: "Mi carnet de identidad", subtitleEn: "Numbers 21–31 and the ID card",
+    nodes: [
+      { id: "1.3-13", kind: "lesson", labelEn: "Lesson 13" },
+      { id: "1.3-15", kind: "listen", labelEn: "Listen" },
+      { id: "1.3-18", kind: "story", labelEn: "Story" },
+      { id: "1.3-20", kind: "check", labelEn: "Unit check" },
     ] },
   { id: "1.4", theme: "terracotta", subtitleEn: "Days, months and birthdays",
     nodes: [

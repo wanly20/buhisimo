@@ -52,9 +52,12 @@ export function sideNav(active = "path", due = 0) {
 
 /** The right-hand panel: streak + XP, weekly goal, class catch-up, tip. */
 export function pathPanel(s) {
-  const you = units.find((u) => u.nodes.some((n) => !s.completed[n.id]))?.id || units[0].id;
-  const youIdx = units.findIndex((u) => u.id === you);
-  const classUnit = units.find((u) => u.id === CLASS_UNIT);
+  // The class track shows textbook units: the map sections of a split unit (1.3a, 1.3b) count as one.
+  const unitOf = (u) => u.unit ?? u.id;
+  const track = [...new Set(units.map(unitOf))];
+  const you = unitOf(units.find((u) => u.nodes.some((n) => !s.completed[n.id])) || units[0]);
+  const youIdx = track.indexOf(you);
+  const classUnit = units.find((u) => unitOf(u) === CLASS_UNIT);
   const week = Math.min(s.xp, WEEK_GOAL_XP);
   const p = week / WEEK_GOAL_XP;
   return `
@@ -84,11 +87,11 @@ export function pathPanel(s) {
         <h2 class="panel-title" id="class-h">Your class is up to ${CLASS_UNIT}</h2>
         <p class="panel-small panel-class__unit">${esc(classUnit.subtitleEn)}</p>
         <ol class="class-track" aria-label="You are on unit ${you}. Your class is on unit ${CLASS_UNIT}.">
-          ${units.map((u, i) => `
-            <li class="class-track__step ${i <= youIdx ? "is-reached" : ""} ${u.id === you ? "is-you" : ""} ${u.id === CLASS_UNIT ? "is-class" : ""}" aria-hidden="true">
-              ${u.id === you ? `<span class="class-track__tag class-track__tag--you">You</span>` : ""}
-              ${u.id === CLASS_UNIT ? `<span class="class-track__tag class-track__tag--class">Class</span>` : ""}
-              <span class="class-track__dot"></span><span class="class-track__label">${u.id}</span>
+          ${track.map((id, i) => `
+            <li class="class-track__step ${i <= youIdx ? "is-reached" : ""} ${id === you ? "is-you" : ""} ${id === CLASS_UNIT ? "is-class" : ""}" aria-hidden="true">
+              ${id === you ? `<span class="class-track__tag class-track__tag--you">You</span>` : ""}
+              ${id === CLASS_UNIT ? `<span class="class-track__tag class-track__tag--class">Class</span>` : ""}
+              <span class="class-track__dot"></span><span class="class-track__label">${id}</span>
             </li>`).join("")}
         </ol>
         <p class="panel-small">Go at your own pace. Every lesson brings you closer.</p>

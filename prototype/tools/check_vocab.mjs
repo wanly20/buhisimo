@@ -9,7 +9,9 @@
 //     and objects inside arrays), plus [[double-bracketed]] Spanish inside English text;
 //   * radio/*.json episodes (line text);
 //   * *.html in prototype/: text inside elements marked lang="es";
-//   * path-data.js textbook unit titles are listed but exempt (they are titles).
+//   * path-data.js textbook unit titles are listed but exempt (they are titles); map section
+//     titles (split units) must match content/lessons_1.1-1.6.json "parts", which the repo
+//     validator checks at their own unit.
 // Then runs two checks:
 //   1. Unit level (this file): every token is a word of a 1.1 row of
 //      vocabulary_database.csv, helper_words.csv or names.csv (o/a words: -o/-a/-os/-as).
@@ -137,7 +139,7 @@ function collectFromHTML(file, out) {
 // ---------------------------------------------------------------- gather
 const dict = buildDictionary();
 const { LESSONS, ITEMS, STORY } = await import(pathToFileURL(join(PROTO, "unit-1-1.js")).href);
-const { unitsTextbookTitlesEs } = await import(pathToFileURL(join(PROTO, "path-data.js")).href);
+const { unitsTextbookTitlesEs, units: pathUnits } = await import(pathToFileURL(join(PROTO, "path-data.js")).href);
 
 const strings = [];
 for (const l of LESSONS) {
@@ -170,6 +172,14 @@ console.log(`  dictionary: ${dict.size} allowed forms (vocabulary + helpers + na
 console.log(`  checked:    ${strings.length} Spanish strings (${unique.length} different) in lesson-1-1.js, unit-1-1.js, radio/*.json and lang="es" in *.html`);
 console.log(`  words used: ${[...usage.keys()].sort((a, b) => a.localeCompare(b, "es")).join(", ")}`);
 console.log(`  exempt textbook unit titles (path-data.js): ${Object.values(unitsTextbookTitlesEs).join(" | ")}`);
+// Map sections of a split unit (path-data.js titleEs): the repo validator checks each title at
+// its own unit through content/lessons_1.1-1.6.json "parts"; here they must match that manifest.
+const manifestParts = JSON.parse(readFileSync(join(ROOT, "content", "lessons_1.1-1.6.json"), "utf8")).parts ?? [];
+for (const u of pathUnits.filter((x) => x.titleEs)) {
+  const part = manifestParts.find((p) => p.id === u.id);
+  if (!part || part.titleEs !== u.titleEs || part.unit !== u.unit) { failures++; console.log(`FAIL  path-data.js section ${u.id}: "${u.titleEs}" doesn't match a part in content/lessons_1.1-1.6.json`); }
+}
+console.log(`  map section titles (path-data.js = lessons manifest "parts", checked at their unit by tools/check_vocab.mjs): ${pathUnits.filter((x) => x.titleEs).map((x) => `${x.id} ${x.titleEs}`).join(" | ") || "none"}`);
 console.log(failures ? `  ✗ unit level: ${failures} string(s) use words outside unit ${SECTION}` : `  ✓ unit level: every Spanish token is an allowed ${SECTION} word`);
 
 // ---------------------------------------------------------------- provenance

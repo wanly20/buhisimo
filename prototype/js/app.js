@@ -25,7 +25,8 @@ const OFFSETS = [0, -56, -84, -56, 0, 56, 84, 56];
 const PEEKS = {
   "1.1": { img: "owl-explaining", side: "right", at: 1 },
   "1.2": { img: "matilda", side: "left", at: 0 },
-  "1.3": { img: "max", side: "right", at: 0 },
+  "1.3a": { img: "max", side: "right", at: 0 },
+  "1.3b": { img: "matilda", side: "left", at: 1 },
   "1.4": { img: "owl-thinking", side: "left", at: 0 },
   "1.5": { img: "owl-encouraging", side: "right", at: 0 },
   "1.6": { img: "max", side: "left", at: 0 },
@@ -99,8 +100,8 @@ function showPath(view = "path") {
       <section class="unit unit--${u.theme}" aria-labelledby="u-${u.id}">
         <div class="unit-banner">
           <div class="unit-banner__text">
-            <span class="unit-kicker">Unit ${u.id}</span>
-            <h2 id="u-${u.id}" lang="es" class="unit-title">${esc(unitsTextbookTitlesEs[u.id])}</h2>
+            <span class="unit-kicker">${u.unit ? `Unit ${esc(u.unit)} · Part ${esc(u.id.slice(u.unit.length).toUpperCase())}` : `Unit ${u.id}`}</span>
+            <h2 id="u-${u.id}" lang="es" class="unit-title">${esc(u.titleEs ?? unitsTextbookTitlesEs[u.id])}</h2>
             <p class="unit-sub">${esc(u.subtitleEn)}</p>
           </div>
           <button class="unit-guide" data-guide="${u.id}" aria-label="Unit ${u.id} guidebook">${icon("book-open", 24, 2.5)}</button>

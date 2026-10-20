@@ -49,6 +49,11 @@
 //   * Lesson size: counted items = "new" entries (a nested array such as ["soy", "de"] is
 //     one chunk = one item; names are not counted) + letter groups + "teaches" rule cards.
 //     More than 6 is a warning; more than 8 is a failure.
+//   * Map sections ("parts" in the manifest, decision 2026-10-20): a long unit can be shown
+//     as two halves on the path. Parts must be contiguous lesson ranges covering the whole
+//     unit, every lesson's "part" must match, and the part title must pass at its unit.
+//     A part that doesn't open with a repaso or close with a check/boss is a warning.
+//     Sentences keep their unit (the CSV section) and their lesson number.
 //   * Conjugation-lesson eligibility: >= 4 forms of a Lemma in helper_words.csv (verb
 //     forms), counting the infinitive when it is itself a row (decision 2026-10-18).
 // Exit code 1 on any failure.
@@ -316,7 +321,8 @@ const APPROVED = new Set(approveArg === "all" ? [...proposals.keys()].filter(isP
 for (const id of APPROVED) if (!proposals.has(id)) { console.error(`--approve: unknown proposal ${id}`); process.exit(2); }
 
 // ------------------------------------------------------------------ manifest (teaching points)
-const manifest = existsSync(LESSONS) ? JSON.parse(readFileSync(LESSONS, "utf8")).lessons : null;
+const manifestFile = existsSync(LESSONS) ? JSON.parse(readFileSync(LESSONS, "utf8")) : null;
+const manifest = manifestFile ? manifestFile.lessons : null;
 const ruleTaughtUnit = new Map(); // plural rule -> first unit where it is taught
 if (manifest) for (const l of manifest) for (const t of l.teaches ?? []) {
   const r = t.replace(/^plural:/, ""), s = parseSection(l.unit);
@@ -624,6 +630,43 @@ if (manifest) {
   log(`  lesson-level failures: ${lessonFails}; lessons above ${SOFT_MAX_NEW} items: ${sizeWarnings} (warning); above ${HARD_MAX_NEW}: ${sizeFails} (failure)`);
   if (missing.length) log(`  WARN not introduced in any lesson (${secStr(lo)}–${secStr(hi)} rows): ${missing.map((m) => `${m.key} [${secStr(m.section)} ${m.file}]`).join(", ")}`);
   else log(`  coverage: every vocabulary, helper, letter and name row in ${secStr(lo)}–${secStr(hi)} is introduced`);
+
+  // --- map sections ("parts"): a long unit shown as halves on the path (decision 2026-10-20).
+  // The CSV section (and every sentence's unit) stays the unit; a part only groups lessons.
+  const parts = manifestFile.parts ?? [];
+  if (parts.length) {
+    log("");
+    log("Map sections (parts): contiguous lesson ranges of one unit; each opens with a repaso and closes with a check or boss");
+    const byUnit = new Map();
+    for (const p of parts) {
+      if (!p.id || !p.unit || !p.titleEs || !Array.isArray(p.lessons) || p.lessons.length !== 2) { failures++; log(`FAIL  part ${p.id ?? "?"}: needs id, unit, titleEs and lessons [first, last]`); continue; }
+      if (!byUnit.has(p.unit)) byUnit.set(p.unit, []);
+      byUnit.get(p.unit).push(p);
+      const t = classify({ unit: p.unit, es: p.titleEs }, unitDict(p.unit), { taught: rulesTaughtBy(parseSection(p.unit)) });
+      if (t.status === "FAIL") { failures++; log(`FAIL  part ${p.id}: title "${p.titleEs}" -> not allowed at ${p.unit}: ${t.bad.join(", ")}`); }
+    }
+    for (const l of manifest) if (l.part && !parts.some((p) => p.id === l.part && p.unit === l.unit)) { failures++; log(`FAIL  ${l.unit} L${l.lesson}: part "${l.part}" is not declared in "parts" for unit ${l.unit}`); }
+    const isNameKey = (k) => !!items.get(NFC(k))?.isName;
+    for (const [unit, ps] of byUnit) {
+      const ls = manifest.filter((l) => l.unit === unit);
+      ps.sort((a, b) => a.lessons[0] - b.lessons[0]);
+      let next = 1;
+      for (const p of ps) {
+        const [a, b] = p.lessons;
+        if (a !== next || b < a) { failures++; log(`FAIL  part ${p.id}: lessons ${a}–${b} should start at L${next} (parts must be contiguous)`); }
+        next = b + 1;
+        const inPart = ls.filter((l) => l.lesson >= a && l.lesson <= b);
+        for (const l of inPart) if (l.part !== p.id) { failures++; log(`FAIL  ${unit} L${l.lesson}: inside ${p.id}'s range but tagged "${l.part ?? "none"}"`); }
+        const first = inPart[0], last = inPart[inPart.length - 1];
+        if (first?.type !== "repaso") log(`WARN  part ${p.id}: opens with a ${first?.type ?? "missing"} lesson, not a repaso`);
+        if (!["check", "boss"].includes(last?.type)) log(`WARN  part ${p.id}: closes with a ${last?.type ?? "missing"} lesson, not a check or boss`);
+        const n = inPart.reduce((t, l) => t + (l.new ?? []).filter((it) => ![it].flat().every(isNameKey)).length + (l.letters ?? []).length + (l.teaches ?? []).length, 0);
+        log(`  ${p.id.padEnd(5)} L${a}–L${b}: ${inPart.length} lessons, ${n} counted items, «${p.titleEs}» (${p.titleEn ?? ""})`);
+      }
+      for (const l of ls) if (!ps.some((p) => l.lesson >= p.lessons[0] && l.lesson <= p.lessons[1])) { failures++; log(`FAIL  ${unit} L${l.lesson}: in no part (unit ${unit} is split, so every lesson needs one)`); }
+      if (next - 1 !== ls.length) { failures++; log(`FAIL  unit ${unit}: parts cover L1–L${next - 1} but the unit has ${ls.length} lessons`); }
+    }
+  }
 
   log("");
   log("Conjugation lessons (rule: once ≥ 4 forms of a Lemma are introduced; the infinitive counts when it is a row)");

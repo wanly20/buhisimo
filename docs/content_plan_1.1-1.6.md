@@ -1,11 +1,11 @@
 # Buhísimo v2: content plan for units 1.1–1.6
 
-*Drafted 9 October 2026 for Juan; **revised 18 October 2026** with Juan's decisions (smaller lessons, P1–P10 approved, the determiner rule, irregular plurals, songs and podcasts). This is a content and data plan, not UI. Companion files:*
+*Drafted 9 October 2026 for Juan; **revised 18 October 2026** with Juan's decisions (smaller lessons, P1–P10 approved, the determiner rule, irregular plurals, songs and podcasts); **20 October 2026:** Unit 1.3 is shown as two map sections, 1.3a and 1.3b (§6). This is a content and data plan, not UI. Companion files:*
 
 | File | What it is |
 |---|---|
 | `content/lessons_1.1-1.6.json` | The lesson order and the items, letters and rule cards each lesson introduces (machine-readable version of this plan) |
-| `content/sentences_1.1-1.6.json` | Every Spanish sentence or phrase in this plan (461), tagged with the unit and lesson where it is first used. Song and podcast lines carry a `clip` id (§11) |
+| `content/sentences_1.1-1.6.json` | Every Spanish sentence or phrase in this plan (468), tagged with the unit and lesson where it is first used. Song and podcast lines carry a `clip` id (§11) |
 | `content/proposals_1.1-1.6.json` | The proposals in §9. P1–P10 are **approved** and now live in the CSVs; P11–P13 are new and still open |
 | `content/plurals.json` | Plural rules and the irregular plurals of the whole master CSV; read by the validator |
 | `docs/irregular_plurals.md` | The irregular-plural list for Juan (all units), with where each plural is taught |
@@ -19,19 +19,19 @@
 |---|---|---|---|---|
 | 1.1 El español global | 11 | 7 | 24 + 11 + 7 | 72 |
 | 1.2 ¿Qué tal? | 13 | 7 | 17 + 31 + 0 | 81 |
-| 1.3 Mi carnet de identidad | 18 | 10 | 38 + 10 + 3 | 92 |
+| 1.3 Mi carnet de identidad (map: 1.3a + 1.3b) | 20 (11 + 9) | 10 | 38 + 10 + 3 | 99 |
 | 1.4 ¡…y que cumplas muchos más! | 13 | 7 | 27 + 2 + 0 | 62 |
 | 1.5 Mis preferencias | 13 | 7 | 26 + 1 + 0 | 69 |
 | 1.6 ¡Tod@s a clase! | 15 | 8 | 12 + 9 + 0, plus 6 plural rule cards | 85 |
-| **Total** | **83** (was 74) | **46** (was 40) | **218** (was 184) + 6 rule cards | **461** (was 376) |
+| **Total** | **85** (was 74) | **46** (was 40) | **218** (was 184) + 6 rule cards | **468** (was 376) |
 
 - 1.2's 31 helper items are *muy, gracias, está, ¿Cómo se escribe?* and the 27 letter names (taught as 9 letter groups, see 1.2 L9–L11). `llamarse` is now taught in 1.2, its CSV section (decision 2).
 - **Lesson size:** the average learn lesson now has 4.3 counted items; the largest has 6. No lesson is above 6, so the hard limit of 8 is never used.
-- **The validator passes:** all 461 sentences use only approved words at their unit and at their lesson, with a determiner before every noun that has lost its *el/la* and with every plural rule taught first. The 63 sentences that used to wait on a proposal are now ordinary sentences. Nothing is pending.
+- **The validator passes:** all 468 sentences use only approved words at their unit and at their lesson, with a determiner before every noun that has lost its *el/la* and with every plural rule taught first. The 63 sentences that used to wait on a proposal are now ordinary sentences. Nothing is pending.
 
 ### Decisions applied on 18 October 2026
 
-1. **About 6 new items per lesson; 8 is the hard limit.** Lessons were re-split (74 → 83). A chunk such as *soy de* counts as one item. The validator warns above 6 and fails above 8.
+1. **About 6 new items per lesson; 8 is the hard limit.** Lessons were re-split (74 → 83; 85 since the 1.3 split on 20 October added a 1.3a check and a 1.3b repaso). A chunk such as *soy de* counts as one item. The validator warns above 6 and fails above 8.
 2. **Infinitives in the Claro CSV are taught, and the infinitive counts as a form.** *Llamarse* and *escribir* are taught in 1.2 (as spelling targets in the alphabet lessons); llamarse reaches 4 forms in 1.3 L2, so 1.3 L3 stays its conjugation lesson. The old open question is closed.
 3. **P7 approved, with a limit:** a CSV noun may swap its *el/la* for *un/una, mi/tu/su, los/las, mis/tus/sus* or a number, and is **never bare**. No "Nombre: Samuel" labels: the plan uses *¿El nombre? Samuel.* or *Mi nombre es Samuel.* The validator enforces this.
 4. **P1–P6, P8, P9 and P10 approved and added to the masters** (see §9). *Uve* and *ye* are the letter names.
@@ -263,10 +263,21 @@ B:  ¡Hasta luego, Max!
 
 ---
 
-## 6. Unit 1.3 · Mi carnet de identidad (18 lessons)
+## 6. Unit 1.3 · Mi carnet de identidad (20 lessons, two map sections)
 
 **Unit goal:** give and ask names; numbers 1–31; ask and say age; fill in an ID card; *mi*.
-**Shape:** this is the largest unit (48 items). Numbers are split into six lessons and interleaved with name, age and ID lessons, then brought together in the Radio Búho numbers episode (L13). If the map feels long, show it as two halves: "1.3a ¿Cómo te llamas?" (L1–L13) and "1.3b El carnet" (L14–L18).
+**Shape:** this is the largest unit (48 items). Numbers are split into six lessons and interleaved with name, age and ID lessons, then brought together in the Radio Búho numbers episode (L15).
+
+**Two map sections (decided 20 October 2026; Juan approved splitting units with too many lessons).** At 18 lessons, 1.3 was well above the other units (11–15), so the path shows it as two sections. The split is a **path grouping only**: the CSV section stays "1.3 Mi carnet de identidad", every sentence keeps unit 1.3, and the lessons are numbered L1–L20 straight through. In `content/lessons_1.1-1.6.json` each 1.3 lesson has `"part": "1.3a"` or `"1.3b"`, and a top-level `"parts"` list gives each section's title and lesson range; the validator checks the ranges (§10).
+
+| Section | Lessons | What it covers | Opens / closes with |
+|---|---|---|---|
+| **1.3a «¿Cómo te llamas?»** | L1–L11 (11 lessons, 30 counted items) | names, *llamarse*, numbers 1–20, age with *tener* | L1 repaso (1.1–1.2) / **L11 1.3a check (new)** |
+| **1.3b «Mi carnet de identidad»** | L12–L20 (9 lessons, 18 counted items) | numbers 21–31, the numbers podcast and song, the ID card, *mi*, *amigo/a* | **L12 repaso (new)** / L20 unit check |
+
+Why here: the cut falls after the first big block (names, 1–20 and age, practised together in L10) and before 21–31, so 1.3a ends on something students can already do in full (*Me llamo Samuel. Tengo trece años.*). 21–31 then sits next to the counting-song episode, which needs the whole 1–31 sequence, and the ID card. The halves are 11 and 9 lessons, close to Unit 1.1 (11). The new L11 check and L12 repaso keep the rule that each section opens with retrieval and closes with a check. Moving the podcast into 1.3a was considered and rejected: the song runs 1–31, so it can't come before 21–31.
+
+**Section 1.3a · ¿Cómo te llamas? (L1–L11)**
 
 ### 1.3 L1 · repaso · ¿Qué tal?
 - 1.2 greetings and feelings plus 1.1 countries and a spelling item. **Example:** Buenas tardes, Matilda. ¿Cómo estás? — Regular.
@@ -312,31 +323,41 @@ B:  ¡Hasta luego, Max!
 - **Goal:** person contrast for *tener*, alongside *llamarse* and *ser* (tener has only 3 forms, so this is not a full conjugation lesson). Numbers 1–20 interleaved.
 - **Examples:** Tengo, tienes, tiene. · Me llamo Matilda. Tengo doce años. · Max tiene trece años. Es de Melbourne.
 
-### 1.3 L11 · learn · Veintiuno… veinticinco
+### 1.3 L11 · check · 1.3a check: ¿Cómo te llamas? ¿Cuántos años tienes? *(new, 20 Oct: closes section 1.3a)*
+- No hearts. Numbers 1–20 by ear (hear → tap the digit, and a short countdown dictation), names and ages (listen → pick the person), then production: introduce a character (name, age, where from).
+- **Examples:** ¿Cómo te llamas? — Me llamo Samuel. Tengo trece años. · Valentina tiene doce años. Es de Salento. · Veinte, diecinueve, dieciocho, diecisiete, dieciséis. · ¿Cómo se llama él? — Se llama Max. Tiene trece años.
+
+**Section 1.3b · Mi carnet de identidad (L12–L20)**
+
+### 1.3 L12 · repaso · Names, ages and numbers 1–20 *(new, 20 Oct: opens section 1.3b)*
+- Spaced retrieval of 1.3a (numbers 1–20 out of order, *me llamo / te llamas / se llama*, *tengo … años*) plus one 1.1 country item and one 1.2 greeting. 21–29 are built from *veinte* + 1–9, so the repaso leans on *uno… nueve* and *veinte*.
+- **Examples:** Cinco, diez, quince, veinte. · ¡Hola! Me llamo Matilda. Soy de Melbourne. Tengo doce años. · ¿Te llamas Valentina? — Sí. ¿Y tú?
+
+### 1.3 L13 · learn · Veintiuno… veinticinco
 - **New (5):** veintiuno, veintidós, veintitrés, veinticuatro, veinticinco (C). Pattern: *veinti-* + unit; watch the accents on *-dós, -trés*. **Clip:** N5.
 - **Examples:** Veintiuno, veintidós, veintitrés, veinticuatro, veinticinco. · Veinte, veintiuno, veintidós…
 
-### 1.3 L12 · learn · Veintiséis… treinta y uno
+### 1.3 L14 · learn · Veintiséis… treinta y uno
 - **New (6):** veintiséis, veintisiete, veintiocho, veintinueve, treinta, treinta y uno (C). One pattern. Note: *treinta y uno* is three words, unlike *veintiuno*. **Clip:** N6.
 - **Examples:** Veintiséis, veintisiete, veintiocho, veintinueve, treinta. · Veintinueve, treinta, treinta y uno.
 
-### 1.3 L13 · listen · Radio Búho: los números *(podcast and counting song, §11)*
+### 1.3 L15 · listen · Radio Búho: los números *(podcast and counting song, §11)*
 - The whole counting song 1–31, a countdown with Max, then two callers give their name and age. Students write the numbers they hear.
 - **Examples:** Diez, nueve, ocho, siete, seis, cinco, cuatro, tres, dos, uno… ¡Max! · ¿Cuántos años tienes, Samuel? — Tengo trece años. · ¿Cuántos años tienes? ¡Doce, doce, doce años!
 
-### 1.3 L14 · learn · Mi carnet de identidad
+### 1.3 L16 · learn · Mi carnet de identidad
 - **New (4):** el carnet de identidad, el nombre, el apellido (C) · mi (H, moved from 1.6 by P5) · *name:* Restrepo (N).
 - **Worked example (P7):** *el nombre → mi nombre*: *mi* takes the place of *el*. Never the noun alone.
 - **Exercises:** read an ID card → pick; tiles; type *el apellido*; fill a card by answering questions (*¿El nombre? —*), never by bare labels.
 - **Examples:** El nombre es Valentina. El apellido es Restrepo. · ¿El nombre? Samuel. ¿El apellido? Restrepo. · Mi nombre es Samuel. Mi apellido es Restrepo. · ¿Tienes mi carnet de identidad? · Tengo el carnet de identidad.
 - **Card labels on screen** (the printed field names of a picture of an ID card) are images, not text exercises, so no bare noun ever appears in a sentence.
 
-### 1.3 L15 · learn · La amiga de Matilda
+### 1.3 L17 · learn · La amiga de Matilda
 - **New (3):** la edad, el/la amigo/a, el lugar de nacimiento (C; spelling fixed by P9).
 - **Exercises:** match amigo/amiga to pictures (agreement); fill a full ID card for a character.
 - **Examples:** Valentina es la amiga de Matilda. · Samuel es el amigo de Max. · ¿La edad? Doce. · El lugar de nacimiento de Samuel es Salento. · Mi lugar de nacimiento es Melbourne. Tengo trece años. · Mi amiga se llama Valentina.
 
-### 1.3 L16 · story · El carnet de Max
+### 1.3 L18 · story · El carnet de Max
 Max jumped a little too far in the Cocora valley and his ID card fell out. 11 lines; checks after lines 2, 5 and 11.
 ```
 S:  Max, ¿tienes el carnet de identidad?
@@ -355,11 +376,11 @@ X:  ¡Gracias, Buhísimo!
     [check] Put Buhísimo's three questions in order.
 ```
 
-### 1.3 L17 · listen · Radio Búho: el carnet de identidad
+### 1.3 L19 · listen · Radio Búho: el carnet de identidad
 - Three teens call in; students fill three ID cards (name, surname, from, age) on the first listen.
 - **Script:** ¡Buenas tardes! Me llamo Buhísimo. ¿Y tú? · Me llamo Valentina Restrepo. Tengo doce años. Soy de Salento. · ¿Y tú? ¿Cuántos años tienes? · Me llamo Samuel Restrepo. Trece. · Me llamo Matilda. Soy de Australia. Doce.
 
-### 1.3 L18 · check · The ID card office
+### 1.3 L20 · check · The ID card office
 - Number dictation (1–31), an ID card listening task, and production: introduce yourself as a character (name, where from, age).
 - **Examples:** Me llamo Samuel. Soy de Colombia. · ¿Cuántos años tienes? — Trece. · Samuel es el amigo de Matilda. · Me llamo Max. Tengo trece años. Soy de Melbourne.
 
@@ -633,11 +654,11 @@ X:  ¡Gracias, Buhísimo! ¡Fenomenal!
 | P2 | **el español** | `helper_words.csv`, 1.1 | 1.1 L6 |
 | P3 | **¿Cómo te llamas? / ¿Cómo se llama?** | `helper_words.csv`, 1.3, chunks (no Lemma) | 1.3 L2 |
 | P4 | **años** | `helper_words.csv`, 1.3, Type "noun (plural form)": always after a number | 1.3 L8 |
-| P5 | **mi** moved from 1.6 to 1.3 | `helper_words.csv`. *Tu* stays 1.4 (it arrives inside *¿Cuándo es tu cumpleaños?*) and *su* stays 1.6: no 1.3 sentence needs them | 1.3 L14 |
+| P5 | **mi** moved from 1.6 to 1.3 | `helper_words.csv`. *Tu* stays 1.4 (it arrives inside *¿Cuándo es tu cumpleaños?*) and *su* stays 1.6: no 1.3 sentence needs them | 1.3 L16 |
 | P6 | **el** moved from 1.6 to 1.4 | `helper_words.csv` | 1.4 L10 |
-| P7 | **Determiner rule**: a CSV noun may swap *el/la* for *un/una, mi/tu/su, los/las, mis/tus/sus* or a number, never bare | `tools/check_vocab.mjs` | 1.3 L14 (*mi*), 1.6 L4 (*un/una*) |
+| P7 | **Determiner rule**: a CSV noun may swap *el/la* for *un/una, mi/tu/su, los/las, mis/tus/sus* or a number, never bare | `tools/check_vocab.mjs` | 1.3 L16 (*mi*), 1.6 L4 (*un/una*) |
 | P8 | **Plurals**, each rule taught first | `tools/check_vocab.mjs` + `content/plurals.json` | 1.6 L6–L8 |
-| P9 | **Typo fixed**: el lugar de *nascimiento* → *nacimiento* | `vocabulary_database.csv` master, synced to every copy | 1.3 L15 |
+| P9 | **Typo fixed**: el lugar de *nascimiento* → *nacimiento* | `vocabulary_database.csv` master, synced to every copy | 1.3 L17 |
 | P10 | **Letter names + ¿Cómo se escribe?** with **uve** and **ye** | `helper_words.csv`, 1.2: the chunk and 27 rows *la a … la zeta* (Type letter) | 1.2 L9–L12 |
 
 **Letter-name choices (P10).** Juan chose ***uve*** (not *ve corta*) and ***ye*** (not *i griega*), as the RAE has recommended since 2010. For W he chose ***doble ve***, the usual Colombian name (20 Oct 2026). Letters are stored with their article (*la eme*) so that the one-letter names (*a, e, o, u, de, te*) don't become stray "words" for the other tools that read `helper_words.csv` (the slide and worksheet generators). The bare name is allowed only in a spelling line.
@@ -664,6 +685,7 @@ No sentence uses P11–P13, so nothing is pending. To approve one: add its words
 3. **Letter names.** *La eme* is an ordinary noun phrase; the bare *eme* is allowed only in a spelling line (it contains *se escribe* or *alfabeto*, or is marked `"spell": true`), and only for letters taught by that lesson.
 4. **Lesson size.** Counted items = rows in `new` (a nested array such as `["soy", "de"]` is one chunk = one item; names don't count) + letter groups + rule cards. **More than 6 is a warning; more than 8 is a failure.**
 5. **Approved proposals** are no longer applied as pending: their words are CSV rows and their rules are built in. A leftover `"needs"` tag on an approved proposal is reported as a warning. Pending proposals (P11–P13) still work as before, with `--approve` and `--strict`.
+6. **Map sections (20 October 2026).** A unit can be shown as map sections with `"parts"` in the manifest. Parts must be contiguous ranges that cover every lesson of their unit, each lesson's `part` must match its range, and each part title must pass at its unit. A part that doesn't open with a repaso or close with a check or boss is a warning. Only 1.3 is split.
 
 Then, as before:
 1. **Unit-level check (the hard rule):** every sentence must tokenise with the words allowed at its unit.
@@ -682,10 +704,10 @@ node tools/check_vocab.mjs --plurals              # every CSV noun's plural and 
 ```
 **Spot checks that behave as intended:** *Nombre: Samuel.* fails at 1.3 (bare noun) while *Mi nombre es Samuel.* passes; *Mochila.* and *No hay tijeras.* fail at 1.6 (bare); *Una libro.* fails (agreement); *Dos lápiz.* fails; *Hay tres lápices.* fails in 1.6 L6 ("z-ces taught in 1.6 L7") and passes from L7; *Dos bolígrafos marrones.* fails in 1.6 L7 and passes from L8; *Dos lunes.* fails at 1.5; *Los jóvenes.* fails at 2.2 and passes at 2.5; *Tengo años.* fails (needs a number) while *Tengo doce años.* passes; *Eme, a, equis.* fails as a normal line and passes as a spelling line; *¿Cómo se escribe Max? — Eme, a, equis.* fails in 1.2 L9 ("equis introduced in 1.2 L11").
 
-**Output of the final run** (18 October 2026):
+**Output of the final run** (20 October 2026):
 ```
 Buhísimo vocabulary check: content/sentences_1.1-1.6.json
-  data: 427 vocabulary rows, 79 helper rows, 62 names (19 names have no Section and are never allowed)
+  data: 426 vocabulary rows, 79 helper rows, 62 names (19 names have no Section and are never allowed)
   proposals: 13 in content/proposals_1.1-1.6.json (10 approved, 3 pending); approved for this run: none
   plural rules and where they are first taught: regular 1.6, z-ces 1.6, unchanged 1.6, plural-only 1.6, accent-loss 1.6, compound 1.6, mixed-masculine 2.2, accent-gain 2.5, y-yes 2.5, loanword 3.5, el-feminine 3.7
 
@@ -693,19 +715,23 @@ Unit-level check: rows with Section ≤ the sentence's unit; a determiner before
   unit  sentences  ready  pending  fail
   1.1          72     72        0     0
   1.2          81     81        0     0
-  1.3          92     92        0     0
+  1.3          99     99        0     0
   1.4          62     62        0     0
   1.5          69     69        0     0
   1.6          85     85        0     0
-  all         461    461        0     0
+  all         468    468        0     0
   singular nouns after a determiner other than their own el/la (P7): amiga, amigo, apellido, bolígrafo, carnet de identidad, cuaderno, cumpleaños, estuche, goma, libro, lugar de nacimiento, lápiz, mochila, nombre, regla, sacapuntas
   noun plurals used (P8) [rules]: años [regular], bolígrafos [regular], cuadernos [regular], hojas de papel [compound], libros de texto [compound], libros [regular], lunes [unchanged], lápices [z-ces], martes [unchanged], miércoles [unchanged], países [regular], reglas [regular], sacapuntas [unchanged]
 
 Lesson-level check (content/lessons_1.1-1.6.json): only items, letters and plural rules introduced in the sentence's lesson or before
-  lessons: 83 (1.1: 11, 1.2: 13, 1.3: 18, 1.4: 13, 1.5: 13, 1.6: 15); items introduced: 218; plural rules taught: regular, z-ces, unchanged, plural-only, accent-loss, compound
+  lessons: 85 (1.1: 11, 1.2: 13, 1.3: 20, 1.4: 13, 1.5: 13, 1.6: 15); items introduced: 218; plural rules taught: regular, z-ces, unchanged, plural-only, accent-loss, compound
   lessons with new items: 46, average 4.3 counted items, largest 6
   lesson-level failures: 0; lessons above 6 items: 0 (warning); above 8: 0 (failure)
   coverage: every vocabulary, helper, letter and name row in 1.1–1.6 is introduced
+
+Map sections (parts): contiguous lesson ranges of one unit; each opens with a repaso and closes with a check or boss
+  1.3a  L1–L11: 11 lessons, 30 counted items, «¿Cómo te llamas?» (Names, numbers 1–20 and age)
+  1.3b  L12–L20: 9 lessons, 18 counted items, «Mi carnet de identidad» (Numbers 21–31 and the ID card)
 
 Conjugation lessons (rule: once ≥ 4 forms of a Lemma are introduced; the infinitive counts when it is a row)
   ser       es (1.1 L1, él/ella), soy (1.1 L1, yo), eres (1.1 L3, tú)
@@ -717,7 +743,7 @@ Conjugation lessons (rule: once ≥ 4 forms of a Lemma are introduced; the infin
   tener     tengo (1.3 L8, yo), tienes (1.3 L8, tú), tiene (1.3 L8, él/ella)
             -> 3 forms by 1.6: no conjugation lesson yet
 
-✓ PASS: 461 of 461 sentences use only approved words, determiners and taught plural rules.
+✓ PASS: 468 of 468 sentences use only approved words, determiners and taught plural rules.
 ```
 `--plurals` also passes: "Every irregular noun plural is listed in content/plurals.json." The prototype's own checker (`prototype/tools/check_vocab.mjs`) passes on the revised lesson 1.1-1.
 
@@ -739,7 +765,7 @@ So the plan uses **short, simple, repeated tunes**, and treats sung versions as 
 | Episode | Lesson | Clips inside learn lessons | Later spaced review |
 |---|---|---|---|
 | **«El alfabeto»** (alphabet chant + spelling call-in) | 1.2 L12 | A1–A2 in 1.2 L9, A3 in 1.2 L10, A4 in 1.2 L11 | 1.2 L13 check, 1.3 L1 repaso; spelling items in every unit check; *¿Cómo se escribe…?* with new words in later units |
-| **«Los números»** (counting song 1–31 + age call-in) | 1.3 L13 | N1 in L4, N2 in L5, N3 in L7, N4 in L9, N5 in L11, N6 in L12 | 1.3 L18 check, 1.4 L1 repaso, Number Invaders |
+| **«Los números»** (counting song 1–31 + age call-in) | 1.3 L15 | N1 in L4, N2 in L5, N3 in L7, N4 in L9, N5 in L13, N6 in L14 | 1.3 L11 (1.3a check, 1–20), 1.3 L12 repaso, 1.3 L20 check, 1.4 L1 repaso, Number Invaders |
 | **«La semana y los meses»** (week and month chants) | 1.4 L7 | D1 in L2, D2 in L3, D3 in L4, D4 in L5, D5 in L6 | 1.4 L13 check, 1.5 L1 repaso |
 | *Later (not scripted yet)* | 2.1 | Numbers 32–100: «Los números II», same tune as «Los números» | |
 | | 2.2 | Family tree chant (*el padre, la madre, el hermano…*) | |
@@ -784,7 +810,7 @@ If it is sung, any simple, repeated tune works (Wallace 1994). The traditional A
 | 2:15–3:05 | A6 | Call-in: *¡Hola, Buhísimo! Soy de Chile. Ce, hache, i, ele, e.* · *¿Cómo se escribe Colombia? — Ce, o, ele, o, eme, be, i, a.* · Matilda spells Melbourne · Max: *¿Cómo se escribe Max? — ¡Eme, a, equis! ¡Fenomenal!* |
 | 3:05–3:15 | A7 | Buhísimo: *¡Muy bien! ¡Fenomenal! ¡Hasta luego!* |
 
-**N. «Los números» (1.3 L13)**
+**N. «Los números» (1.3 L15)**
 
 Verses (each verse is also clip N1–N6 inside its learn lesson):
 ```
@@ -839,7 +865,7 @@ D7  | El año: enero … diciembre.   (three bars)
 1. **P11 cero, P12 mis/tus, P13 el abecedario** (§9): approve, or leave out?
 2. **W: decided.** Juan chose *doble ve* (20 Oct 2026).
 3. **Story canon** (birthdays, favourite colours, Max as a leap-day kangaroo, Matilda's green ruana days): fine to fix as canon?
-4. **1.3 length (18 lessons).** Keep one long unit, or split the map into 1.3a/1.3b at the numbers podcast?
+4. **1.3 length: decided.** The map shows 1.3 as two sections (20 Oct 2026; Juan approved splitting long units): 1.3a «¿Cómo te llamas?» L1–L11 (names, 1–20, age, ending with a new 1.3a check) and 1.3b «Mi carnet de identidad» L12–L20 (a new repaso, 21–31, the numbers podcast, the ID card, the unit check). The CSV section stays 1.3 (§6). No other unit needs a split: after 1.3, the longest is 1.6 with 15 lessons, inside the 11–15 range.
 5. **Songs: decided.** Sung, in the style of the counting-song samples (ACE-Step), which Juan likes (20 Oct 2026). Juan doesn't need to record tunes.
 6. **Number range in later generators:** dates up to 31 use *veintiuno*/*treinta y uno* safely. *Uno*, *veintiuno* and *treinta y uno* are not determiners in the validator (before a noun they become *un/veintiún/treinta y un*), so counted-object generators stay at 2–30, as in v1.
 7. **CSV issues: fixed 20 Oct 2026.** `los rasgos físicos` now has its accent, and the duplicate 2.2 `la edad` row is deleted (it stays in 1.3, the earlier section).
