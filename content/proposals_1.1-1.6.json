@@ -315,7 +315,7 @@
           "type": "letter"
         },
         {
-          "es": "la uve doble",
+          "es": "la doble ve",
           "en": "W",
           "section": "1.2",
           "type": "letter"
@@ -342,7 +342,7 @@
       "unlocks": "Spelling practice for el alfabeto / escribir (1.2): ¿Cómo se escribe Max? — Eme, a, equis. Juan chose uve and ye.",
       "status": "approved",
       "approved": "2026-10-18",
-      "implemented": "helper_words.csv, 1.2: ¿Cómo se escribe? (chunk) and 27 letter rows \"la a\" … \"la zeta\" (Type letter). Juan chose uve (not ve corta) and ye (not i griega); W is uve doble to match. Bare letter names are allowed only when spelling. Taught in 1.2 L9–L11, chant and podcast in 1.2 L12."
+      "implemented": "helper_words.csv, 1.2: ¿Cómo se escribe? (chunk) and 27 letter rows \"la a\" … \"la zeta\" (Type letter). Juan chose uve (not ve corta) and ye (not i griega); W is doble ve to match. Bare letter names are allowed only when spelling. Taught in 1.2 L9–L11, chant and podcast in 1.2 L12."
     },
     {
       "id": "P11",

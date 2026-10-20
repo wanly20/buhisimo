@@ -248,9 +248,9 @@ B:  ¡Hasta luego, Max!
 - **Examples:** ¿Cómo se escribe Salento? — Ese, a, ele, e, ene, te, o. · ¿Cómo se escribe «hola»? — Hache, o, ele, a. · ¿Cómo se escribe Matilda? — Eme, a, te, i, ele, de, a. · ¿Cómo se escribe «escribir»? — E, ese, ce, erre, i, be, i, erre. · ¿Cómo se escribe «llamarse»? — Ele, ele, a, eme, a, erre, ese, e.
 
 ### 1.2 L11 · learn · Las letras raras: ka, uve, equis…
-- **New (6):** *letters:* ka · uve · uve doble · equis · ye · zeta (each its own item: no shared pattern).
-- **Letter names chosen by Juan:** **uve** (not *ve corta / ve chiquita*) and **ye** (not *i griega*), following the RAE 2010 recommendation. **W = uve doble** to match *uve* (in Colombia many people say *doble ve*; see §12).
-- **Clip:** A4 (ka, uve, uve doble, equis, ye, zeta).
+- **New (6):** *letters:* ka · uve · doble ve · equis · ye · zeta (each its own item: no shared pattern).
+- **Letter names chosen by Juan:** **uve** (not *ve corta / ve chiquita*) and **ye** (not *i griega*), following the RAE 2010 recommendation. **W = doble ve**, chosen by Juan on 20 Oct 2026 (the usual Colombian name).
+- **Clip:** A4 (ka, uve, doble ve, equis, ye, zeta).
 - **Examples:** ¿Cómo se escribe Max? — Eme, a, equis. · ¿Cómo se escribe «soy»? — Ese, o, ye. · ¿Cómo se escribe «muy»? — Eme, u, ye.
 
 ### 1.2 L12 · listen · Radio Búho: el alfabeto *(podcast and chant, §11)*
@@ -640,7 +640,7 @@ X:  ¡Gracias, Buhísimo! ¡Fenomenal!
 | P9 | **Typo fixed**: el lugar de *nascimiento* → *nacimiento* | `vocabulary_database.csv` master, synced to every copy | 1.3 L15 |
 | P10 | **Letter names + ¿Cómo se escribe?** with **uve** and **ye** | `helper_words.csv`, 1.2: the chunk and 27 rows *la a … la zeta* (Type letter) | 1.2 L9–L12 |
 
-**Letter-name choices (P10).** Juan chose ***uve*** (not *ve corta*) and ***ye*** (not *i griega*), as the RAE has recommended since 2010. For consistency W is ***uve doble***. Letters are stored with their article (*la eme*) so that the one-letter names (*a, e, o, u, de, te*) don't become stray "words" for the other tools that read `helper_words.csv` (the slide and worksheet generators). The bare name is allowed only in a spelling line.
+**Letter-name choices (P10).** Juan chose ***uve*** (not *ve corta*) and ***ye*** (not *i griega*), as the RAE has recommended since 2010. For W he chose ***doble ve***, the usual Colombian name (20 Oct 2026). Letters are stored with their article (*la eme*) so that the one-letter names (*a, e, o, u, de, te*) don't become stray "words" for the other tools that read `helper_words.csv` (the slide and worksheet generators). The bare name is allowed only in a spelling line.
 
 ### Still open (new, for Juan to decide)
 
@@ -758,14 +758,14 @@ Family chants (one bar each, said twice):
 A1  | A, e, i, o, u.                       |   (las vocales)
 A2  | Efe, ele, eme, ene, eñe, ese, erre.  |   then: | Jota, jota, jota. |
 A3  | Be, ce, de, ge, pe, te.              |
-A4  | Ka, uve, uve doble, equis, ye, zeta. |
+A4  | Ka, uve, doble ve, equis, ye, zeta. |
 ```
 The whole alphabet in order (A5, sung or chanted twice, the second time with gaps for students):
 ```
 | A, be, ce, de,      | e, efe, ge,          |
 | hache, i, jota,     | ka, ele, eme,        |
 | ene, eñe, o,        | pe, cu, erre,        |
-| ese, te, u,         | uve, uve doble,      |
+| ese, te, u,         | uve, doble ve,      |
 | equis, ye, zeta.    | ¡El alfabeto!        |
 ```
 If it is sung, any simple, repeated tune works (Wallace 1994). The traditional ABC tune (*Ah! vous dirai-je, maman*, public domain) can carry these lines, and many Colombian children already know an *abecedario* sung to it.
@@ -837,9 +837,9 @@ D7  | El año: enero … diciembre.   (three bars)
 *Closed on 18 October: P7/P8 (approved), whether the infinitive counts (yes), 1.1 L1's size (now 6), and `la lengua` (P2 approved).*
 
 1. **P11 cero, P12 mis/tus, P13 el abecedario** (§9): approve, or leave out?
-2. **W: uve doble or doble ve?** *Uve doble* matches Juan's *uve*; many Colombians say *doble ve*. One word in the chant either way.
+2. **W: decided.** Juan chose *doble ve* (20 Oct 2026).
 3. **Story canon** (birthdays, favourite colours, Max as a leap-day kangaroo, Matilda's green ruana days): fine to fix as canon?
 4. **1.3 length (18 lessons).** Keep one long unit, or split the map into 1.3a/1.3b at the numbers podcast?
-5. **Songs: sung or chanted?** The evidence favours a simple sung tune (§11.1). Can Juan record the two tunes, or should we start with spoken chants over a beat?
+5. **Songs: decided.** Sung, in the style of the counting-song samples (ACE-Step), which Juan likes (20 Oct 2026). Juan doesn't need to record tunes.
 6. **Number range in later generators:** dates up to 31 use *veintiuno*/*treinta y uno* safely. *Uno*, *veintiuno* and *treinta y uno* are not determiners in the validator (before a noun they become *un/veintiún/treinta y un*), so counted-object generators stay at 2–30, as in v1.
-7. **CSV issues found while scanning plurals** (`docs/irregular_plurals.md`): `los rasgos fisicos` (2.5) is missing an accent (*físicos*); `la edad` is a row in both 1.3 and 2.2. Fix in the master?
+7. **CSV issues: fixed 20 Oct 2026.** `los rasgos físicos` now has its accent, and the duplicate 2.2 `la edad` row is deleted (it stays in 1.3, the earlier section).

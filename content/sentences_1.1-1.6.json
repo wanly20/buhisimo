@@ -154,7 +154,7 @@
 {"unit":"1.2","lesson":10,"kind":"intro","es":"¿Cómo se escribe «llamarse»? — Ele, ele, a, eme, a, erre, ese, e.","en":"How do you spell \"llamarse\" (to be called)? — L, L, A, M, A, R, S, E."},
 
 {"unit":"1.2","lesson":11,"kind":"intro","speaker":"Buhísimo","es":"¿Cómo se escribe Max? — Eme, a, equis.","en":"How do you spell Max? — M, A, X.","spell":true},
-{"unit":"1.2","lesson":11,"kind":"song","es":"Ka, uve, uve doble, equis, ye, zeta.","en":"K, V, W, X, Y, Z.","clip":"A4","spell":true},
+{"unit":"1.2","lesson":11,"kind":"song","es":"Ka, uve, doble ve, equis, ye, zeta.","en":"K, V, W, X, Y, Z.","clip":"A4","spell":true},
 {"unit":"1.2","lesson":11,"kind":"practice","es":"¿Cómo se escribe «soy»? — Ese, o, ye.","en":"How do you spell \"soy\"? — S, O, Y."},
 {"unit":"1.2","lesson":11,"kind":"practice","es":"¿Cómo se escribe «muy»? — Eme, u, ye.","en":"How do you spell \"muy\"? — M, U, Y."},
 
@@ -162,7 +162,7 @@
 {"unit":"1.2","lesson":12,"kind":"song","es":"A, be, ce, de, e, efe, ge,","en":"A, B, C, D, E, F, G,","clip":"A5","spell":true},
 {"unit":"1.2","lesson":12,"kind":"song","es":"hache, i, jota, ka, ele, eme,","en":"H, I, J, K, L, M,","clip":"A5","spell":true},
 {"unit":"1.2","lesson":12,"kind":"song","es":"ene, eñe, o, pe, cu, erre,","en":"N, Ñ, O, P, Q, R,","clip":"A5","spell":true},
-{"unit":"1.2","lesson":12,"kind":"song","es":"ese, te, u, uve, uve doble,","en":"S, T, U, V, W,","clip":"A5","spell":true},
+{"unit":"1.2","lesson":12,"kind":"song","es":"ese, te, u, uve, doble ve,","en":"S, T, U, V, W,","clip":"A5","spell":true},
 {"unit":"1.2","lesson":12,"kind":"song","es":"equis, ye, zeta. ¡El alfabeto!","en":"X, Y, Z. The alphabet!","clip":"A5"},
 {"unit":"1.2","lesson":12,"kind":"podcast","es":"¡Hola, Buhísimo! Soy de Chile. Ce, hache, i, ele, e.","en":"Hi, Buhísimo! I'm from Chile. C, H, I, L, E.","clip":"A6","spell":true},
 {"unit":"1.2","lesson":12,"kind":"podcast","es":"¿Cómo se escribe Colombia? — Ce, o, ele, o, eme, be, i, a.","en":"How do you spell Colombia? — C, O, L, O, M, B, I, A.","clip":"A6"},

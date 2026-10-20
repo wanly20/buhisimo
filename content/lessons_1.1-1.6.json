@@ -23,7 +23,7 @@
     {"unit": "1.2", "lesson": 8, "type": "listen", "title": "Radio Búho: ¿Qué tal?", "new": []},
     {"unit": "1.2", "lesson": 9, "type": "learn", "title": "El alfabeto: a, e, i, o, u", "new": ["el alfabeto", "¿Cómo se escribe?"], "letters": [["a", "e", "i", "o", "u"], ["efe", "ele", "eme", "ene", "eñe", "ese", "erre"], ["jota"]], "clip": "Radio Búho «El alfabeto», clips A1–A2"},
     {"unit": "1.2", "lesson": 10, "type": "learn", "title": "Be, ce, de… y llamarse", "new": ["escribir", "llamarse"], "letters": [["be", "ce", "de", "ge", "pe", "te"], ["hache"], ["cu"]], "clip": "Radio Búho «El alfabeto», clip A3"},
-    {"unit": "1.2", "lesson": 11, "type": "learn", "title": "Las letras raras: ka, uve, equis…", "new": [], "letters": [["ka"], ["uve"], ["uve doble"], ["equis"], ["ye"], ["zeta"]], "clip": "Radio Búho «El alfabeto», clip A4"},
+    {"unit": "1.2", "lesson": 11, "type": "learn", "title": "Las letras raras: ka, uve, equis…", "new": [], "letters": [["ka"], ["uve"], ["doble ve"], ["equis"], ["ye"], ["zeta"]], "clip": "Radio Búho «El alfabeto», clip A4"},
     {"unit": "1.2", "lesson": 12, "type": "listen", "title": "Radio Búho: el alfabeto (podcast and chant)", "new": [], "podcast": "alfabeto"},
     {"unit": "1.2", "lesson": 13, "type": "check", "title": "1.2 check: the plaza", "new": []},
 
