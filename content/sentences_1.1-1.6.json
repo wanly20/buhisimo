@@ -194,10 +194,10 @@
 {"unit":"1.3","lesson":3,"kind":"practice","es":"Ella se llama Valentina. Es de Colombia.","en":"Her name is Valentina. She's from Colombia."},
 {"unit":"1.3","lesson":3,"kind":"practice","es":"Me llamo, te llamas, se llama.","en":"My name is, your name is, his/her name is."},
 
-{"unit":"1.3","lesson":4,"kind":"intro","es":"Uno, dos, tres, cuatro, cinco.","en":"One, two, three, four, five."},
+{"unit":"1.3","lesson":4,"kind":"intro","es":"Cero, uno, dos, tres, cuatro, cinco.","en":"Zero, one, two, three, four, five."},
 {"unit":"1.3","lesson":4,"kind":"practice","speaker":"Max","es":"Tres, dos, uno… ¡Max!","en":"Three, two, one… Max!"},
-{"unit":"1.3","lesson":4,"kind":"practice","es":"Cinco, cuatro, tres, dos, uno.","en":"Five, four, three, two, one."},
-{"unit":"1.3","lesson":4,"kind":"song","es":"Uno, dos, tres, cuatro, cinco: ¡muy bien!","en":"One, two, three, four, five: very good!","clip":"N1"},
+{"unit":"1.3","lesson":4,"kind":"practice","es":"Cinco, cuatro, tres, dos, uno… ¡cero!","en":"Five, four, three, two, one… zero!","speaker":"Max"},
+{"unit":"1.3","lesson":4,"kind":"song","es":"Cero, uno, dos, tres, cuatro, cinco: ¡muy bien!","en":"Zero, one, two, three, four, five: very good!","clip":"N1"},
 
 {"unit":"1.3","lesson":5,"kind":"intro","es":"Seis, siete, ocho, nueve, diez.","en":"Six, seven, eight, nine, ten."},
 {"unit":"1.3","lesson":5,"kind":"practice","speaker":"Max","es":"Ocho, nueve, diez… ¡fenomenal!","en":"Eight, nine, ten… great!"},
@@ -205,6 +205,7 @@
 {"unit":"1.3","lesson":5,"kind":"song","es":"Seis, siete, ocho, nueve, diez: ¡fenomenal!","en":"Six, seven, eight, nine, ten: great!","clip":"N2"},
 
 {"unit":"1.3","lesson":6,"kind":"game","es":"Uno, tres, cinco, siete, nueve.","en":"One, three, five, seven, nine."},
+{"unit":"1.3","lesson":6,"kind":"game","es":"Diez, ocho, seis, cuatro, dos, cero.","en":"Ten, eight, six, four, two, zero."},
 
 {"unit":"1.3","lesson":7,"kind":"intro","es":"Once, doce, trece, catorce, quince.","en":"Eleven, twelve, thirteen, fourteen, fifteen."},
 {"unit":"1.3","lesson":7,"kind":"practice","es":"Diez, once, doce… ¡trece!","en":"Ten, eleven, twelve… thirteen!"},
@@ -232,6 +233,7 @@
 {"unit":"1.3","lesson":11,"kind":"check","es":"Valentina tiene doce años. Es de Salento.","en":"Valentina is twelve. She's from Salento."},
 {"unit":"1.3","lesson":11,"kind":"check","es":"Veinte, diecinueve, dieciocho, diecisiete, dieciséis.","en":"Twenty, nineteen, eighteen, seventeen, sixteen."},
 {"unit":"1.3","lesson":11,"kind":"check","es":"¿Cómo se llama él? — Se llama Max. Tiene trece años.","en":"What's his name? — His name is Max. He's thirteen."},
+{"unit":"1.3","lesson":11,"kind":"check","es":"Tres, dos, uno… ¡cero!","en":"Three, two, one… zero!"},
 
 {"unit":"1.3","lesson":12,"kind":"repaso","es":"Cinco, diez, quince, veinte.","en":"Five, ten, fifteen, twenty."},
 {"unit":"1.3","lesson":12,"kind":"repaso","speaker":"Matilda","es":"¡Hola! Me llamo Matilda. Soy de Melbourne. Tengo doce años.","en":"Hi! My name is Matilda. I'm from Melbourne. I'm twelve."},
@@ -246,7 +248,7 @@
 {"unit":"1.3","lesson":14,"kind":"song","es":"Veintiséis, veintisiete, veintiocho, veintinueve, treinta… ¡treinta y uno!","en":"Twenty-six to thirty… thirty-one!","clip":"N6"},
 
 {"unit":"1.3","lesson":15,"kind":"podcast","speaker":"Buhísimo","es":"¡Hola, hola! Me llamo Buhísimo. ¡Uno, dos, tres!","en":"Hello, hello! My name is Buhísimo. One, two, three!","clip":"N0"},
-{"unit":"1.3","lesson":15,"kind":"podcast","speaker":"Max","es":"Diez, nueve, ocho, siete, seis, cinco, cuatro, tres, dos, uno… ¡Max!","en":"Ten, nine, eight… one… Max!","clip":"N7"},
+{"unit":"1.3","lesson":15,"kind":"podcast","speaker":"Max","es":"Diez, nueve, ocho, siete, seis, cinco, cuatro, tres, dos, uno… ¡cero! ¡Max!","en":"Ten, nine, eight, seven, six, five, four, three, two, one… zero! Max!","clip":"N7"},
 {"unit":"1.3","lesson":15,"kind":"podcast","es":"¿Cuántos años tienes, Samuel? — Tengo trece años.","en":"How old are you, Samuel? — I'm thirteen.","clip":"N8"},
 {"unit":"1.3","lesson":15,"kind":"podcast","es":"¿Cómo te llamas? — Me llamo Valentina. Tengo doce años.","en":"What's your name? — My name is Valentina. I'm twelve.","clip":"N8"},
 {"unit":"1.3","lesson":15,"kind":"song","es":"¿Cuántos años tienes? ¡Doce, doce, doce años!","en":"How old are you? Twelve, twelve, twelve years old!","clip":"N9"},
@@ -512,6 +514,12 @@
 {"unit":"1.6","lesson":9,"kind":"practice","es":"Tengo sus cuadernos.","en":"I have his/her exercise books."},
 {"unit":"1.6","lesson":9,"kind":"intro","es":"Su mochila es azul.","en":"His/Her backpack is blue."},
 {"unit":"1.6","lesson":9,"kind":"practice","es":"Tengo sus bolígrafos rojos.","en":"I have his/her red pens."},
+{"unit":"1.6","lesson":9,"kind":"rule","es":"Mi lápiz azul, mis lápices azules.","en":"My blue pencil, my blue pencils."},
+{"unit":"1.6","lesson":9,"kind":"rule","es":"Tu regla roja, tus reglas rojas.","en":"Your red ruler, your red rulers."},
+{"unit":"1.6","lesson":9,"kind":"rule","es":"Su cuaderno verde, sus cuadernos verdes.","en":"His/her green exercise book, his/her green exercise books."},
+{"unit":"1.6","lesson":9,"kind":"practice","es":"Tengo mis bolígrafos marrones.","en":"I have my brown pens."},
+{"unit":"1.6","lesson":9,"kind":"practice","es":"¿Tienes tus reglas rojas? — Sí, tengo mis reglas rojas.","en":"Have you got your red rulers? — Yes, I've got my red rulers."},
+{"unit":"1.6","lesson":9,"kind":"practice","es":"Mi goma blanca, mis gomas blancas.","en":"My white eraser, my white erasers."},
 
 {"unit":"1.6","lesson":10,"kind":"game","es":"Un cuaderno.","en":"An exercise book."},
 {"unit":"1.6","lesson":10,"kind":"game","es":"Una goma verde.","en":"A green eraser."},
@@ -524,6 +532,7 @@
 {"unit":"1.6","lesson":11,"kind":"practice","es":"Hay una regla verde en mi mochila.","en":"There's a green ruler in my backpack."},
 {"unit":"1.6","lesson":11,"kind":"practice","es":"No tengo las tijeras.","en":"I haven't got the scissors."},
 {"unit":"1.6","lesson":11,"kind":"practice","es":"¿Hay un sacapuntas en tu estuche? — Sí, hay un sacapuntas.","en":"Is there a pencil sharpener in your pencil case? — Yes, there's a pencil sharpener."},
+{"unit":"1.6","lesson":11,"kind":"practice","es":"En mi estuche hay mis lápices azules.","en":"In my pencil case there are my blue pencils."},
 
 {"unit":"1.6","lesson":12,"kind":"practice","speaker":"Samuel","es":"Me llamo Samuel. Soy de Salento. Tengo el libro de texto.","en":"My name is Samuel. I'm from Salento. I have the textbook."},
 {"unit":"1.6","lesson":12,"kind":"practice","es":"Te llamas Max. Eres de Melbourne. Tienes el mapa.","en":"Your name is Max. You're from Melbourne. You have the map."},
@@ -545,6 +554,7 @@
 {"unit":"1.6","lesson":14,"kind":"check","es":"Me gusta mucho el libro de texto.","en":"I really like the textbook."},
 {"unit":"1.6","lesson":14,"kind":"check","es":"Hay un bolígrafo azul en el estuche.","en":"There's a blue pen in the pencil case."},
 {"unit":"1.6","lesson":14,"kind":"check","es":"En la mochila hay dos cuadernos y una regla.","en":"In the backpack there are two exercise books and a ruler."},
+{"unit":"1.6","lesson":14,"kind":"check","es":"¿Tienes tus tijeras? — Sí, tengo mis tijeras.","en":"Have you got your scissors? — Yes, I've got my scissors."},
 
 {"unit":"1.6","lesson":15,"kind":"boss","speaker":"Matilda","es":"¡Hola! Me llamo Matilda. Soy de Australia.","en":"Hi! My name is Matilda. I'm from Australia."},
 {"unit":"1.6","lesson":15,"kind":"boss","speaker":"Buhísimo","es":"Ella se llama Matilda. Es de Melbourne, en Australia.","en":"Her name is Matilda. She's from Melbourne, in Australia."},
@@ -554,5 +564,6 @@
 {"unit":"1.6","lesson":15,"kind":"boss","es":"Valentina es la amiga de Matilda. Se llama Valentina Restrepo.","en":"Valentina is Matilda's friend. Her name is Valentina Restrepo."},
 {"unit":"1.6","lesson":15,"kind":"boss","es":"¡Hola, Samuel! ¿Qué tal? — Muy bien, gracias.","en":"Hi, Samuel! How's it going? — Very well, thanks."},
 {"unit":"1.6","lesson":15,"kind":"boss","speaker":"Matilda","es":"Tengo doce años. Mi cumpleaños es el quince de junio.","en":"I'm twelve. My birthday is the fifteenth of June."},
-{"unit":"1.6","lesson":15,"kind":"boss","es":"En mi mochila hay tres bolígrafos rojos y una regla verde.","en":"In my backpack there are three red pens and a green ruler."}
+{"unit":"1.6","lesson":15,"kind":"boss","es":"En mi mochila hay tres bolígrafos rojos y una regla verde.","en":"In my backpack there are three red pens and a green ruler."},
+{"unit":"1.6","lesson":15,"kind":"boss","speaker":"Matilda","es":"Tengo mis libros de texto y mis bolígrafos verdes.","en":"I have my textbooks and my green pens."}
 ]

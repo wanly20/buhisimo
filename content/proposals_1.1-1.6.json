@@ -1,5 +1,5 @@
 {
-  "_about": "Proposals for units 1.1-1.6. P1–P10 were APPROVED by Juan on 2026-10-18: their words are now rows of the master CSVs (spanish_app/, synced to data/) and P7/P8 are built-in validator rules, so tools/check_vocab.mjs ignores approved entries (a leftover \"needs\" tag on an approved proposal is reported as a warning). Proposals with status 'proposed' are still open: sentences that use them carry \"needs\": [\"P#\"] and are reported as PENDING. To approve one: copy its words into the master CSVs with the section shown, run spanish_app/sync_vocab.py, set status to approved and remove the tags.",
+  "_about": "Proposals for units 1.1-1.6. P1–P10 were APPROVED by Juan on 2026-10-18, P11 (cero) and P12 (mis, tus) on 2026-10-21; P13 (el abecedario) was REJECTED on 2026-10-21 (status rejected: never allowed): their words are now rows of the master CSVs (spanish_app/, synced to data/) and P7/P8 are built-in validator rules, so tools/check_vocab.mjs ignores approved entries (a leftover \"needs\" tag on an approved proposal is reported as a warning). Proposals with status 'proposed' are still open: sentences that use them carry \"needs\": [\"P#\"] and are reported as PENDING. To approve one: copy its words into the master CSVs with the section shown, run spanish_app/sync_vocab.py, set status to approved and remove the tags.",
   "proposals": [
     {
       "id": "P1",
@@ -348,7 +348,7 @@
       "id": "P11",
       "priority": "nice",
       "kind": "words",
-      "status": "proposed",
+      "status": "approved",
       "title": "cero",
       "words": [
         {
@@ -358,13 +358,15 @@
           "type": "number"
         }
       ],
-      "unlocks": "Numbers 0–31 in the 1.3 counting song and podcast (as Juan asked), countdowns that end on cero, phone-style digit dictation. Not in the Claro 1.3 list; the 1.3 song currently runs 1–31."
+      "unlocks": "Numbers 0–31 in the 1.3 counting song and podcast (as Juan asked), countdowns that end on cero, phone-style digit dictation. Not in the Claro 1.3 list; the 1.3 song currently runs 1–31.",
+      "approved": "2026-10-21",
+      "implemented": "vocabulary_database.csv, 1.3 (Source: Juan 2026-10-21, P11). Taught in 1.3 L4 with uno–cinco (6 items); countdowns end on ¡cero! (1.3 L4, L6, L11, L15) and the counting song opens on cero (clip N1)."
     },
     {
       "id": "P12",
       "priority": "nice",
       "kind": "words",
-      "status": "proposed",
+      "status": "approved",
       "title": "mis, tus",
       "words": [
         {
@@ -380,13 +382,15 @@
           "type": "possessive"
         }
       ],
-      "unlocks": "Plural possessives next to sus in 1.6 L9 (mis libros, tus lápices). Juan's P7 decision lists mis/tus as allowed determiners, but they are not rows yet; the validator already accepts them as determiners once they are."
+      "unlocks": "Plural possessives next to sus in 1.6 L9 (mis libros, tus lápices). Juan's P7 decision lists mis/tus as allowed determiners, but they are not rows yet; the validator already accepts them as determiners once they are.",
+      "approved": "2026-10-21",
+      "implemented": "helper_words.csv, 1.6. Taught in 1.6 L9 with su/sus and a possessive-agreement rule card (agreement:possessive): mi lápiz azul → mis lápices azules, tu regla roja → tus reglas rojas. Juan: study it with activities that practise adjective agreement."
     },
     {
       "id": "P13",
       "priority": "nice",
       "kind": "words",
-      "status": "proposed",
+      "status": "rejected",
       "title": "el abecedario",
       "words": [
         {
@@ -396,7 +400,9 @@
           "type": "noun"
         }
       ],
-      "unlocks": "The everyday Colombian school word for the alphabet, next to the Claro word el alfabeto, for the 1.2 chant title (El abecedario de Buhísimo)."
+      "unlocks": "The everyday Colombian school word for the alphabet, next to the Claro word el alfabeto, for the 1.2 chant title (El abecedario de Buhísimo).",
+      "rejected": "2026-10-21",
+      "note": "Juan: stick to el alfabeto only; the 1.2 song title uses alfabeto."
     }
   ]
 }

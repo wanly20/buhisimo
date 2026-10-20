@@ -6,7 +6,7 @@
 |---|---|
 | `content/lessons_1.1-1.6.json` | The lesson order and the items, letters and rule cards each lesson introduces (machine-readable version of this plan) |
 | `content/sentences_1.1-1.6.json` | Every Spanish sentence or phrase in this plan (468), tagged with the unit and lesson where it is first used. Song and podcast lines carry a `clip` id (§11) |
-| `content/proposals_1.1-1.6.json` | The proposals in §9. P1–P10 are **approved** and now live in the CSVs; P11–P13 are new and still open |
+| `content/proposals_1.1-1.6.json` | The proposals in §9. P1–P12 are **approved** and live in the CSVs; P13 was rejected (21 Oct) |
 | `content/plurals.json` | Plural rules and the irregular plurals of the whole master CSV; read by the validator |
 | `docs/irregular_plurals.md` | The irregular-plural list for Juan (all units), with where each plural is taught |
 | `tools/check_vocab.mjs` | The unit-aware validator (§10) |
@@ -333,17 +333,17 @@ Why here: the cut falls after the first big block (names, 1–20 and age, practi
 - **Goal:** the first conjugation lesson. Llamarse has 4 forms (infinitive + me llamo / te llamas / se llama), so it meets the ≥4 rule (§7). Table → choose the form for the person → type. Then the cross-verb pattern with *soy/eres/es*.
 - **Examples:** Me llamo Matilda. Soy de Melbourne. · Te llamas Samuel. Eres de Colombia. · Se llama Buhísimo. Es de Salento. · Me llamo, te llamas, se llama.
 
-### 1.3 L4 · learn · Uno, dos, tres
-- **New (5):** uno, dos, tres, cuatro, cinco (C). **Clip:** N1.
-- **Exercises:** listen → tap digit; type the word from the digit; count-down chant (speak).
-- **Examples:** Uno, dos, tres, cuatro, cinco. · Tres, dos, uno… ¡Max! · Uno, dos, tres, cuatro, cinco: ¡muy bien!
+### 1.3 L4 · learn · Cero, uno, dos, tres *(title until 21 Oct: «Uno, dos, tres»)*
+- **New (6):** cero (C, P11, approved 21 Oct), uno, dos, tres, cuatro, cinco (C). **Clip:** N1 (now opens on *cero*).
+- **Exercises:** listen → tap digit (0 included); type the word from the digit; count-down chant that ends on *¡cero!* (speak).
+- **Examples:** Cero, uno, dos, tres, cuatro, cinco. · Tres, dos, uno… ¡Max! · Cinco, cuatro, tres, dos, uno… ¡cero! · Cero, uno, dos, tres, cuatro, cinco: ¡muy bien!
 
 ### 1.3 L5 · learn · Seis… diez
 - **New (5):** seis, siete, ocho, nueve, diez (C). **Clip:** N2.
 - **Examples:** Seis, siete, ocho, nueve, diez. · Dos, cuatro, seis, ocho, diez. · Seis, siete, ocho, nueve, diez: ¡fenomenal!
 
-### 1.3 L6 · game · Game: Number Invaders 1–10 *(title until 21 Oct: «Number Invaders 1–10»)*
-- Hear a number → shoot the digit (audio cue mode); calm mode available. **Example:** Uno, tres, cinco, siete, nueve.
+### 1.3 L6 · game · Game: Number Invaders 0–10 *(title until 21 Oct: «Number Invaders 1–10»)*
+- Hear a number → shoot the digit (audio cue mode); calm mode available. **Examples:** Uno, tres, cinco, siete, nueve. · Diez, ocho, seis, cuatro, dos, cero.
 
 ### 1.3 L7 · learn · Once… quince
 - **New (5):** once, doce, trece, catorce, quince (C). These are irregular, so each gets its own intro. **Clip:** N3.
@@ -382,8 +382,8 @@ Why here: the cut falls after the first big block (names, 1–20 and age, practi
 - **Examples:** Veintiséis, veintisiete, veintiocho, veintinueve, treinta. · Veintinueve, treinta, treinta y uno.
 
 ### 1.3 L15 · listen · Radio Búho: the numbers song *(podcast and counting song, §11; title until 21 Oct: «Radio Búho: los números»)*
-- The whole counting song 1–31, a countdown with Max, then two callers give their name and age. Students write the numbers they hear.
-- **Examples:** Diez, nueve, ocho, siete, seis, cinco, cuatro, tres, dos, uno… ¡Max! · ¿Cuántos años tienes, Samuel? — Tengo trece años. · ¿Cuántos años tienes? ¡Doce, doce, doce años!
+- The whole counting song 0–31, a countdown with Max (ending on *¡cero!*), then two callers give their name and age. Students write the numbers they hear.
+- **Examples:** Diez, nueve, ocho, siete, seis, cinco, cuatro, tres, dos, uno… ¡cero! ¡Max! · ¿Cuántos años tienes, Samuel? — Tengo trece años. · ¿Cuántos años tienes? ¡Doce, doce, doce años!
 
 ### 1.3 L16 · learn · Mi carnet de identidad
 - **New (4):** el carnet de identidad, el nombre, el apellido (C) · mi (H, moved from 1.6 by P5) · *name:* Restrepo (N).
@@ -641,9 +641,13 @@ X:  ¡Me encanta, me encanta, me encanta!
 - **Rule cards:** *marrón → marrones*: the stress stays on the same syllable, so the written accent isn't needed any more. *La hoja de papel → las hojas de papel*: only the first noun changes (not *hojas de papeles*). Note: *naranja* and *rosa* can stay the same (*dos cuadernos naranja*).
 - **Examples:** Dos bolígrafos marrones. · Hay tres lápices marrones. · Tengo tres hojas de papel. · Hay dos libros de texto en la mochila. · Hay dos cuadernos naranja.
 
-#### 1.6 L9 · learn · Su libro, sus libros
-- **New (2):** su, sus (H). *Mi* (1.3) and *tu* (1.4) are reviewed. (*Mis* and *tus* are not rows yet: P12.)
-- **Examples:** Mi mochila es verde. · Tu estuche es morado. · Su libro está en la mochila. · Su mochila es azul. · Tengo sus cuadernos. · Tengo sus bolígrafos rojos.
+#### 1.6 L9 · learn · Mi lápiz azul, mis lápices azules *(title until 21 Oct: «Su libro, sus libros»; P12 approved 21 Oct)*
+- **New (5):** su, sus, mis, tus (H) · rule card `agreement:possessive`. *Mi* (1.3) and *tu* (1.4) are reviewed.
+- **Why here:** Juan: *"We need to study it with the activities that help learn how to agree adjectives."* The plural rule cards come first (L6–L8), so every plural used here (*lápices*, *marrones*, *libros de texto*) is already taught.
+- **Rule card (worked examples):** one thing → *mi / tu / su*; more than one → *mis / tus / sus*, and the noun **and the colour after it** change too: *mi lápiz azul → mis lápices azules* · *tu regla roja → tus reglas rojas* · *su cuaderno verde → sus cuadernos verdes*. *Mis/tus/sus* don't change for masculine or feminine (*mis reglas, mis lápices*); the colour does (*rojas, rojos*).
+- **Practice built on agreement:** `sort` singular / plural phrases; `choose` the matching determiner and colour (*___ reglas ___*: *tus … rojas*); `gap` cloze (*Tengo ___ bolígrafos marrones*); `tiles` to build the phrase (*mis · gomas · blancas*); **spot the mistake**: one word of a validated sentence is changed (*mis lápiz azules*) and the student taps the word that doesn't agree. The wrong version is generated from the right one, shown only as the thing to fix, and the right sentence is shown straight after; it is never a model. Then `type` two phrases from English.
+- **Examples:** Mi lápiz azul, mis lápices azules. · Tu regla roja, tus reglas rojas. · Su cuaderno verde, sus cuadernos verdes. · Mi goma blanca, mis gomas blancas. · Tengo mis bolígrafos marrones. · ¿Tienes tus reglas rojas? — Sí, tengo mis reglas rojas. · Tengo sus bolígrafos rojos. · Mi mochila es verde.
+- **Review:** *mis/tus* come back in L11 (*En mi estuche hay mis lápices azules.*), the L14 check (*¿Tienes tus tijeras? — Sí, tengo mis tijeras.*) and the boss (*Tengo mis libros de texto y mis bolígrafos verdes.*).
 
 #### 1.6 L10 · game · En mi mochila (Request engine, v1 Mochila)
 - Read or hear a request, tap the matching objects. Requests come from slot tables (number × object × colour), never free text. **Examples:** Un cuaderno. · Una goma verde. · Tres lápices rojos. · Dos reglas amarillas.
@@ -703,15 +707,15 @@ X:  ¡Gracias, Buhísimo! ¡Fenomenal!
 
 **Letter-name choices (P10).** Juan chose ***uve*** (not *ve corta*) and ***ye*** (not *i griega*), as the RAE has recommended since 2010. For W he chose ***doble ve***, the usual Colombian name (20 Oct 2026). Letters are stored with their article (*la eme*) so that the one-letter names (*a, e, o, u, de, te*) don't become stray "words" for the other tools that read `helper_words.csv` (the slide and worksheet generators). The bare name is allowed only in a spelling line.
 
-### Still open (new, for Juan to decide)
+### Decided by Juan on 21 October 2026
 
-| # | Proposal | Section | What it unlocks |
-|---|---|---|---|
-| P11 | **cero** | 1.3 | Juan asked for a 0–31 counting song; *cero* isn't in the Claro 1.3 list, so the song currently runs 1–31. With P11 the song opens on *cero* and countdowns end on it. |
-| P12 | **mis, tus** | 1.6 | Juan's P7 decision lists *mis/tus* as allowed determiners, but they are not rows yet. 1.6 L9 would teach *mis/tus* next to *sus* (*mis libros*). The validator already accepts them as determiners once they are rows. |
-| P13 | **el abecedario** | 1.2 | The everyday Colombian school word for the alphabet, next to the Claro word *el alfabeto*, for the chant's title (*El abecedario de Buhísimo*). |
+| # | Proposal | Decision | Where it lives now | Taught in |
+|---|---|---|---|---|
+| P11 | **cero** | **Approved.** For countdowns (Max's ends *¡cero!*) and the number songs | `vocabulary_database.csv`, 1.3 (Source: Juan 2026-10-21, P11: an addition beyond Claro) | 1.3 L4, with *uno–cinco* (6 items) |
+| P12 | **mis, tus** | **Approved, in 1.6.** Juan: *"We need to study it with the activities that help learn how to agree adjectives."* | `helper_words.csv`, 1.6 | 1.6 L9, with *su/sus* and a possessive-agreement rule card |
+| P13 | **el abecedario** | **Rejected.** Stick to *el alfabeto*; the 1.2 song title uses *alfabeto* | `content/proposals_1.1-1.6.json`, status `rejected` (the validator never allows it) | — |
 
-No sentence uses P11–P13, so nothing is pending. To approve one: add its words to the master CSV with the section shown, run `spanish_app/sync_vocab.py`, set its status to approved in `content/proposals_1.1-1.6.json`, and add the sentences.
+No proposal is open now.
 
 ---
 
@@ -724,7 +728,7 @@ No sentence uses P11–P13, so nothing is pending. To approve one: add its words
 2. **Plurals (P8) and irregular-plural gating.** Each plural carries one or more rules (regular, z-ces, accent-loss, accent-gain, unchanged, compound, plural-only, loanword, y-yes, mixed-masculine, el-feminine). A plural is allowed only once all its rules are taught: in the manifest, a lesson declares `"teaches": ["plural:z-ces"]`; rules taught after 1.6 take their unit from `ruleTaughtAt` in `plurals.json` (accent-gain 2.5, for example). After a plural determiner, a word with an unchanged plural is read as that plural, so *los lunes* fails before 1.6 L7. `node tools/check_vocab.mjs --plurals` lists the plural of every CSV noun and **fails if an irregular one is missing from `plurals.json`**, so new CSV words can't slip through.
 3. **Letter names.** *La eme* is an ordinary noun phrase; the bare *eme* is allowed only in a spelling line (it contains *se escribe* or *alfabeto*, or is marked `"spell": true`), and only for letters taught by that lesson.
 4. **Lesson size.** Counted items = rows in `new` (a nested array such as `["soy", "de"]` is one chunk = one item; names don't count) + letter groups + rule cards. **More than 6 is a warning; more than 8 is a failure.**
-5. **Approved proposals** are no longer applied as pending: their words are CSV rows and their rules are built in. A leftover `"needs"` tag on an approved proposal is reported as a warning. Pending proposals (P11–P13) still work as before, with `--approve` and `--strict`.
+5. **Approved proposals** are no longer applied as pending: their words are CSV rows and their rules are built in. A leftover `"needs"` tag on an approved proposal is reported as a warning. Pending proposals still work as before, with `--approve` and `--strict` (none is open since 21 Oct); a `rejected` proposal is never allowed.
 6. **Map sections (20 October 2026).** A unit can be shown as map sections with `"parts"` in the manifest. Parts must be contiguous ranges that cover every lesson of their unit, each lesson's `part` must match its range, and each part title must pass at its unit. A part that doesn't open with a repaso or close with a check or boss is a warning. Only 1.3 is split.
 7. **Lesson titles (21 October 2026).** Every lesson needs `titleEs` and/or `titleEn` (an old `title` field fails). `titleEs` is checked like a sentence of its own lesson: only items introduced by then, no bare nouns, plural rules taught. «¿Sí o no?» fails in 1.1 L4 (*o* is 1.5) and «Bolígrafos marrones» fails anywhere (bare plural).
 
@@ -806,7 +810,7 @@ So the plan uses **short, simple, repeated tunes**, and treats sung versions as 
 | Episode | Lesson | Clips inside learn lessons | Later spaced review |
 |---|---|---|---|
 | **«El alfabeto»** (alphabet chant + spelling call-in) | 1.2 L12 | A1–A2 in 1.2 L9, A3 in 1.2 L10, A4 in 1.2 L11 | 1.2 L13 check, 1.3 L1 repaso; spelling items in every unit check; *¿Cómo se escribe…?* with new words in later units |
-| **«Los números»** (counting song 1–31 + age call-in) | 1.3 L15 | N1 in L4, N2 in L5, N3 in L7, N4 in L9, N5 in L13, N6 in L14 | 1.3 L11 (1.3a check, 1–20), 1.3 L12 repaso, 1.3 L20 check, 1.4 L1 repaso, Number Invaders |
+| **«Los números»** (counting song 0–31 + age call-in) | 1.3 L15 | N1 in L4, N2 in L5, N3 in L7, N4 in L9, N5 in L13, N6 in L14 | 1.3 L11 (1.3a check, 1–20), 1.3 L12 repaso, 1.3 L20 check, 1.4 L1 repaso, Number Invaders |
 | **«La semana y los meses»** (week and month chants) | 1.4 L7 | D1 in L2, D2 in L3, D3 in L4, D4 in L5, D5 in L6 | 1.4 L13 check, 1.5 L1 repaso |
 | *Later (not scripted yet)* | 2.1 | Numbers 32–100: «Los números II», same tune as «Los números» | |
 | | 2.2 | Family tree chant (*el padre, la madre, el hermano…*) | |
@@ -855,7 +859,7 @@ If it is sung, any simple, repeated tune works (Wallace 1994). The traditional A
 
 Verses (each verse is also clip N1–N6 inside its learn lesson):
 ```
-N1  | Uno, dos, tres,          | cuatro, cinco: ¡muy bien!          |
+N1  | Cero, uno, dos, tres,    | cuatro, cinco: ¡muy bien!          |
 N2  | Seis, siete, ocho,       | nueve, diez: ¡fenomenal!           |
 N3  | Once, doce, trece,       | catorce, quince: ¡fantástico!      |
 N4  | Dieciséis, diecisiete,   | dieciocho, diecinueve, veinte: ¡muy bien! |
@@ -863,7 +867,7 @@ N5  | Veintiuno, veintidós,    | veintitrés, veinticuatro, veinticinco: ¡feno
 N6  | Veintiséis, veintisiete, | veintiocho, veintinueve, treinta… ¡treinta y uno! |
 ```
 Chorus between verses (N9, from L8 on, since it uses *años*): `| ¿Cuántos años tienes? | ¡Doce, doce, doce años! |`
-Without P11 the song starts on *uno*. With P11 it opens `| Cero… | uno, dos, tres… |` and Max's countdown ends on *cero*.
+P11 is approved (21 Oct): the song runs 0–31, opening on *cero*, and Max's countdown ends on *¡cero!*.
 
 **Podcast outline** (about 3 min):
 
@@ -872,7 +876,7 @@ Without P11 the song starts on *uno*. With P11 it opens `| Cero… | uno, dos, t
 | 0:00–0:08 | — | Jingle |
 | 0:08–0:15 | N0 | Buhísimo: *¡Hola, hola! Me llamo Buhísimo. ¡Uno, dos, tres!* |
 | 0:15–1:45 | N1–N6, N9 | The song: six verses, chorus after verses 2, 4 and 6 |
-| 1:45–2:05 | N7 | Max's countdown: *Diez, nueve, ocho… uno… ¡Max!* (he jumps) |
+| 1:45–2:05 | N7 | Max's countdown: *Diez, nueve, ocho… uno… ¡cero! ¡Max!* (he jumps) |
 | 2:05–2:45 | N8 | Call-in: *¿Cuántos años tienes, Samuel? — Tengo trece años.* · *¿Cómo te llamas? — Me llamo Valentina. Tengo doce años.* |
 | 2:45–2:55 | N10 | *¡Muy bien! Uno, dos, tres… ¡hasta luego!* |
 
@@ -903,7 +907,7 @@ D7  | El año: enero … diciembre.   (three bars)
 
 *Closed on 18 October: P7/P8 (approved), whether the infinitive counts (yes), 1.1 L1's size (now 6), and `la lengua` (P2 approved).*
 
-1. **P11 cero, P12 mis/tus, P13 el abecedario** (§9): approve, or leave out?
+1. **P11–P13: decided** (21 Oct 2026, §9): *cero* approved (1.3 L4), *mis/tus* approved (1.6 L9, taught with adjective agreement), *el abecedario* rejected.
 2. **W: decided.** Juan chose *doble ve* (20 Oct 2026).
 3. **Story canon: decided.** Juan approved it on 21 Oct 2026 (§3): birthdays Max 29 de febrero, Valentina 20 de julio, Matilda 15 de junio, Samuel 10 de enero, Buhísimo 7 de agosto (the hardest months on purpose, for exposure); favourite colours Matilda verde, Max rojo, Valentina morado, Samuel azul, Buhísimo marrón. The 1.4 and 1.6 sentences that used the old dates (Samuel 1 May, Matilda 1 March, Buhísimo 1 January) now use these.
 4. **1.3 length: decided.** The map shows 1.3 as two sections (20 Oct 2026; Juan approved splitting long units): 1.3a «¿Cómo te llamas?» L1–L11 (names, 1–20, age, ending with a new 1.3a check) and 1.3b «Mi carnet de identidad» L12–L20 (a new repaso, 21–31, the numbers podcast, the ID card, the unit check). The CSV section stays 1.3 (§6). No other unit needs a split: after 1.3, the longest is 1.6 with 15 lessons, inside the 11–15 range.

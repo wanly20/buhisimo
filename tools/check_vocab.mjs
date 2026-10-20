@@ -308,7 +308,7 @@ if (existsSync(PROPOSALS)) {
   const doc = JSON.parse(readFileSync(PROPOSALS, "utf8"));
   for (const p of doc.proposals ?? []) {
     proposals.set(p.id, p);
-    if (p.status === "approved") continue; // approved words now live in the CSVs; approved rules are built in
+    if (p.status === "approved" || p.status === "rejected") continue; // approved words now live in the CSVs; rejected ones are never allowed
     for (const w of p.words ?? []) {
       const section = parseSection(w.section);
       const item = `${p.id}:${w.es}`;
@@ -318,7 +318,7 @@ if (existsSync(PROPOSALS)) {
     }
   }
 }
-const isPending = (pid) => proposals.has(pid) && proposals.get(pid).status !== "approved";
+const isPending = (pid) => proposals.has(pid) && !["approved", "rejected"].includes(proposals.get(pid).status);
 const approveArg = opt("approve", "");
 const APPROVED = new Set(approveArg === "all" ? [...proposals.keys()].filter(isPending) : approveArg.split(",").map((s) => s.trim()).filter(Boolean));
 for (const id of APPROVED) if (!proposals.has(id)) { console.error(`--approve: unknown proposal ${id}`); process.exit(2); }
@@ -491,7 +491,7 @@ const pendingCount = [...proposals.keys()].filter(isPending).length;
 log(`Buhísimo vocabulary check: ${rel(SENTENCES)}`);
 log(`  data: ${vocabRows.length} vocabulary rows, ${helperRows.length} helper rows, ${nameRows.length} names` +
     (unsectioned.length ? ` (${unsectioned.length} names have no Section and are never allowed)` : ""));
-log(`  proposals: ${proposals.size} in ${rel(PROPOSALS)} (${proposals.size - pendingCount} approved, ${pendingCount} pending); approved for this run: ${APPROVED.size ? [...APPROVED].join(", ") : "none"}${STRICT ? "; --strict: pending counts as failure" : ""}`);
+log(`  proposals: ${proposals.size} in ${rel(PROPOSALS)} (${[...proposals.values()].filter((p) => p.status === "approved").length} approved, ${[...proposals.values()].filter((p) => p.status === "rejected").length} rejected, ${pendingCount} pending); approved for this run: ${APPROVED.size ? [...APPROVED].join(", ") : "none"}${STRICT ? "; --strict: pending counts as failure" : ""}`);
 log(`  plural rules and where they are first taught: ${[...ruleTaughtUnit].map(([r, s]) => `${r} ${secStr(s)}`).join(", ") || "none"}`);
 
 const seen = new Map();
