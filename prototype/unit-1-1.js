@@ -175,7 +175,8 @@ const L3 = {
 const L4 = {
   ...common,
   id: "1.1-4", n: 4, kind: "learn",
-  // The plan's title "¿Sí o no?" uses o (taught in 1.5): shown in English for now.
+  // Titles use only words the lesson has taught (decision 2026-10-21): not «¿Sí o no?» (o is 1.5).
+  titleEs: "¿Sí? ¿No?",
   titleEn: "Yes or no?",
   storyEn: "Max and Matilda quiz each other: is it sí or no?",
   canDoEn: "Now you can answer yes/no questions, and say what you're not.",
@@ -303,7 +304,8 @@ const L6 = {
 const L7 = {
   ...common,
   id: "1.1-7", n: 7, kind: "learn",
-  // The plan's title "Islas y destinos" uses y and plurals, which 1.1 doesn't teach: shown in English for now.
+  // Not «Islas y destinos»: y is 1.5, and bare plurals are never used (decision 2026-10-21).
+  titleEs: "El destino",
   titleEn: "Islands and destinations",
   storyEn: "Max picks a destination. Every island he finds is Spanish-speaking (well, almost).",
   canDoEn: "Now you can name four groups of islands and say where you're going.",
@@ -347,7 +349,8 @@ const L7 = {
 const L8 = {
   ...common,
   id: "1.1-8", n: 8, kind: "learn",
-  // The plan's title "Famoso e histórico" uses e, which 1.1 doesn't teach: shown in English for now.
+  // Not «Famoso e histórico»: e is 1.5 (decision 2026-10-21).
+  titleEs: "¡Max es famoso!",
   titleEn: "Famous and historic",
   storyEn: "In the plaza, everyone wants a photo with the kangaroo: “¡Max es famoso!”",
   canDoEn: "Now you can describe places: -o for masculine words, -a for feminine words.",
@@ -370,7 +373,8 @@ const L8 = {
       cards: [
         { es: "el monumento", bucket: 0 }, { es: "la capital", bucket: 1 }, { es: "la Isla de Pascua", bucket: 1 },
         { es: "el mapa", bucket: 0 }, { es: "el país", bucket: 0 }, { es: "la lengua", bucket: 1 }] },
-    { id: "intro-cocora", type: "intro", character: "owl-celebrating", contextEn: "Buhísimo's favourite place, the Cocora Valley, near Salento:",
+    // Scene picture of the Cocora Valley (Juan, 21 Oct): drop it in at assets/cocora-valley.webp; until then the owl shows.
+    { id: "intro-cocora", type: "intro", scene: "cocora-valley", sceneAltEn: "The Cocora Valley: tall wax palms in the mist", character: "owl-celebrating", contextEn: "Buhísimo's favourite place, the Cocora Valley, near Salento:",
       es: "Cocora es famoso.", en: "Cocora is famous.",
       noteEn: "Cocora is short for the Cocora Valley, a masculine word, so it takes [[famoso]]. Its wax palms are the tallest palms in the world." },
     { id: "pick-max-famoso", type: "pick", character: "matilda", promptEs: "¡Max es famoso!",
@@ -432,7 +436,12 @@ const L10 = {
     { id: "g-study-south", type: "mapstudy", titleEn: "Look at the map: South America", places: ["co", "pe", "cl", "ar", "pascua"],
       contextEn: "Tap each place to hear it." },
     { id: "g-study-world", type: "mapstudy", titleEn: "Look at the map: Spain, Africa and Asia", places: ["es", "baleares", "canarias", "gq", "ph", "au"],
-      contextEn: "Tap each place to hear it. Then the game starts." },
+      contextEn: "Tap each place to hear it. Then the game starts.",
+      // Six names are too crowded at 390px wide: phones get two maps (decision 2026-10-21).
+      phoneSplit: [
+        { titleEn: "Look at the map: Spain and Africa", places: ["es", "baleares", "canarias", "gq"], contextEn: "Tap each place to hear it." },
+        { titleEn: "Look at the map: Asia and Australia", places: ["ph", "au"], contextEn: "Tap each place to hear it. Then the game starts." },
+      ] },
     { id: "g-gq", type: "maptap", sayEs: "Él es de Guinea Ecuatorial.", en: "He's from Equatorial Guinea.", target: "gq", choices: ["gq", "canarias", "es", "co"] },
     { id: "g-us", type: "maptap", sayEs: "Ella es de Estados Unidos.", en: "She's from the United States.", target: "us", choices: ["us", "cu", "do", "co"] },
     { id: "g-peru", type: "maptap", sayEs: "Él es de Perú.", en: "He's from Peru.", target: "pe", choices: ["pe", "cl", "ar", "co"] },
@@ -486,7 +495,8 @@ const L11 = {
 const L9 = {
   ...common,
   id: "1.1-9", n: 9, kind: "story",
-  titleEn: STORY.titleEn, // plan title "Max y el mapa" uses y (taught in 1.5): shown in English for now
+  titleEs: "El mapa de Max", // not «Max y el mapa»: y is 1.5 (decision 2026-10-21)
+  titleEn: STORY.titleEn,
   storyEn: STORY.sceneEn,
   canDoEn: "You followed a whole story in Spanish!",
   xpBase: 10,

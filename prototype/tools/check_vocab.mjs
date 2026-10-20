@@ -179,6 +179,15 @@ for (const u of pathUnits.filter((x) => x.titleEs)) {
   const part = manifestParts.find((p) => p.id === u.id);
   if (!part || part.titleEs !== u.titleEs || part.unit !== u.unit) { failures++; console.log(`FAIL  path-data.js section ${u.id}: "${u.titleEs}" doesn't match a part in content/lessons_1.1-1.6.json`); }
 }
+// Lesson titles (decision 2026-10-21): each prototype lesson's titleEs must be the manifest's titleEs
+// (which the repo validator checks at its own lesson), so the two never drift apart.
+const manifestLessons = JSON.parse(readFileSync(join(ROOT, "content", "lessons_1.1-1.6.json"), "utf8")).lessons;
+for (const l of LESSONS) {
+  const m = manifestLessons.find((x) => x.unit === l.unit && x.lesson === l.n);
+  if (!m) { failures++; console.log(`FAIL  lesson ${l.id}: not in content/lessons_1.1-1.6.json`); continue; }
+  if ((l.titleEs || null) !== (m.titleEs || null)) { failures++; console.log(`FAIL  lesson ${l.id}: titleEs «${l.titleEs ?? "—"}» but the manifest says «${m.titleEs ?? "—"}»`); }
+}
+console.log(`  lesson titles: ${LESSONS.filter((l) => l.titleEs).length} Spanish titles, all equal to the manifest's titleEs (checked at their lesson below)`);
 console.log(`  map section titles (path-data.js = lessons manifest "parts", checked at their unit by tools/check_vocab.mjs): ${pathUnits.filter((x) => x.titleEs).map((x) => `${x.id} ${x.titleEs}`).join(" | ") || "none"}`);
 console.log(failures ? `  ✗ unit level: ${failures} string(s) use words outside unit ${SECTION}` : `  ✓ unit level: every Spanish token is an allowed ${SECTION} word`);
 

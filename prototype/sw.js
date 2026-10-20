@@ -7,7 +7,7 @@
 // Updates: bump VERSION (and APP_VERSION in js/app.js) on every release. The new worker
 // installs in the background, then the page tells it to take over (SKIP_WAITING) as
 // soon as no lesson is running (js/app.js); old caches are deleted on activate.
-const VERSION = "2026-10-20.lock-map";
+const VERSION = "2026-10-21.maps";
 const SHELL = `buhisimo-shell-${VERSION}`;
 const MEDIA = `buhisimo-media-${VERSION}`;
 const RUNTIME = "buhisimo-runtime";

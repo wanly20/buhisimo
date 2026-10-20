@@ -69,13 +69,17 @@ async function newPage(viewport, { touch = false } = {}) {
   const ctx = await browser.newContext({ viewport, hasTouch: touch, acceptDownloads: true });
   await ctx.addInitScript(MOCK_SPEECH);
   const page = await ctx.newPage();
-  page.on("console", (m) => { if (m.type() === "error" && !/favicon/.test(m.text())) errors.push(`console.error: ${m.text()}`); });
+  // A missing file is reported by its URL (below); optional art may be missing (the scene falls back to a character).
+  page.on("console", (m) => { if (m.type() === "error" && !/favicon|Failed to load resource: the server responded with a status of 404/.test(m.text())) errors.push(`console.error: ${m.text()}`); });
+  page.on("response", (r) => { if (r.status() === 404 && !/favicon|assets\/cocora-valley\.webp$/.test(r.url())) errors.push(`404: ${r.url()}`); });
   page.on("pageerror", (e) => errors.push(`pageerror: ${e.message}`));
   page.on("requestfailed", (r) => { if (!OFFLINE && !/canvas-confetti|fonts\.g/.test(r.url()) && !/ERR_ABORTED/.test(r.failure()?.errorText || "")) errors.push(`requestfailed: ${r.url()} ${r.failure()?.errorText}`); });
   return { ctx, page };
 }
 
 const wait = (page, ms) => page.waitForTimeout(ms);
+// SECTIONS=A,M runs only those sections (default: all).
+const RUN = (k) => !process.env.SECTIONS || process.env.SECTIONS.split(",").includes(k);
 const step = (page) => page.evaluate(() => {
   const s = window.__buho?.step();
   const ex = document.querySelector(".lesson-body .ex:not(.step-leave)");
@@ -203,7 +207,7 @@ const LESSON_IDS = Array.from({ length: 11 }, (_, i) => `1.1-${i + 1}`);
 
 // ===================================================================== A. desktop 1366×768: the whole unit
 log("A. Chromebook 1366×768: every 1.1 lesson in order, keyboard play");
-{
+if (RUN("A")) {
   const { ctx, page } = await newPage({ width: 1366, height: 768 });
   await page.goto(BASE + "index.html");
   await page.evaluate(() => localStorage.clear());
@@ -356,7 +360,7 @@ log("A. Chromebook 1366×768: every 1.1 lesson in order, keyboard play");
 
 // ===================================================================== B. story details + tap to hear
 log("B. Story lesson details (1366×768)");
-{
+if (RUN("B")) {
   const { ctx, page } = await newPage({ width: 1366, height: 768 });
   // Record what is spoken: recorded clips (HTMLMediaElement.play) and the computer voice.
   await page.addInitScript(() => {
@@ -415,7 +419,7 @@ log("B. Story lesson details (1366×768)");
 
 // ===================================================================== C. phone 390×844
 log("C. Phone 390×844: tab bar, lessons with touch, views");
-{
+if (RUN("C")) {
   const { ctx, page } = await newPage({ width: 390, height: 844 }, { touch: true });
   await page.goto(BASE + "index.html");
   await page.evaluate(() => localStorage.clear());
@@ -453,7 +457,7 @@ log("C. Phone 390×844: tab bar, lessons with touch, views");
 
 // ===================================================================== D. tablet 820×1180: tab bar too
 log("D. Tablet 820×1180");
-{
+if (RUN("D")) {
   const { ctx, page } = await newPage({ width: 820, height: 1180 }, { touch: true });
   await page.goto(BASE + "index.html#/radio");
   await wait(page, 1300);
@@ -463,7 +467,7 @@ log("D. Tablet 820×1180");
 
 // ===================================================================== L. lessons lock one after the other
 log("L. Locks: sequential unlocking, no way round it by URL, the teacher override");
-for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width: 390, height: 844, tag: "m" }]) {
+if (RUN("L")) for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width: 390, height: 844, tag: "m" }]) {
   const { ctx, page } = await newPage({ width: vp.width, height: vp.height }, { touch: vp.tag === "m" });
   await page.goto(BASE + "index.html");
   await page.evaluate(() => localStorage.clear());
@@ -524,14 +528,15 @@ for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width: 390, height: 
 
 // ===================================================================== M. map questions
 log("M. Map questions: a labelled study map first, then no names; small places tappable on a phone");
-for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width: 390, height: 844, tag: "m" }]) {
+if (RUN("M")) for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width: 390, height: 844, tag: "m" }]) {
   const { ctx, page } = await newPage({ width: vp.width, height: vp.height }, { touch: vp.tag === "m" });
   await page.goto(BASE + "index.html");
   await page.evaluate(() => localStorage.clear());
   await page.goto(BASE + "index.html?unlock=all#/");
   await wait(page, 900);
-  const SHOT = new Set(["study-l2", "study-l7", "g-study-north", "g-study-south", "g-study-world", "map-pascua", "map-baleares", "map-canarias", "map-gq", "map-filipinas", "map-rd", "g-espana", "g-canarias", "c-map-cuba"]);
+  const SHOT = new Set(["study-l2", "study-l7", "g-study-north", "g-study-south", "g-study-world", "g-study-world-1", "g-study-world-2", "map-pascua", "map-baleares", "map-canarias", "map-gq", "map-filipinas", "map-rd", "g-espana", "g-canarias", "c-map-cuba"]);
   let maptaps = 0, studies = 0, hintDone = false;
+  const worldMaps = [];
   const problems = [];
   for (const id of ["1.1-2", "1.1-3", "1.1-6", "1.1-7", "1.1-10", "1.1-11"]) {
     await page.goto(BASE + `index.html#/lesson/${id}`);
@@ -543,6 +548,7 @@ for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width: 390, height: 
       const s = st.step;
       if (s.type === "mapstudy") {
         studies++;
+        if (s.id.startsWith("g-study-world")) worldMaps.push(s.id);
         await wait(page, 350); // labels are placed again after the entrance animation
         const labels = await page.$$eval(".ex-mapstudy .map-pin__label", (ls) => ls.filter((l) => l.getBoundingClientRect().width > 0).length);
         if (labels !== s.places.length) problems.push(`${id} ${s.id}: ${labels} of ${s.places.length} names shown`);
@@ -600,6 +606,8 @@ for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width: 390, height: 
       }
     }
   }
+  // Spain, Africa and Asia: one map on wide screens, two smaller ones on a phone (decision 2026-10-21)
+  ok(vp.tag === "m" ? worldMaps.join() === "g-study-world-1,g-study-world-2" : worldMaps.join() === "g-study-world", `${vp.tag}: the Spain/Africa/Asia study map is ${vp.tag === "m" ? "split in two on a phone" : "one map"} (${worldMaps.join(", ")})`);
   ok(studies >= 7 && maptaps >= 20, `${vp.tag}: ${studies} study maps and ${maptaps} map questions seen`);
   ok(problems.length === 0, `${vp.tag}: every map question has no names before CHECK, 44px+ targets inside the map, no overlaps${problems.length ? ": " + problems.join("; ") : ""}`);
   await ctx.close();
@@ -607,7 +615,7 @@ for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width: 390, height: 
 
 // ===================================================================== E. audio coverage
 log("E. Audio coverage");
-{
+if (RUN("E")) {
   const wrongBadges = badges.filter((b) => b.texts.length && b.texts.every(hasClip));
   ok(wrongBadges.length === 0, `no "Audio coming soon" badge for a line that has a recording${wrongBadges.length ? ": " + [...new Set(wrongBadges.map((b) => `${b.where}: ${b.texts.join(" / ")}`))].join("; ") : ""}`);
   const still = [...new Set(badges.filter((b) => !b.texts.every(hasClip)).flatMap((b) => b.texts.filter((t) => !hasClip(t))))];

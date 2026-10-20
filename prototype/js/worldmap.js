@@ -7,21 +7,35 @@ import { esc } from "./ui.js";
 // Every place the unit names. `shape` = the country drawn for it; `es` = its name
 // (a 1.1 item, so it's allowed on screen); lon/lat = where the pin goes.
 export const PLACES = {
-  co: { es: "Colombia", en: "Colombia", lon: -73.5, lat: 4.5, shape: "co" },
-  es: { es: "España", en: "Spain", lon: -3.7, lat: 40.2, shape: "es" },
-  au: { es: "Australia", en: "Australia", lon: 134, lat: -25.5, shape: "au" },
-  ar: { es: "Argentina", en: "Argentina", lon: -64.5, lat: -34.5, shape: "ar" },
-  cl: { es: "Chile", en: "Chile", lon: -72, lat: -36.5, shape: "cl" }, // pin on the thin strip, clear of Argentina
-  pe: { es: "Perú", en: "Peru", lon: -75.5, lat: -9.8, shape: "pe" },
-  cu: { es: "Cuba", en: "Cuba", lon: -79, lat: 21.8, shape: "cu" },
-  us: { es: "Estados Unidos", en: "the United States", lon: -98, lat: 39, shape: "us" },
-  do: { es: "República Dominicana", en: "the Dominican Republic", lon: -70.4, lat: 18.9, shape: "do" },
-  gq: { es: "Guinea Ecuatorial", en: "Equatorial Guinea", lon: 10.4, lat: 1.6, shape: "gq" },
-  ph: { es: "las Islas Filipinas", en: "the Philippines", lon: 122, lat: 12.5, shape: "ph" },
-  pascua: { es: "la Isla de Pascua", en: "Easter Island", lon: -109.35, lat: -27.1, shape: "cl", island: true },
-  canarias: { es: "las Islas Canarias", en: "the Canary Islands", lon: -15.6, lat: 28.3, shape: "es", island: true },
-  baleares: { es: "las Islas Baleares", en: "the Balearic Islands", lon: 2.9, lat: 39.6, shape: "es", island: true },
+  co: { es: "Colombia", en: "Colombia", lon: -73.5, lat: 4.5, shape: "co", region: "southAmerica" },
+  es: { es: "España", en: "Spain", lon: -3.7, lat: 40.2, shape: "es", region: "spainAfrica" },
+  au: { es: "Australia", en: "Australia", lon: 134, lat: -25.5, shape: "au", region: "australia" },
+  ar: { es: "Argentina", en: "Argentina", lon: -64.5, lat: -34.5, shape: "ar", region: "southAmerica" },
+  cl: { es: "Chile", en: "Chile", lon: -72, lat: -36.5, shape: "cl", region: "southAmerica" }, // pin on the thin strip, clear of Argentina
+  pe: { es: "Perú", en: "Peru", lon: -75.5, lat: -9.8, shape: "pe", region: "southAmerica" },
+  cu: { es: "Cuba", en: "Cuba", lon: -79, lat: 21.8, shape: "cu", region: "caribbean" },
+  us: { es: "Estados Unidos", en: "the United States", lon: -98, lat: 39, shape: "us", region: "northAmerica" },
+  do: { es: "República Dominicana", en: "the Dominican Republic", lon: -70.4, lat: 18.9, shape: "do", region: "caribbean" },
+  gq: { es: "Guinea Ecuatorial", en: "Equatorial Guinea", lon: 10.4, lat: 1.6, shape: "gq", region: "africa" },
+  ph: { es: "las Islas Filipinas", en: "the Philippines", lon: 122, lat: 12.5, shape: "ph", region: "seAsia" },
+  pascua: { es: "la Isla de Pascua", en: "Easter Island", lon: -109.35, lat: -27.1, shape: "cl", island: true, region: "southAmericaPacific" },
+  canarias: { es: "las Islas Canarias", en: "the Canary Islands", lon: -15.6, lat: 28.3, shape: "es", island: true, region: "spainAfrica" },
+  baleares: { es: "las Islas Baleares", en: "the Balearic Islands", lon: 2.9, lat: 39.6, shape: "es", island: true, region: "spainAfrica" },
 };
+// Locator regions [west, north, east, south] in degrees: a continent or a region students know.
+export const REGIONS = {
+  southAmerica: [-84, 14, -33, -56],                 // Colombia, Perú, Chile, Argentina
+  southAmericaPacific: [-119, 14, -33, -56],         // + la Isla de Pascua, far out in the Pacific
+  caribbean: [-106, 31, -58, 4],                      // Cuba, República Dominicana: the Caribbean and Central America
+  northAmerica: [-127, 52, -60, 8],                   // Estados Unidos with Mexico and the Caribbean
+  spainAfrica: [-23, 46, 10, 22],                      // España, las Islas Baleares, las Islas Canarias: Spain and NW Africa
+  africa: [-19, 38, 52, -36],                         // Guinea Ecuatorial: all of Africa
+  seAsia: [90, 32, 137, -11],                         // las Islas Filipinas: SE Asia
+  australia: [110, -8, 157, -45],
+};
+// Places drawn with a callout ring on a locator map (too small to see as a shape).
+const SMALL = new Set(["gq", "cu", "do", "ph"]);
+
 // Countries where Spanish is an official language (for "hispanohablante").
 const HISPANIC_FOCUS = ["co", "es", "ar", "cl", "pe", "cu", "do", "gq"];
 
@@ -58,11 +72,13 @@ export function mapFrame({ focus = null, choices = [], highlight = [], pins = fa
     HISPANIC_FOCUS.forEach((c) => tint.add(c));
     view = fit([[X(-118), Y(48)], [X(14), Y(-55)]], aspect, { pad: 20 });
   } else if (focus) {
+    // Locator map (decision 2026-10-21, Juan): zoom out to the whole continent or a large region
+    // the student recognises, never a patch of sea; small places get a callout ring.
     const p = PLACES[focus];
     tint.add(p.shape);
-    if (p.island || ["gq", "cu", "do"].includes(focus)) dots.push(focus);
-    const span = p.island || focus === "gq" ? 380 : ["us", "au", "ar", "cl"].includes(focus) ? 520 : 420;
-    view = fit([[X(p.lon), Y(p.lat)]], aspect, { pad: span / 2, minW: span });
+    if (p.island || SMALL.has(focus)) dots.push(focus);
+    const [w, n, e, s] = REGIONS[p.region];
+    view = fit([[X(w), Y(n)], [X(e), Y(s)], [X(p.lon), Y(p.lat)]], aspect, { pad: 30, minW: 300 });
   } else {
     view = fit(choices.map((c) => [X(PLACES[c].lon), Y(PLACES[c].lat)]), aspect, { pad: 110, minW: 420 });
   }
@@ -92,7 +108,8 @@ export function mapFrame({ focus = null, choices = [], highlight = [], pins = fa
         <span class="map-mark__name" lang="es">${esc(PLACES[c].es)}</span>
       </button>`;
   }).join("") : "";
-  const dotHtml = dots.map((c) => { const [l, t] = pct(c); return `<span class="map-dot" style="left:${l.toFixed(2)}%;top:${t.toFixed(2)}%" aria-hidden="true"></span>`; }).join("");
+  // A dot on the place and a callout ring round it, so a small island or country is easy to find.
+  const dotHtml = dots.map((c) => { const [l, t] = pct(c); return `<span class="map-callout" style="left:${l.toFixed(2)}%;top:${t.toFixed(2)}%" aria-hidden="true"></span><span class="map-dot" style="left:${l.toFixed(2)}%;top:${t.toFixed(2)}%" aria-hidden="true"></span>`; }).join("");
   const label = focus === "hispanic" ? "Map: the Spanish-speaking countries in turquoise"
     : focus ? `Map: where ${PLACES[focus].en} is` : quiz ? "Map with numbered places" : "Map";
   return `

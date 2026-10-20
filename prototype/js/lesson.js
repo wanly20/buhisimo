@@ -2,7 +2,7 @@
 // Each exercise is a controller: { el, mount?(), check?() -> result, footer, destroy?() }.
 // Results: { ok, nearly?, title?, body?, answerEs?, owl? }.
 import { icon } from "./icons.js";
-import { $, $$, esc, es, rich, el, button, footBar, audioButtons, charImg, flagImg, shuffle, pick, restartAnim, reducedMotion, toast, openModal } from "./ui.js";
+import { $, $$, esc, es, rich, el, button, footBar, audioButtons, charImg, flagImg, CHAR_ALT, shuffle, pick, restartAnim, reducedMotion, toast, openModal } from "./ui.js";
 import { tts, stt, fold, speechMatches } from "./speech.js";
 import { sfx } from "./sound.js";
 import { store } from "./store.js";
@@ -17,7 +17,10 @@ export const hasAudio = (text) => !!text && (tts.hasClip(text) || store.get().ro
 export function runLesson(app, lesson, { onExit, onComplete, openSettings, onGraded }) {
   // ------------------------------------------------------------ queue
   const unsupported = [];
-  let queue = lesson.steps.filter((s) => {
+  // A crowded study map can be split into smaller maps on phones (`phoneSplit`, < 700px wide).
+  const narrow = window.innerWidth < 700;
+  const expanded = lesson.steps.flatMap((s) => (narrow && s.phoneSplit ? s.phoneSplit.map((p, k) => ({ ...s, ...p, id: `${s.id}-${k + 1}`, phoneSplit: undefined })) : [s]));
+  let queue = expanded.filter((s) => {
     if (s.type === "speak" && !stt.available()) { unsupported.push("speaking"); return false; }
     if (s.type === "speak" && !store.speakOn()) return false;
     // Listening is never audio-only without a recording: those steps become
@@ -344,6 +347,8 @@ function head(title, badge = "") {
 function artHtml(step, cls = "intro-char") {
   if (step.map) return `<div class="intro-map">${mapFrame({ focus: step.map, aspect: 1, pins: false })}</div>`;
   if (step.art) return `<img class="${cls} intro-noun" src="assets/${step.art}.webp" alt="" draggable="false">`;
+  // A scene picture (e.g. the Cocora Valley); if the file isn't there yet, the character shows instead.
+  if (step.scene) return `<img class="${cls} intro-scene" src="assets/${step.scene}.webp" alt="${esc(step.sceneAltEn || "")}" draggable="false" data-fallback="${esc(step.character || "owl-explaining")}">`;
   return `${charImg(step.character, cls)}${step.flag ? flagImg(step.flag, "flag intro-flag") : ""}`;
 }
 
@@ -395,6 +400,12 @@ function intro(step, api) {
       ${step.noteEn ? `<p class="note">${icon("lightbulb", 20, 2.5)}<span>${rich(step.noteEn)}</span></p>` : ""}
     </div>`);
   node.querySelector(".ex-head .h-title").remove();
+  node.querySelector("img.intro-scene")?.addEventListener("error", (e) => {
+    const img = e.currentTarget;
+    img.classList.remove("intro-scene");
+    img.src = `assets/${img.dataset.fallback}.webp`;
+    img.alt = CHAR_ALT[img.dataset.fallback] || "";
+  }, { once: true });
   const audible = markAudio(node, step.es);
   wireAudio(node, api, step.es);
   if (step.exampleEs && !hasAudio(step.exampleEs)) node.querySelector("[data-ex]")?.replaceWith(el(audioSoon(true)));

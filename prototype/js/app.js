@@ -14,7 +14,7 @@ import { gradeStep, meetLesson, buildReview, reviewViewHtml, dueItems, metItems 
 import { mountRadio, stopRadio } from "./radio.js";
 
 // Bump together with VERSION in sw.js for every release (tools/e2e-unit.mjs checks they match).
-export const APP_VERSION = "2026-10-20.lock-map";
+export const APP_VERSION = "2026-10-21.maps";
 
 const app = document.getElementById("app");
 applyFont(store.get().font);
@@ -69,6 +69,9 @@ const isOpen = (id) => {
   return !!store.get().unlockAll || isDone(id) || i <= currentIndex();
 };
 const titleHtml = (l) => (l.titleEs ? es(l.titleEs) : esc(l.titleEn));
+/** Spanish titles get a small English line underneath (decision 2026-10-21). */
+const enLine = (l, cls = "node-pop__en") => (l.titleEs ? `<p class="${cls}">${esc(l.titleEn)}</p>` : "");
+const unitSize = (l) => LESSONS.filter((x) => x.unit === l.unit).length;
 
 // =================================================================== router
 // #/ path · #/review · #/radio · #/profile (views inside the path screen)
@@ -188,7 +191,9 @@ function showPath(view = "path") {
     closePop();
     if (node) { sfx.select(); openPop(node, e.detail === 0); }
   });
-  scroller.addEventListener("scroll", closePop, { passive: true });
+  // Scrolling closes the popover, except the scroll we start ourselves to bring a popover into view.
+  let ownScrollUntil = 0;
+  scroller.addEventListener("scroll", () => { if (Date.now() > ownScrollUntil) closePop(); }, { passive: true });
   screen.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && $(".node-pop", screen)) {
       const node = $(".node-pop", screen).closest(".node-wrap").querySelector(".node");
@@ -215,11 +220,11 @@ function showPath(view = "path") {
       <div class="node-pop ${open ? `node-pop--${unit.theme}` : "node-pop--soon"}" style="--shift:${-x}px" role="dialog" aria-label="${esc(meta.labelEn)}">
         <span class="node-pop__arrow" style="--ax:${x}px"></span>
         ${open
-          ? `<h3 class="node-pop__title">${titleHtml(l)}</h3>
-             <p class="node-pop__meta">${esc(meta.labelEn)} · ${l.n} of ${LESSONS.length}${l.titleEs ? ` · ${esc(l.titleEn)}` : ""}</p>
+          ? `<h3 class="node-pop__title">${titleHtml(l)}</h3>${enLine(l)}
+             <p class="node-pop__meta">${esc(meta.labelEn)} · ${l.n} of ${unitSize(l)}</p>
              ${button(done ? `Practise again +${l.xpBase} XP` : `Start +${l.xpBase} XP`, { variant: "on-color", attrs: `data-start="${id}"` })}`
           : l
-            ? `<h3 class="node-pop__title">${titleHtml(l)}</h3>
+            ? `<h3 class="node-pop__title">${titleHtml(l)}</h3>${enLine(l)}
                <p class="node-pop__meta">${icon("lock", 14, 2.75)} Finish “${esc(prevL.titleEs || prevL.titleEn)}” first. One step at a time!</p>
                ${button("Locked", { variant: "secondary", attrs: "disabled" })}`
             : `<h3 class="node-pop__title node-pop__title--en">${esc(meta.labelEn)}</h3>
@@ -231,7 +236,7 @@ function showPath(view = "path") {
     if (viaKeyboard) setTimeout(() => pop.querySelector("button:not(:disabled)")?.focus({ preventScroll: true }), 80);
     setTimeout(() => {
       const r = pop.getBoundingClientRect(), sr = scroller.getBoundingClientRect();
-      if (r.bottom > sr.bottom - 12) scroller.scrollBy({ top: r.bottom - sr.bottom + 24, behavior: reducedMotion() ? "auto" : "smooth" });
+      if (r.bottom > sr.bottom - 12) ownScrollUntil = Date.now() + 900, scroller.scrollBy({ top: r.bottom - sr.bottom + 24, behavior: reducedMotion() ? "auto" : "smooth" });
     }, 60);
   }
 }

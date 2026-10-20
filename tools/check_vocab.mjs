@@ -49,6 +49,9 @@
 //   * Lesson size: counted items = "new" entries (a nested array such as ["soy", "de"] is
 //     one chunk = one item; names are not counted) + letter groups + "teaches" rule cards.
 //     More than 6 is a warning; more than 8 is a failure.
+//   * Lesson titles (decision 2026-10-21): every lesson has titleEs (Spanish, shown to students)
+//     and/or titleEn. titleEs is checked like a sentence of its own lesson: only words introduced
+//     by then, no bare nouns, plural rules taught (so «¿Sí o no?» fails in 1.1: o is 1.5).
 //   * Map sections ("parts" in the manifest, decision 2026-10-20): a long unit can be shown
 //     as two halves on the path. Parts must be contiguous lesson ranges covering the whole
 //     unit, every lesson's "part" must match, and the part title must pass at its unit.
@@ -559,7 +562,7 @@ if (manifest) {
     if (!lessonSentences.has(k)) lessonSentences.set(k, []);
     lessonSentences.get(k).push(s);
   }
-  let lessonFails = 0, sizeWarnings = 0, sizeFails = 0;
+  let lessonFails = 0, sizeWarnings = 0, sizeFails = 0, titlesChecked = 0, titleFails = 0;
   const firstIntro = new Map(), ruleAt = new Map();
   for (const l of manifest) {
     const at = `${l.unit} L${l.lesson}`;
@@ -612,6 +615,15 @@ if (manifest) {
     else if (counted.length > SOFT_MAX_NEW) { sizeWarnings++; log(`WARN  ${tag}: ${counted.length} new items, above ${SOFT_MAX_NEW}: ${counted.join(", ")}`); }
     else if (VERBOSE && counted.length) log(`      ${tag}: ${counted.length} new: ${counted.join(", ")}`);
     const dictFor = (extra) => buildDict({ maxSection: sec, extra, introduced });
+    // Lesson titles (decision 2026-10-21): titleEs is shown to students, so it obeys the same
+    // rules as a sentence of that lesson (words introduced by then, no bare nouns, plural rules).
+    if (!l.titleEs && !l.titleEn) { failures++; lessonFails++; log(`FAIL  ${tag}: needs a title (titleEs and/or titleEn)`); }
+    if (l.title) { failures++; lessonFails++; log(`FAIL  ${tag}: "title" is ambiguous: use titleEs (Spanish, checked) and titleEn (English)`); }
+    if (l.titleEs) {
+      titlesChecked++;
+      const r = classify({ unit: l.unit, es: l.titleEs }, dictFor, { taught, letters: lettersIn });
+      if (r.status === "FAIL") { failures++; lessonFails++; titleFails++; log(`FAIL  ${tag}: title «${l.titleEs}» -> not allowed at this lesson: ${r.bad.map(hint).join(", ")}`); }
+    }
     for (const s of lessonSentences.get(`${l.unit}|${l.lesson}`) ?? []) {
       const r = classify(s, dictFor, { taught, letters: lettersIn });
       if (r.status === "FAIL") {
@@ -627,6 +639,7 @@ if (manifest) {
   const withNew = sizes.filter((n) => n > 0);
   log(`  lessons: ${manifest.length} (${[...counts].map(([u, n]) => `${u}: ${n}`).join(", ")}); items introduced: ${introduced.size}; plural rules taught: ${[...taught].join(", ") || "none"}`);
   log(`  lessons with new items: ${withNew.length}, average ${(withNew.reduce((a, b) => a + b, 0) / (withNew.length || 1)).toFixed(1)} counted items, largest ${Math.max(0, ...withNew)}`);
+  log(`  lesson titles: ${titlesChecked} Spanish titles checked at their own lesson, ${titleFails} failing; ${manifest.filter((l) => !l.titleEs).length} lessons have an English title only`);
   log(`  lesson-level failures: ${lessonFails}; lessons above ${SOFT_MAX_NEW} items: ${sizeWarnings} (warning); above ${HARD_MAX_NEW}: ${sizeFails} (failure)`);
   if (missing.length) log(`  WARN not introduced in any lesson (${secStr(lo)}–${secStr(hi)} rows): ${missing.map((m) => `${m.key} [${secStr(m.section)} ${m.file}]`).join(", ")}`);
   else log(`  coverage: every vocabulary, helper, letter and name row in ${secStr(lo)}–${secStr(hi)} is introduced`);

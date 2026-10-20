@@ -53,6 +53,14 @@
    - **Plausible distractors:** neighbours and look-alikes, never a far-away country on its own: Argentina / Chile / Perú / Colombia; Cuba / República Dominicana / Estados Unidos; las Islas Baleares / las Islas Canarias / España; Guinea Ecuatorial / las Islas Canarias / España; la Isla de Pascua / Chile / Perú; las Islas Filipinas / Australia / la Isla de Pascua.
    - **Small places on a phone:** every ring is a 48 px target; rings that would overlap at 390 px wide (Cuba and the Dominican Republic, Spain and the Balearics) are spread apart with a leader line to the real spot. The e2e test checks every map question at 390×844 and 1366×768 (targets ≥ 44 px, inside the map, no overlaps, no names before CHECK).
 
+
+### Decisions applied on 21 October 2026
+
+1. **Lesson titles obey the vocabulary rules.** A title is Spanish students read, so it may only use words taught by that lesson, with no bare nouns. Each lesson in `content/lessons_1.1-1.6.json` now has `titleEs` (shown in Spanish, with a small English line, `titleEn`, underneath) or only `titleEn` when no Spanish title fits yet. The validator checks every `titleEs` at its own lesson (§10). Renamed in 1.1: «¿Sí o no?» → **«¿Sí? ¿No?»** (L4), «Islas y destinos» → **«El destino»** (L7), «Famoso e histórico» → **«¡Max es famoso!»** (L8), «Max y el mapa» → **«El mapa de Max»** (L9). Titles in 1.2–1.6 that failed are renamed in the lesson headings below (each heading notes its old title): mostly *Repaso:*, *Radio Búho:* and English check titles, plus «Be, ce, de… y llamarse», «Las letras raras…», «El carnet de Max» (*el* before 1.4), «Un jeep de colores», «Bolígrafos marrones, hojas de papel» (bare plurals).
+2. **Locator maps show a whole region.** Juan: the *Isla de Pascua* card showed a square of ocean with a dot, and *Guinea Ecuatorial* only a patch of coast. Every locator card now zooms out to the continent or a region students recognise (South America, with the Pacific for Pascua; the Caribbean and Central America; North America; Spain and North-West Africa; all of Africa; South-East Asia; Australia), tints the country it belongs to (Chile for Pascua, Spain for the Canarias and Baleares) and puts a callout ring round small places. The cards are bigger, too.
+3. **Crowded study maps split on phones.** In Map tap (1.1 L10), «Spain, Africa and Asia» becomes two maps below 700 px wide: Spain and Africa, then Asia and Australia. Wider screens keep one.
+4. **Story canon approved** (§3): birthdays and favourite colours.
+5. **A scene picture for Cocora.** 1.1 L8's *Cocora es famoso.* card shows a picture of the Cocora Valley (wax palms in the mist) instead of the owl, once `prototype/assets/cocora-valley.webp` exists; until then the owl shows.
 ---
 
 ## 1. How to read this plan
@@ -96,7 +104,17 @@
 | 1.5 | Choosing a Willys jeep to drive up to Cocora: everyone has a different favourite colour, and they take the jeep with all of them. | same |
 | 1.6 | First day at Valentina and Samuel's school. Max has no backpack: everything is in his pouch, except the scissors. The Unit 1 boss is Buhísimo's welcome poster. | same |
 
-**Story canon proposed here (change freely):** birthdays are Samuel 1 May, Matilda 1 March, Valentina 20 July, Max 29 February and Buhísimo 1 January. Favourite colours are Matilda green (eucalyptus), Max red, Valentina purple, Samuel blue and Buhísimo brown (he's a little proud of himself).
+**Story canon (approved by Juan, 21 October 2026).**
+
+| Character | Birthday | Favourite colour |
+|---|---|---|
+| Max | 29 de febrero (a leap-day kangaroo: only three real birthdays so far) | rojo |
+| Valentina | 20 de julio (Colombia's Independence Day) | morado |
+| Matilda | 15 de junio | verde (eucalyptus) |
+| Samuel | 10 de enero | azul |
+| Buhísimo | 7 de agosto | marrón (he's a little proud of himself) |
+
+The birthdays fall on the hardest months on purpose, for exposure: *febrero*, *julio* and *junio* (a look-alike pair: Matilda 15 *junio*, Valentina 20 *julio*), *enero* and *agosto*. The 1.4 and 1.6 sentences use these dates (1.4 L9 can only say *el primero / el uno*, since *el* + number arrives in L10, so L9 asks about the month: *¿Mi cumpleaños? Enero.*).
 
 ---
 
@@ -130,7 +148,7 @@
 - **Examples:** Tú eres de Australia. · Soy Buhísimo. Tú eres Matilda. · Él es de Estados Unidos. · Ella es de República Dominicana.
 - **Story:** Buhísimo plays a guessing game: "Tú eres… Matilda!"
 
-### 1.1 L4 · learn · ¿Sí o no? *(new: P1)*
+### 1.1 L4 · learn · ¿Sí? ¿No? *(new: P1; title renamed 21 Oct: o is 1.5)*
 - **Goal:** answer yes/no questions; *no* before the verb.
 - **New (2):** sí, no (H). Two items and a lot of retrieval of L1–L3.
 - **Worked example:** *¿Eres de España? — No, soy de Australia.* Watch-out card: *sí* (yes) has an accent; *si* (if) comes in 3.4.
@@ -151,21 +169,21 @@
 - **Examples:** Chile es hispanohablante. · El mapa: el mundo hispanohablante. · La lengua de Guinea Ecuatorial es el español. · El español es la lengua de Cuba. · ¿La lengua de Chile? ¡El español!
 - **Story:** Max unfolds his map. Buhísimo shows that Spanish is spoken on four continents, including Equatorial Guinea in Africa.
 
-### 1.1 L7 · learn · Islas y destinos
+### 1.1 L7 · learn · El destino *(title renamed 21 Oct: y is 1.5, and «islas» would be a bare plural)*
 - **New (5):** la Isla de Pascua, las Islas Canarias, las Islas Baleares, las Islas Filipinas, el destino (C).
 - **Review:** *¿De dónde es?*, él/ella, L6 map words.
 - **Exercises:** maptap islands; listen → pick island; tiles "El destino es ___".
 - **Examples:** El destino es la Isla de Pascua. · La Isla de Pascua es de Chile. · Ella es de las Islas Canarias. · ¿El destino? ¡Las Islas Filipinas!
 - **Culture note (English):** Spanish was an official language in the Philippines for centuries, and many Filipino words come from Spanish. Avoid saying the Philippines *is* Spanish-speaking today.
 
-### 1.1 L8 · learn · Famoso e histórico
+### 1.1 L8 · learn · ¡Max es famoso! *(title renamed 21 Oct: e is 1.5)*
 - **Goal:** describe places; the first agreement contrast (*famoso/famosa*).
 - **New (4):** famoso/a, histórico/a, el monumento, la capital (C) · *name:* Cocora (N).
 - **Exercises:** intro pair "El monumento es histórico / La capital es histórica" (worked example of agreement); `sort` -o/-a by noun; gap with both forms.
 - **Examples:** El monumento es famoso. · La capital es histórica. · Cocora es famoso. · La Isla de Pascua es famosa. · ¡Max es famoso!
 - **Story:** In the plaza everyone wants a photo with the kangaroo: "¡Max es famoso!"
 
-### 1.1 L9 · story · Max y el mapa
+### 1.1 L9 · story · El mapa de Max *(title renamed 21 Oct: y is 1.5)*
 Buhísimo, Matilda and Max in the plaza. 10 lines, all 1.1 words. Checks after lines 4, 7 and 10.
 ```
 B:  ¿De dónde eres, Matilda?
@@ -183,10 +201,10 @@ X:  (a crowd is watching him) ¡Soy famoso!
     [check] Put the last three lines in order.
 ```
 
-### 1.1 L10 · game · Map tap
+### 1.1 L10 · game · Game: map tap *(title until 21 Oct: «Map tap»)*
 - First three labelled study maps (the Caribbean, South America, Spain / Africa / Asia), then hear "Ella es de Guinea Ecuatorial" → tap the place on a map **without names** (decision 20 Oct: numbered rings, neighbours as distractors, "Show the names" costs the bonus). Later rounds add islands and *soy/eres/es*. Sentences come from a closed list (subject × country, all validated). **Examples:** Él es de Guinea Ecuatorial. · Soy de las Islas Canarias.
 
-### 1.1 L11 · check · Passport control
+### 1.1 L11 · check · Unit check: passport control *(title until 21 Oct: «Passport control»)*
 - 12–15 items: every 1.1 item at least once, mostly type and listen; one maptap round; production: type 3 sentences from English. The boss finale: Buhísimo stamps passports by asking three tourists *¿De dónde eres?* (listen, then type their answer).
 - **Production examples:** Soy de Australia. ¿De dónde eres? · ¿Eres de Argentina? — No, soy de Chile. · La lengua de Perú es el español. · La capital es famosa.
 
@@ -197,7 +215,7 @@ X:  (a crowd is watching him) ¡Soy famoso!
 **Unit goal:** greet and say goodbye at the right time of day; ask how someone is and answer; say how someone else is (*está*); say and spell with the Spanish alphabet.
 **Infinitives (decision 2):** *escribir* and *llamarse* are 1.2 CSV rows and are taught here, in the alphabet lessons, as spelling targets with their meaning (*escribir* = to write, *llamarse* = to be called). Their forms come later (*me llamo…* in 1.3).
 
-### 1.2 L1 · repaso · ¿De dónde eres?
+### 1.2 L1 · repaso · ¿De dónde es Max? *(title until 21 Oct: «¿De dónde eres?»)*
 - 10–12 items: 1.1 countries, *soy/eres/es*, *sí/no*, *¿De dónde…?*. **Example:** ¿De dónde es Max? — Es de Australia.
 
 ### 1.2 L2 · learn · ¡Hola!
@@ -244,7 +262,7 @@ X:  Mal… muy mal.
 B:  ¡Hasta luego, Max!
 ```
 
-### 1.2 L8 · listen · Radio Búho: ¿Qué tal?
+### 1.2 L8 · listen · ¡Hola, Buhísimo! *(title until 21 Oct: «Radio Búho: ¿Qué tal?»)*
 - Buhísimo takes four calls from four countries. Students fill a grid (country × face) on the first listen, then listen again with the transcript.
 - **Script:** ¡Buenas tardes! Soy Buhísimo. ¿Qué tal? · ¡Hola, Buhísimo! Soy de Argentina. Muy bien, gracias. · ¡Hola! Soy de Cuba. Regular. · Buenas tardes. Soy de España. ¡Fenomenal! · ¡Hola! Soy de Perú. Fatal. · ¡Hasta luego, Argentina, Cuba, España, Perú!
 
@@ -256,23 +274,23 @@ B:  ¡Hasta luego, Max!
 - **Examples:** El alfabeto: a, e, i, o, u. · ¿Cómo se escribe «ella»? — E, ele, ele, a. · ¿Cómo se escribe «eres»? — E, erre, e, ese. · ¿Cómo se escribe «fenomenal»? — Efe, e, ene, o, eme, e, ene, a, ele.
 - **Validator note:** a bare letter name (*eme*) is allowed only in a spelling line (one that contains *se escribe* or *alfabeto*, or is marked `"spell": true`). Elsewhere a letter is a noun like any other: *la eme*.
 
-### 1.2 L10 · learn · Be, ce, de… y llamarse
+### 1.2 L10 · learn · ¿Cómo se escribe Matilda? *(title until 21 Oct: «Be, ce, de… y llamarse»)*
 - **New (5):** escribir, llamarse (C, infinitives) · *letters:* be ce de ge pe te (one group: "letter + e") · hache · cu.
 - **Clip:** A3 (be, ce, de, ge, pe, te).
 - **Exercises:** spell names from 1.1 (dictation and tiles); accent fix-up (*Peru → Perú*, *Buhisimo → Buhísimo*); intro cards for the two infinitives, then spell them. *Llamarse* shows that *ll* is spelt "ele, ele".
 - **Examples:** ¿Cómo se escribe Salento? — Ese, a, ele, e, ene, te, o. · ¿Cómo se escribe «hola»? — Hache, o, ele, a. · ¿Cómo se escribe Matilda? — Eme, a, te, i, ele, de, a. · ¿Cómo se escribe «escribir»? — E, ese, ce, erre, i, be, i, erre. · ¿Cómo se escribe «llamarse»? — Ele, ele, a, eme, a, erre, ese, e.
 
-### 1.2 L11 · learn · Las letras raras: ka, uve, equis…
+### 1.2 L11 · learn · ¿Cómo se escribe Max? *(title until 21 Oct: «Las letras raras: ka, uve, equis…»)*
 - **New (6):** *letters:* ka · uve · doble ve · equis · ye · zeta (each its own item: no shared pattern).
 - **Letter names chosen by Juan:** **uve** (not *ve corta / ve chiquita*) and **ye** (not *i griega*), following the RAE 2010 recommendation. **W = doble ve**, chosen by Juan on 20 Oct 2026 (the usual Colombian name).
 - **Clip:** A4 (ka, uve, doble ve, equis, ye, zeta).
 - **Examples:** ¿Cómo se escribe Max? — Eme, a, equis. · ¿Cómo se escribe «soy»? — Ese, o, ye. · ¿Cómo se escribe «muy»? — Eme, u, ye.
 
-### 1.2 L12 · listen · Radio Búho: el alfabeto *(podcast and chant, §11)*
+### 1.2 L12 · listen · ¡El alfabeto! *(podcast and chant, §11; title until 21 Oct: «Radio Búho: el alfabeto»)*
 - The full episode: the four family chants, the whole alphabet in order, then listeners phone in to spell their country or name. Students fill a spelling grid on the first listen.
 - **Examples:** A, be, ce, de, e, efe, ge, … · ¡Hola, Buhísimo! Soy de Chile. Ce, hache, i, ele, e. · ¿Cómo se escribe Melbourne? — Eme, e, ele, be, o, u, erre, ene, e.
 
-### 1.2 L13 · check · The plaza
+### 1.2 L13 · check · Unit check: the plaza *(title until 21 Oct: «The plaza»)*
 - Every 1.2 item; one listening grid; one spelling dictation; production: build and speak a greeting exchange for a given time of day and mood.
 - **Examples:** ¡Hola! ¿Cómo estás? — Muy bien, gracias. ¿Y tú? · Buenas tardes, Max. ¿Qué tal? · Matilda está muy bien. · ¿Cómo se escribe España? — E, ese, pe, a, eñe, a.
 
@@ -294,7 +312,7 @@ Why here: the cut falls after the first big block (names, 1–20 and age, practi
 
 **Section 1.3a · ¿Cómo te llamas? (L1–L11)**
 
-### 1.3 L1 · repaso · ¿Qué tal?
+### 1.3 L1 · repaso · Buenas tardes, ¿qué tal? *(title until 21 Oct: «¿Qué tal?»)*
 - 1.2 greetings and feelings plus 1.1 countries and a spelling item. **Example:** Buenas tardes, Matilda. ¿Cómo estás? — Regular.
 
 ### 1.3 L2 · learn · Me llamo Valentina
@@ -304,7 +322,7 @@ Why here: the cut falls after the first big block (names, 1–20 and age, practi
 - **Examples:** ¡Hola! Me llamo Valentina. · ¿Cómo te llamas? — Me llamo Valentina. · ¿Cómo se llama él? — Se llama Samuel. · Ella se llama Matilda. · ¿Te llamas Samuel? — Sí, me llamo Samuel.
 - **Story:** The Restrepo house. Valentina (12) and Samuel (13) meet the visitors.
 
-### 1.3 L3 · conjugation · llamarse
+### 1.3 L3 · conjugation · Me llamo, te llamas, se llama *(title until 21 Oct: «llamarse»)*
 - **Goal:** the first conjugation lesson. Llamarse has 4 forms (infinitive + me llamo / te llamas / se llama), so it meets the ≥4 rule (§7). Table → choose the form for the person → type. Then the cross-verb pattern with *soy/eres/es*.
 - **Examples:** Me llamo Matilda. Soy de Melbourne. · Te llamas Samuel. Eres de Colombia. · Se llama Buhísimo. Es de Salento. · Me llamo, te llamas, se llama.
 
@@ -317,7 +335,7 @@ Why here: the cut falls after the first big block (names, 1–20 and age, practi
 - **New (5):** seis, siete, ocho, nueve, diez (C). **Clip:** N2.
 - **Examples:** Seis, siete, ocho, nueve, diez. · Dos, cuatro, seis, ocho, diez. · Seis, siete, ocho, nueve, diez: ¡fenomenal!
 
-### 1.3 L6 · game · Number Invaders 1–10
+### 1.3 L6 · game · Game: Number Invaders 1–10 *(title until 21 Oct: «Number Invaders 1–10»)*
 - Hear a number → shoot the digit (audio cue mode); calm mode available. **Example:** Uno, tres, cinco, siete, nueve.
 
 ### 1.3 L7 · learn · Once… quince
@@ -338,13 +356,13 @@ Why here: the cut falls after the first big block (names, 1–20 and age, practi
 - **Goal:** person contrast for *tener*, alongside *llamarse* and *ser* (tener has only 3 forms, so this is not a full conjugation lesson). Numbers 1–20 interleaved.
 - **Examples:** Tengo, tienes, tiene. · Me llamo Matilda. Tengo doce años. · Max tiene trece años. Es de Melbourne.
 
-### 1.3 L11 · check · 1.3a check: ¿Cómo te llamas? ¿Cuántos años tienes? *(new, 20 Oct: closes section 1.3a)*
+### 1.3 L11 · check · ¿Cómo te llamas? ¿Cuántos años tienes? *(new, 20 Oct: closes section 1.3a; title until 21 Oct: «1.3a check: ¿Cómo te llamas? ¿Cuántos años tienes?»)*
 - No hearts. Numbers 1–20 by ear (hear → tap the digit, and a short countdown dictation), names and ages (listen → pick the person), then production: introduce a character (name, age, where from).
 - **Examples:** ¿Cómo te llamas? — Me llamo Samuel. Tengo trece años. · Valentina tiene doce años. Es de Salento. · Veinte, diecinueve, dieciocho, diecisiete, dieciséis. · ¿Cómo se llama él? — Se llama Max. Tiene trece años.
 
 **Section 1.3b · Mi carnet de identidad (L12–L20)**
 
-### 1.3 L12 · repaso · Names, ages and numbers 1–20 *(new, 20 Oct: opens section 1.3b)*
+### 1.3 L12 · repaso · Cinco, diez, quince, veinte *(new, 20 Oct: opens section 1.3b; title until 21 Oct: «Names, ages and numbers 1–20»)*
 - Spaced retrieval of 1.3a (numbers 1–20 out of order, *me llamo / te llamas / se llama*, *tengo … años*) plus one 1.1 country item and one 1.2 greeting. 21–29 are built from *veinte* + 1–9, so the repaso leans on *uno… nueve* and *veinte*.
 - **Examples:** Cinco, diez, quince, veinte. · ¡Hola! Me llamo Matilda. Soy de Melbourne. Tengo doce años. · ¿Te llamas Valentina? — Sí. ¿Y tú?
 
@@ -356,7 +374,7 @@ Why here: the cut falls after the first big block (names, 1–20 and age, practi
 - **New (6):** veintiséis, veintisiete, veintiocho, veintinueve, treinta, treinta y uno (C). One pattern. Note: *treinta y uno* is three words, unlike *veintiuno*. **Clip:** N6.
 - **Examples:** Veintiséis, veintisiete, veintiocho, veintinueve, treinta. · Veintinueve, treinta, treinta y uno.
 
-### 1.3 L15 · listen · Radio Búho: los números *(podcast and counting song, §11)*
+### 1.3 L15 · listen · Radio Búho: the numbers song *(podcast and counting song, §11; title until 21 Oct: «Radio Búho: los números»)*
 - The whole counting song 1–31, a countdown with Max, then two callers give their name and age. Students write the numbers they hear.
 - **Examples:** Diez, nueve, ocho, siete, seis, cinco, cuatro, tres, dos, uno… ¡Max! · ¿Cuántos años tienes, Samuel? — Tengo trece años. · ¿Cuántos años tienes? ¡Doce, doce, doce años!
 
@@ -372,7 +390,7 @@ Why here: the cut falls after the first big block (names, 1–20 and age, practi
 - **Exercises:** match amigo/amiga to pictures (agreement); fill a full ID card for a character.
 - **Examples:** Valentina es la amiga de Matilda. · Samuel es el amigo de Max. · ¿La edad? Doce. · El lugar de nacimiento de Samuel es Salento. · Mi lugar de nacimiento es Melbourne. Tengo trece años. · Mi amiga se llama Valentina.
 
-### 1.3 L18 · story · El carnet de Max
+### 1.3 L18 · story · El carnet de identidad de Max *(title until 21 Oct: «El carnet de Max»)*
 Max jumped a little too far in the Cocora valley and his ID card fell out. 11 lines; checks after lines 2, 5 and 11.
 ```
 S:  Max, ¿tienes el carnet de identidad?
@@ -391,11 +409,11 @@ X:  ¡Gracias, Buhísimo!
     [check] Put Buhísimo's three questions in order.
 ```
 
-### 1.3 L19 · listen · Radio Búho: el carnet de identidad
+### 1.3 L19 · listen · Radio Búho: three ID cards *(title until 21 Oct: «Radio Búho: el carnet de identidad»)*
 - Three teens call in; students fill three ID cards (name, surname, from, age) on the first listen.
 - **Script:** ¡Buenas tardes! Me llamo Buhísimo. ¿Y tú? · Me llamo Valentina Restrepo. Tengo doce años. Soy de Salento. · ¿Y tú? ¿Cuántos años tienes? · Me llamo Samuel Restrepo. Trece. · Me llamo Matilda. Soy de Australia. Doce.
 
-### 1.3 L20 · check · The ID card office
+### 1.3 L20 · check · Unit check: the ID card office *(title until 21 Oct: «The ID card office»)*
 - Number dictation (1–31), an ID card listening task, and production: introduce yourself as a character (name, where from, age).
 - **Examples:** Me llamo Samuel. Soy de Colombia. · ¿Cuántos años tienes? — Trece. · Samuel es el amigo de Matilda. · Me llamo Max. Tengo trece años. Soy de Melbourne.
 
@@ -424,7 +442,7 @@ So **llamarse is the only verb with a conjugation lesson in Unit 1**. Ser and te
 **Unit goal:** days, months, the date and birthdays. Numbers 1–31 come back in every lesson.
 **With P6** (standalone *el* moved to 1.4), every date works from L10: *el + number + de + month*. Days and months are lower case in Spanish; the `capitals` column marks them as case-sensitive, so typing "Lunes" mid-sentence should be "nearly". No plurals yet: *los lunes* waits for the 1.6 L7 rule card.
 
-#### 1.4 L1 · repaso · Los números
+#### 1.4 L1 · repaso · Veinte, veinticinco, treinta *(title until 21 Oct: «Los números»)*
 - Numbers 1–31 (audio → digit, digit → type), names and age; a clip from the 1.3 counting song. **Example:** Uno, cinco, diez, quince, veinte, veinticinco, treinta.
 
 #### 1.4 L2 · learn · La semana
@@ -449,22 +467,22 @@ So **llamarse is the only verb with a conjugation lesson in Unit 1**. Ser and te
 - **New (5):** septiembre, octubre, noviembre, diciembre, el año (C). **Clip:** D5.
 - **Examples:** Septiembre, octubre, noviembre, diciembre. · El año: enero, febrero, marzo… · Septiembre, octubre, noviembre, diciembre: ¡el año!
 
-#### 1.4 L7 · listen · Radio Búho: la semana y los meses *(podcast and chant, new, §11)*
+#### 1.4 L7 · listen · Radio Búho: the week and the months *(podcast and chant, new, §11; title until 21 Oct: «Radio Búho: la semana y los meses»)*
 - The week chant and the months chant in full, then callers say what day it is. **Examples:** La semana: lunes, martes, miércoles, jueves, viernes, sábado, domingo. · ¿Es martes? — No, es miércoles.
 
-#### 1.4 L8 · game · Calendar tap
+#### 1.4 L8 · game · Game: calendar tap *(title until 21 Oct: «Calendar tap»)*
 - Hear a day or month → tap it on a calendar; later rounds use the full date (after L10). **Examples:** Es miércoles. · Es octubre.
 
 #### 1.4 L9 · learn · ¿Cuándo es tu cumpleaños?
 - **New (5):** ¿Cuándo es tu cumpleaños?, el cumpleaños, el primero, el uno (C) · tu (H).
-- **Worked example:** *El primero* and *el uno* both mean "the first"; in Colombia people say *el primero*, in Spain often *el uno*. Samuel says one and Matilda the other. *Mi cumpleaños* (P5 + P7): *mi* replaces *el*.
-- **Examples:** ¿Cuándo es tu cumpleaños? — Es el primero de junio. · El cumpleaños de Samuel es el primero de mayo. · El cumpleaños de Matilda es el uno de marzo. · Mi cumpleaños es el primero de mayo. · ¿Y tú, Max? ¿Tu cumpleaños?
+- **Worked example:** *El primero* and *el uno* both mean "the first"; in Colombia people say *el primero*, in Spain often *el uno*. Buhísimo shows both: *El uno de marzo, el primero de marzo: ¡muy bien!* *Mi cumpleaños* (P5 + P7): *mi* replaces *el*. *El* + any other number comes in L10, so here the cast only name the month (*¿Mi cumpleaños? Enero.*).
+- **Examples:** ¿Cuándo es tu cumpleaños? — Es el primero de junio. · ¿El cumpleaños de Samuel? ¿El primero de mayo? — No. · El uno de marzo, el primero de marzo: ¡muy bien! · ¿Cuándo es tu cumpleaños, Buhísimo? — ¿Mi cumpleaños? Agosto. · (Samuel) ¿Mi cumpleaños? Enero. · ¿Y tú, Max? ¿Tu cumpleaños?
 
 #### 1.4 L10 · learn · La fecha: el veinte de julio
 - **New (2):** el (H, moved from 1.6 by P6) · la fecha (C). Then a date workout: day + date. **Worked example:** "*el* + number + *de* + month". This is where all 31 × 12 dates open up (a generated list, validated).
-- **Examples:** Es el veinte de julio. · El cumpleaños de Valentina es el veinte de julio. · La fecha es el uno de abril. · Es martes, el doce de marzo. · La fecha es el treinta y uno de diciembre.
+- **Examples:** Es el veinte de julio. · El cumpleaños de Valentina es el veinte de julio. · La fecha es el uno de abril. · Es martes, el doce de marzo. · La fecha es el treinta y uno de diciembre. · The cast's birthdays (canon, §3): Mi cumpleaños es el diez de enero. (Samuel) · El cumpleaños de Matilda es el quince de junio. · Mi cumpleaños es el siete de agosto. ¡Fenomenal! (Buhísimo) · El cumpleaños de Max es el veintinueve de febrero.
 
-#### 1.4 L11 · speak · Di la fecha
+#### 1.4 L11 · speak · Speak: say the date *(title until 21 Oct: «Di la fecha»)*
 - Shadow 4 dates, then prompted production from a calendar picture.
 - **Examples:** Es viernes, el primero de julio. · ¿Cuándo es tu cumpleaños? — Es el uno de noviembre. · Es el quince de septiembre.
 
@@ -472,7 +490,7 @@ So **llamarse is the only verb with a conjugation lesson in Unit 1**. Ser and te
 Checks after lines 3, 7 and 10.
 ```
 V:  ¿Cuándo es tu cumpleaños, Matilda?
-M:  Es el uno de marzo. ¿Y tú, Valentina?
+M:  Es el quince de junio. ¿Y tú, Valentina?
 V:  Julio. ¡Veinte de julio!
     [check] Why is Valentina's birthday special? (it's Colombia's national day: fireworks!)
 S:  ¿Y tú, Max? ¿Cuándo es tu cumpleaños?
@@ -481,12 +499,12 @@ S:  ¿Veintinueve de febrero? ¿Cuántos años tienes, Max?
 X:  Trece. ¿El cumpleaños? ¡Tres!
     [check] Why does Max say "¡Tres!"? (29 February only comes every four years: he's a leap-day kangaroo)
 B:  ¡Max es fantástico!
-V:  La fecha: domingo, el uno de marzo. ¡El cumpleaños de Matilda!
+V:  La fecha: domingo, el quince de junio. ¡El cumpleaños de Matilda!
 M:  ¡Fenomenal! ¡Gracias!
-    [check] What will they celebrate on Sunday 1 March? (Matilda's birthday, and Max celebrates on the same day in non-leap years)
+    [check] What will they celebrate on Sunday 15 June? (Matilda's birthday)
 ```
 
-#### 1.4 L13 · check · The party calendar
+#### 1.4 L13 · check · Unit check: the party calendar *(title until 21 Oct: «The party calendar»)*
 - Every 1.4 item; date dictation; production: say and type birthdays from a calendar.
 - **Examples:** ¿Cuándo es tu cumpleaños? — Es el primero de agosto. · Es sábado, el uno de mayo. · Es jueves, el veintidós de abril.
 
@@ -495,7 +513,7 @@ M:  ¡Fenomenal! ¡Gracias!
 **Unit goal:** colours with agreement; likes and dislikes; join opinions with connectors.
 **With P6**, colour opinions work from the start of the unit (*Me encanta el azul*, *Odio el blanco*), so *odio/detesto/prefiero* now have kind, natural sentences in 1.5. Colours stay singular until 1.6 (plural agreement is taught in 1.6 L6 and L8).
 
-#### 1.5 L1 · repaso · El calendario
+#### 1.5 L1 · repaso · Es domingo, el primero de junio *(title until 21 Oct: «El calendario»)*
 - Days, months and dates from 1.4; numbers. **Example:** Es domingo, el primero de junio.
 
 #### 1.5 L2 · learn · Rojo, azul, verde
@@ -512,7 +530,7 @@ M:  ¡Fenomenal! ¡Gracias!
 - **New (3):** claro/a, oscuro/a, mi color favorito es… (C).
 - **Examples:** Mi color favorito es azul. · Max es marrón claro. · Buhísimo es marrón oscuro. · Mi color favorito es verde oscuro.
 
-#### 1.5 L5 · game · Colour match
+#### 1.5 L5 · game · Game: colour match *(title until 21 Oct: «Colour match»)*
 - Picture → colour phrase with agreement (Request engine). **Examples:** El mapa es amarillo. · La capital es roja. · El carnet de identidad es azul claro.
 
 #### 1.5 L6 · learn · Me gusta, me encanta
@@ -537,7 +555,7 @@ M:  ¡Fenomenal! ¡Gracias!
 - Pattern *opinion + thing + connector + opinion + thing*, faded model → gap → tiles → type.
 - **Examples:** Me gusta mucho España, pero prefiero Colombia. · Me gusta mucho el rojo. Además, me encanta el amarillo.
 
-#### 1.5 L11 · story · Un jeep de colores
+#### 1.5 L11 · story · ¡Rojo, verde, azul… y amarillo! *(title until 21 Oct: «Un jeep de colores»)*
 Choosing a painted Willys jeep for the ride up to Cocora. Checks after lines 4 and 6, and at the end.
 ```
 X:  ¡Rojo! ¡Me encanta!
@@ -552,11 +570,11 @@ V:  ¡Fantástico! ¡Me encanta!
 X:  ¡Me encanta, me encanta, me encanta!
 ```
 
-#### 1.5 L12 · listen · Radio Búho: colores favoritos
+#### 1.5 L12 · listen · Radio Búho: favourite colours *(title until 21 Oct: «Radio Búho: colores favoritos»)*
 - A colour poll. Grid: person × colour.
 - **Script:** ¡Buenas tardes! Soy Buhísimo. Mi color favorito es marrón. · ¿Y tú, Valentina? · Mi color favorito es morado. ¡Me encanta! · ¿Y tú, Samuel? · Mi color favorito es azul. ¡Azul claro! · Mi color favorito es verde. ¡Verde oscuro! · ¿Y Max? · ¡Mi color favorito es rojo! Rojo, amarillo, azul, verde…
 
-#### 1.5 L13 · check · Paint the jeep
+#### 1.5 L13 · check · Unit check: paint the jeep *(title until 21 Oct: «Paint the jeep»)*
 - Every 1.5 item; one listening grid; production: 2 opinion sentences with a connector.
 - **Examples:** Mi color favorito es morado. · Me gusta mucho Salento, pero prefiero Cocora. · Max es marrón claro y Matilda es gris. · Me encanta el rojo. Sin embargo, prefiero el verde.
 
@@ -577,7 +595,7 @@ X:  ¡Me encanta, me encanta, me encanta!
 
 *Carnet → carnets* (a loanword) is not used in 1.1–1.6; its card is planned for 3.5 with *el fan → los fans*. *Naranja* and *rosa* stay unchanged after a plural noun (*dos cuadernos naranja*), which is correct and needs no card; L8 mentions it.
 
-#### 1.6 L1 · repaso · Colores y opiniones
+#### 1.6 L1 · repaso · ¿Rojo o verde? *(title until 21 Oct: «Colores y opiniones»)*
 - Colours, opinions and connectors (1.5), plus dates. **Example:** ¿Rojo o verde? — Rojo. ¡Me encanta!
 
 #### 1.6 L2 · learn · El libro, la regla
@@ -611,7 +629,7 @@ X:  ¡Me encanta, me encanta, me encanta!
 - **Exercises:** odd-one-out (which plural changes?); hear "dos ___" → pick *lápiz/lápices*; type the plural with the accent kept (*lápices*).
 - **Examples:** Un lápiz, dos lápices. · Hay tres lápices. · El sacapuntas, los sacapuntas. · Tengo dos sacapuntas. · Los lunes, los martes, los miércoles… · Max no tiene las tijeras.
 
-#### 1.6 L8 · learn · Bolígrafos marrones, hojas de papel *(rule cards: accent loss, compounds)*
+#### 1.6 L8 · learn · Dos bolígrafos marrones *(rule cards: accent loss, compounds; title until 21 Oct: «Bolígrafos marrones, hojas de papel»)*
 - **New (2 rule cards):** `plural:accent-loss`, `plural:compound`.
 - **Rule cards:** *marrón → marrones*: the stress stays on the same syllable, so the written accent isn't needed any more. *La hoja de papel → las hojas de papel*: only the first noun changes (not *hojas de papeles*). Note: *naranja* and *rosa* can stay the same (*dos cuadernos naranja*).
 - **Examples:** Dos bolígrafos marrones. · Hay tres lápices marrones. · Tengo tres hojas de papel. · Hay dos libros de texto en la mochila. · Hay dos cuadernos naranja.
@@ -623,7 +641,7 @@ X:  ¡Me encanta, me encanta, me encanta!
 #### 1.6 L10 · game · En mi mochila (Request engine, v1 Mochila)
 - Read or hear a request, tap the matching objects. Requests come from slot tables (number × object × colour), never free text. **Examples:** Un cuaderno. · Una goma verde. · Tres lápices rojos. · Dos reglas amarillas.
 
-#### 1.6 L11 · practice · La mochila mágica (mix engine)
+#### 1.6 L11 · practice · Practice: the magic backpack *(title until 21 Oct: «La mochila mágica (mix engine)»)*
 - The v1 templates T1–T5 (rules §8.2), every output listed and validated at build time. **T4 changed:** *No hay tijeras…* (bare noun) became *No tengo las tijeras.*
 - **Examples:** Prefiero el cuaderno azul. *(T3)* · En mi mochila hay tres bolígrafos rojos. *(T1)* · Hay una regla verde en mi mochila. *(T2)* · No tengo las tijeras. *(T4)* · ¿Hay un sacapuntas en tu estuche? — Sí, hay un sacapuntas. *(T5)*
 
@@ -649,13 +667,13 @@ X:  ¡Gracias, Buhísimo! ¡Fenomenal!
     [check] Who helps Max? (Buhísimo)
 ```
 
-#### 1.6 L14 · check · First day of school
+#### 1.6 L14 · check · Unit check: first day of school *(title until 21 Oct: «First day of school»)*
 - Every 1.6 item, including one plural of each rule; a Request-engine round; production: describe what's in a backpack.
 - **Examples:** El estuche está en la mochila. · Me gusta mucho el libro de texto. · Hay un bolígrafo azul en el estuche. · En la mochila hay dos cuadernos y una regla.
 
 #### 1.6 L15 · boss · Unit 1 boss: Buhísimo's welcome poster
 - Cumulative 1.1–1.6, no hearts, about 15 items: listening (a Radio Búho-style self-introduction), typing, a spelling item, and **4–5 production sentences, each combining at least 3 sections**. Students build Matilda's welcome poster: name and greeting (1.2–1.3), where from (1.1), birthday (1.4), favourite colour and opinions (1.5), what's in the backpack (1.6). Pass at ≥80% first-try; otherwise targeted practice of the missed items, then retry.
-- **Examples:** ¡Hola! Me llamo Matilda. Soy de Australia. · Ella se llama Matilda. Es de Melbourne, en Australia. · ¿Cuándo es tu cumpleaños, Matilda? — Es domingo, el uno de marzo. · Mi color favorito es verde, pero también me gusta el azul. · Tengo doce años. Mi cumpleaños es el uno de marzo. · En mi mochila hay tres bolígrafos rojos y una regla verde.
+- **Examples:** ¡Hola! Me llamo Matilda. Soy de Australia. · Ella se llama Matilda. Es de Melbourne, en Australia. · ¿Cuándo es tu cumpleaños, Matilda? — Es domingo, el quince de junio. · Mi color favorito es verde, pero también me gusta el azul. · Tengo doce años. Mi cumpleaños es el quince de junio. · En mi mochila hay tres bolígrafos rojos y una regla verde.
 
 ---
 
@@ -701,6 +719,7 @@ No sentence uses P11–P13, so nothing is pending. To approve one: add its words
 4. **Lesson size.** Counted items = rows in `new` (a nested array such as `["soy", "de"]` is one chunk = one item; names don't count) + letter groups + rule cards. **More than 6 is a warning; more than 8 is a failure.**
 5. **Approved proposals** are no longer applied as pending: their words are CSV rows and their rules are built in. A leftover `"needs"` tag on an approved proposal is reported as a warning. Pending proposals (P11–P13) still work as before, with `--approve` and `--strict`.
 6. **Map sections (20 October 2026).** A unit can be shown as map sections with `"parts"` in the manifest. Parts must be contiguous ranges that cover every lesson of their unit, each lesson's `part` must match its range, and each part title must pass at its unit. A part that doesn't open with a repaso or close with a check or boss is a warning. Only 1.3 is split.
+7. **Lesson titles (21 October 2026).** Every lesson needs `titleEs` and/or `titleEn` (an old `title` field fails). `titleEs` is checked like a sentence of its own lesson: only items introduced by then, no bare nouns, plural rules taught. «¿Sí o no?» fails in 1.1 L4 (*o* is 1.5) and «Bolígrafos marrones» fails anywhere (bare plural).
 
 Then, as before:
 1. **Unit-level check (the hard rule):** every sentence must tokenise with the words allowed at its unit.
@@ -879,7 +898,7 @@ D7  | El año: enero … diciembre.   (three bars)
 
 1. **P11 cero, P12 mis/tus, P13 el abecedario** (§9): approve, or leave out?
 2. **W: decided.** Juan chose *doble ve* (20 Oct 2026).
-3. **Story canon** (birthdays, favourite colours, Max as a leap-day kangaroo, Matilda's green ruana days): fine to fix as canon?
+3. **Story canon: decided.** Juan approved it on 21 Oct 2026 (§3): birthdays Max 29 de febrero, Valentina 20 de julio, Matilda 15 de junio, Samuel 10 de enero, Buhísimo 7 de agosto (the hardest months on purpose, for exposure); favourite colours Matilda verde, Max rojo, Valentina morado, Samuel azul, Buhísimo marrón. The 1.4 and 1.6 sentences that used the old dates (Samuel 1 May, Matilda 1 March, Buhísimo 1 January) now use these.
 4. **1.3 length: decided.** The map shows 1.3 as two sections (20 Oct 2026; Juan approved splitting long units): 1.3a «¿Cómo te llamas?» L1–L11 (names, 1–20, age, ending with a new 1.3a check) and 1.3b «Mi carnet de identidad» L12–L20 (a new repaso, 21–31, the numbers podcast, the ID card, the unit check). The CSV section stays 1.3 (§6). No other unit needs a split: after 1.3, the longest is 1.6 with 15 lessons, inside the 11–15 range.
 5. **Songs: decided.** Sung, in the style of the counting-song samples (ACE-Step), which Juan likes (20 Oct 2026). Juan doesn't need to record tunes.
 6. **Number range in later generators:** dates up to 31 use *veintiuno*/*treinta y uno* safely. *Uno*, *veintiuno* and *treinta y uno* are not determiners in the validator (before a noun they become *un/veintiún/treinta y un*), so counted-object generators stay at 2–30, as in v1.

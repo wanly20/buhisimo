@@ -194,6 +194,7 @@
 .node-pop__title { margin: 0 0 2px; font-size: var(--fs-xl); line-height: 1.2; }
 .node-pop__title .es { font-weight: 700; }
 .node-pop__title--en { font-family: var(--font-display); font-weight: var(--display-weight-bold); }
+.node-pop__en { margin: 0 0 6px; font-size: var(--fs-sm); font-style: italic; opacity: 0.9; }
 .node-pop__meta { margin: 0 0 var(--sp-4); font-size: var(--fs-sm); opacity: 0.95; }
 
 .path-end { display: flex; align-items: center; justify-content: center; gap: var(--sp-2); margin: var(--sp-6) auto 0; padding: var(--sp-3) var(--sp-4); width: fit-content; border-radius: var(--r-pill); background: rgb(255 255 255 / 0.9); color: var(--ink-soft); font-weight: 700; font-size: var(--fs-sm); }
