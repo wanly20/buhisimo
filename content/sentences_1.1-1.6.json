@@ -203,9 +203,12 @@
 {"unit":"1.3","lesson":5,"kind":"practice","speaker":"Max","es":"Ocho, nueve, diez… ¡fenomenal!","en":"Eight, nine, ten… great!"},
 {"unit":"1.3","lesson":5,"kind":"practice","es":"Dos, cuatro, seis, ocho, diez.","en":"Two, four, six, eight, ten."},
 {"unit":"1.3","lesson":5,"kind":"song","es":"Seis, siete, ocho, nueve, diez: ¡fenomenal!","en":"Six, seven, eight, nine, ten: great!","clip":"N2"},
+{"unit":"1.3","lesson":5,"kind":"intro","es":"¿Seis? No, siete.","en":"Six? No, seven.","lookalike":"seis/siete"},
+{"unit":"1.3","lesson":5,"kind":"practice","es":"Seis, siete. Seis, siete, ocho.","en":"Six, seven. Six, seven, eight.","lookalike":"seis/siete"},
 
 {"unit":"1.3","lesson":6,"kind":"game","es":"Uno, tres, cinco, siete, nueve.","en":"One, three, five, seven, nine."},
 {"unit":"1.3","lesson":6,"kind":"game","es":"Diez, ocho, seis, cuatro, dos, cero.","en":"Ten, eight, six, four, two, zero."},
+{"unit":"1.3","lesson":6,"kind":"game","es":"Seis, siete, seis, siete.","en":"Six, seven, six, seven.","lookalike":"seis/siete"},
 
 {"unit":"1.3","lesson":7,"kind":"intro","es":"Once, doce, trece, catorce, quince.","en":"Eleven, twelve, thirteen, fourteen, fifteen."},
 {"unit":"1.3","lesson":7,"kind":"practice","es":"Diez, once, doce… ¡trece!","en":"Ten, eleven, twelve… thirteen!"},
@@ -234,10 +237,12 @@
 {"unit":"1.3","lesson":11,"kind":"check","es":"Veinte, diecinueve, dieciocho, diecisiete, dieciséis.","en":"Twenty, nineteen, eighteen, seventeen, sixteen."},
 {"unit":"1.3","lesson":11,"kind":"check","es":"¿Cómo se llama él? — Se llama Max. Tiene trece años.","en":"What's his name? — His name is Max. He's thirteen."},
 {"unit":"1.3","lesson":11,"kind":"check","es":"Tres, dos, uno… ¡cero!","en":"Three, two, one… zero!"},
+{"unit":"1.3","lesson":11,"kind":"check","es":"¿Siete? — No, seis.","en":"Seven? — No, six.","lookalike":"seis/siete"},
 
 {"unit":"1.3","lesson":12,"kind":"repaso","es":"Cinco, diez, quince, veinte.","en":"Five, ten, fifteen, twenty."},
 {"unit":"1.3","lesson":12,"kind":"repaso","speaker":"Matilda","es":"¡Hola! Me llamo Matilda. Soy de Melbourne. Tengo doce años.","en":"Hi! My name is Matilda. I'm from Melbourne. I'm twelve."},
 {"unit":"1.3","lesson":12,"kind":"repaso","es":"¿Te llamas Valentina? — Sí. ¿Y tú?","en":"Is your name Valentina? — Yes. And you?"},
+{"unit":"1.3","lesson":12,"kind":"repaso","es":"Cinco, seis, siete. ¡Muy bien!","en":"Five, six, seven. Very good!","lookalike":"seis/siete"},
 
 {"unit":"1.3","lesson":13,"kind":"intro","es":"Veintiuno, veintidós, veintitrés, veinticuatro, veinticinco.","en":"Twenty-one, twenty-two, twenty-three, twenty-four, twenty-five."},
 {"unit":"1.3","lesson":13,"kind":"practice","es":"Veinte, veintiuno, veintidós…","en":"Twenty, twenty-one, twenty-two…"},
@@ -320,11 +325,14 @@
 {"unit":"1.4","lesson":5,"kind":"practice","es":"Es julio. Buhísimo está fenomenal.","en":"It's July. Buhísimo is feeling great."},
 {"unit":"1.4","lesson":5,"kind":"practice","speaker":"Max","es":"¿Junio? ¡Fantástico!","en":"June? Fantastic!"},
 {"unit":"1.4","lesson":5,"kind":"song","es":"Mayo, junio, julio, agosto… ¡fantástico!","en":"May, June, July, August… fantastic!","clip":"D4"},
+{"unit":"1.4","lesson":5,"kind":"intro","es":"¿Junio? No, julio.","en":"June? No, July.","lookalike":"junio/julio"},
+{"unit":"1.4","lesson":5,"kind":"practice","es":"Junio, julio. ¡Junio! ¡Julio!","en":"June, July. June! July!","lookalike":"junio/julio"},
 
 {"unit":"1.4","lesson":6,"kind":"intro","es":"Septiembre, octubre, noviembre, diciembre.","en":"September, October, November, December."},
 {"unit":"1.4","lesson":6,"kind":"intro","es":"El año: enero, febrero, marzo…","en":"The year: January, February, March…"},
 {"unit":"1.4","lesson":6,"kind":"practice","es":"Es diciembre. ¡Fenomenal!","en":"It's December. Great!"},
 {"unit":"1.4","lesson":6,"kind":"song","es":"Septiembre, octubre, noviembre, diciembre: ¡el año!","en":"September, October, November, December: the year!","clip":"D5"},
+{"unit":"1.4","lesson":6,"kind":"intro","es":"¿El nombre? Samuel. ¿El mes? Noviembre.","en":"The name? Samuel. The month? November.","lookalike":"nombre/noviembre"},
 
 {"unit":"1.4","lesson":7,"kind":"podcast","speaker":"Buhísimo","es":"¡Buenos días! Soy Buhísimo. ¿Cómo estás?","en":"Good morning! I'm Buhísimo. How are you?","clip":"D0"},
 {"unit":"1.4","lesson":7,"kind":"song","es":"La semana: lunes, martes, miércoles, jueves, viernes, sábado, domingo.","en":"The week: Monday … Sunday.","clip":"D6"},
@@ -336,6 +344,8 @@
 
 {"unit":"1.4","lesson":8,"kind":"game","es":"Es miércoles.","en":"It's Wednesday."},
 {"unit":"1.4","lesson":8,"kind":"game","es":"Es octubre.","en":"It's October."},
+{"unit":"1.4","lesson":8,"kind":"game","es":"Es junio. — No, es julio.","en":"It's June. — No, it's July.","lookalike":"junio/julio"},
+{"unit":"1.4","lesson":8,"kind":"game","es":"Es noviembre.","en":"It's November.","lookalike":"nombre/noviembre"},
 
 {"unit":"1.4","lesson":9,"kind":"intro","es":"¿Cuándo es tu cumpleaños? — Es el primero de junio.","en":"When is your birthday? — It's the first of June."},
 {"unit":"1.4","lesson":9,"kind":"intro","es":"¿El cumpleaños de Samuel? ¿El primero de mayo? — No.","en":"Samuel's birthday? The first of May? — No."},
@@ -355,6 +365,7 @@
 {"unit":"1.4","lesson":10,"kind":"practice","es":"El cumpleaños de Matilda es el quince de junio.","en":"Matilda's birthday is the fifteenth of June."},
 {"unit":"1.4","lesson":10,"kind":"practice","speaker":"Buhísimo","es":"Mi cumpleaños es el siete de agosto. ¡Fenomenal!","en":"My birthday is the seventh of August. Great!"},
 {"unit":"1.4","lesson":10,"kind":"practice","es":"El cumpleaños de Max es el veintinueve de febrero.","en":"Max's birthday is the twenty-ninth of February."},
+{"unit":"1.4","lesson":10,"kind":"practice","es":"Mi nombre es Valentina. Mi cumpleaños es el veinte de julio.","en":"My name is Valentina. My birthday is the twentieth of July.","lookalike":"nombre/noviembre, junio/julio"},
 
 {"unit":"1.4","lesson":11,"kind":"speak","es":"Es viernes, el primero de julio.","en":"It's Friday, the first of July."},
 {"unit":"1.4","lesson":11,"kind":"speak","es":"¿Cuándo es tu cumpleaños? — Es el uno de noviembre.","en":"When is your birthday? — It's the first of November."},
@@ -375,8 +386,12 @@
 {"unit":"1.4","lesson":13,"kind":"check","es":"Es sábado, el uno de mayo.","en":"It's Saturday, the first of May."},
 {"unit":"1.4","lesson":13,"kind":"check","es":"Lunes, miércoles, viernes.","en":"Monday, Wednesday, Friday."},
 {"unit":"1.4","lesson":13,"kind":"check","es":"Es jueves, el veintidós de abril.","en":"It's Thursday, the twenty-second of April."},
+{"unit":"1.4","lesson":13,"kind":"check","es":"El cumpleaños de Matilda es el quince de junio. El cumpleaños de Valentina es el veinte de julio.","en":"Matilda's birthday is the fifteenth of June. Valentina's birthday is the twentieth of July.","lookalike":"junio/julio"},
+{"unit":"1.4","lesson":13,"kind":"check","es":"Mi nombre es Samuel. ¿El mes? Noviembre.","en":"My name is Samuel. The month? November.","lookalike":"nombre/noviembre"},
 
 {"unit":"1.5","lesson":1,"kind":"repaso","es":"Es domingo, el primero de junio.","en":"It's Sunday, the first of June."},
+{"unit":"1.5","lesson":1,"kind":"repaso","es":"Junio, julio, agosto.","en":"June, July, August.","lookalike":"junio/julio"},
+{"unit":"1.5","lesson":1,"kind":"repaso","es":"¿El nombre? Matilda. ¿El mes? Junio.","en":"The name? Matilda. The month? June.","lookalike":"nombre/noviembre"},
 
 {"unit":"1.5","lesson":2,"kind":"intro","es":"El mapa es azul.","en":"The map is blue."},
 {"unit":"1.5","lesson":2,"kind":"intro","es":"El monumento es blanco.","en":"The monument is white."},
@@ -421,7 +436,7 @@
 
 {"unit":"1.5","lesson":8,"kind":"intro","es":"¿Rojo o azul? — Azul.","en":"Red or blue? — Blue."},
 {"unit":"1.5","lesson":8,"kind":"intro","es":"Max es marrón y Matilda es gris.","en":"Max is brown and Matilda is grey."},
-{"unit":"1.5","lesson":8,"kind":"intro","es":"Me gusta Chile, pero prefiero Perú.","en":"I like Chile, but I prefer Peru."},
+{"unit":"1.5","lesson":8,"kind":"intro","es":"Me gusta Chile, pero prefiero Perú.","en":"I like Chile, but I prefer Peru.","lookalike":"pero/Perú"},
 {"unit":"1.5","lesson":8,"kind":"practice","es":"El mapa es azul y verde.","en":"The map is blue and green."},
 {"unit":"1.5","lesson":8,"kind":"practice","es":"¿Chile o Argentina?","en":"Chile or Argentina?"},
 {"unit":"1.5","lesson":8,"kind":"practice","es":"Me encanta el azul, pero no me gusta nada el naranja.","en":"I love blue, but I don't like orange at all."},
@@ -434,6 +449,7 @@
 {"unit":"1.5","lesson":10,"kind":"practice","es":"Me gusta mucho España, pero prefiero Colombia.","en":"I really like Spain, but I prefer Colombia."},
 {"unit":"1.5","lesson":10,"kind":"practice","es":"¿Azul o verde? — Verde. También me gusta el azul claro.","en":"Blue or green? — Green. I also like light blue."},
 {"unit":"1.5","lesson":10,"kind":"practice","es":"Me gusta mucho el rojo. Además, me encanta el amarillo.","en":"I really like red. What's more, I love yellow."},
+{"unit":"1.5","lesson":10,"kind":"practice","es":"Me gusta Perú, pero prefiero Chile.","en":"I like Peru, but I prefer Chile.","lookalike":"pero/Perú"},
 
 {"unit":"1.5","lesson":11,"kind":"story","speaker":"Max","es":"¡Rojo! ¡Me encanta!","en":"Red! I love it!"},
 {"unit":"1.5","lesson":11,"kind":"story","speaker":"Matilda","es":"¿Rojo? No me gusta nada.","en":"Red? I don't like it at all."},
@@ -457,8 +473,10 @@
 {"unit":"1.5","lesson":13,"kind":"check","es":"Me gusta mucho Salento, pero prefiero Cocora.","en":"I really like Salento, but I prefer Cocora."},
 {"unit":"1.5","lesson":13,"kind":"check","es":"Max es marrón claro y Matilda es gris.","en":"Max is light brown and Matilda is grey."},
 {"unit":"1.5","lesson":13,"kind":"check","es":"Me encanta el rojo. Sin embargo, prefiero el verde.","en":"I love red. However, I prefer green."},
+{"unit":"1.5","lesson":13,"kind":"check","es":"¿Perú? Me encanta, pero prefiero Cuba.","en":"Peru? I love it, but I prefer Cuba.","lookalike":"pero/Perú"},
 
 {"unit":"1.6","lesson":1,"kind":"repaso","es":"¿Rojo o verde? — Rojo. ¡Me encanta!","en":"Red or green? — Red. I love it!"},
+{"unit":"1.6","lesson":1,"kind":"repaso","es":"Me gusta mucho Perú, pero prefiero Colombia.","en":"I really like Peru, but I prefer Colombia.","lookalike":"pero/Perú"},
 
 {"unit":"1.6","lesson":2,"kind":"intro","es":"El libro es azul.","en":"The book is blue."},
 {"unit":"1.6","lesson":2,"kind":"intro","es":"La regla es amarilla.","en":"The ruler is yellow."},

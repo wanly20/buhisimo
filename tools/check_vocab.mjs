@@ -52,6 +52,8 @@
 //   * Lesson titles (decision 2026-10-21): every lesson has titleEs (Spanish, shown to students)
 //     and/or titleEn. titleEs is checked like a sentence of its own lesson: only words introduced
 //     by then, no bare nouns, plural rules taught (so «¿Sí o no?» fails in 1.1: o is 1.5).
+//   * Look-alike pairs (21 Oct 2026): a sentence tagged "lookalike": "junio/julio" practises telling
+//     the two apart; it fails if either word isn't introduced by its lesson.
 //   * Map sections ("parts" in the manifest, decision 2026-10-20): a long unit can be shown
 //     as two halves on the path. Parts must be contiguous lesson ranges covering the whole
 //     unit, every lesson's "part" must match, and the part title must pass at its unit.
@@ -563,6 +565,7 @@ if (manifest) {
     lessonSentences.get(k).push(s);
   }
   let lessonFails = 0, sizeWarnings = 0, sizeFails = 0, titlesChecked = 0, titleFails = 0;
+  const lookalikes = new Map(); // "junio/julio" -> [lessons with a differentiation item]
   const firstIntro = new Map(), ruleAt = new Map();
   for (const l of manifest) {
     const at = `${l.unit} L${l.lesson}`;
@@ -625,6 +628,15 @@ if (manifest) {
       if (r.status === "FAIL") { failures++; lessonFails++; titleFails++; log(`FAIL  ${tag}: title «${l.titleEs}» -> not allowed at this lesson: ${r.bad.map(hint).join(", ")}`); }
     }
     for (const s of lessonSentences.get(`${l.unit}|${l.lesson}`) ?? []) {
+      // Look-alike pairs (Juan, 21 Oct 2026): a differentiation item ("lookalike": "junio/julio")
+      // may only come once BOTH words are taught, never before.
+      for (const pair of String(s.lookalike ?? "").split(",").map((x) => x.trim()).filter(Boolean)) {
+        const words = pair.split("/").map((w) => keyOf(w));
+        const d = dictFor(new Set());
+        const notYet = words.filter((w) => !d.has(w) && !d.has(`el ${w}`));
+        lookalikes.set(pair, [...(lookalikes.get(pair) ?? []), tag]);
+        if (words.length !== 2 || notYet.length) { failures++; lessonFails++; log(`FAIL  ${tag}: look-alike item "${pair}" before both words are taught (${notYet.join(", ") || "needs two words a/b"}): "${s.es}"`); }
+      }
       const r = classify(s, dictFor, { taught, letters: lettersIn });
       if (r.status === "FAIL") {
         failures++; lessonFails++;
@@ -639,6 +651,7 @@ if (manifest) {
   const withNew = sizes.filter((n) => n > 0);
   log(`  lessons: ${manifest.length} (${[...counts].map(([u, n]) => `${u}: ${n}`).join(", ")}); items introduced: ${introduced.size}; plural rules taught: ${[...taught].join(", ") || "none"}`);
   log(`  lessons with new items: ${withNew.length}, average ${(withNew.reduce((a, b) => a + b, 0) / (withNew.length || 1)).toFixed(1)} counted items, largest ${Math.max(0, ...withNew)}`);
+  if (lookalikes.size) log(`  look-alike pairs practised side by side (only after both are taught): ${[...lookalikes].map(([p, at]) => `${p} ${[...new Set(at)].join(", ")}`).join("; ")}`);
   log(`  lesson titles: ${titlesChecked} Spanish titles checked at their own lesson, ${titleFails} failing; ${manifest.filter((l) => !l.titleEs).length} lessons have an English title only`);
   log(`  lesson-level failures: ${lessonFails}; lessons above ${SOFT_MAX_NEW} items: ${sizeWarnings} (warning); above ${HARD_MAX_NEW}: ${sizeFails} (failure)`);
   if (missing.length) log(`  WARN not introduced in any lesson (${secStr(lo)}–${secStr(hi)} rows): ${missing.map((m) => `${m.key} [${secStr(m.section)} ${m.file}]`).join(", ")}`);

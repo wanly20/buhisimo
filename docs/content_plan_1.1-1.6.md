@@ -61,7 +61,17 @@
 3. **Crowded study maps split on phones.** In Map tap (1.1 L10), «Spain, Africa and Asia» becomes two maps below 700 px wide: Spain and Africa, then Asia and Australia. Wider screens keep one.
 4. **Story canon approved** (§3): birthdays and favourite colours.
 5. **A scene picture for Cocora.** 1.1 L8's *Cocora es famoso.* card shows a picture of the Cocora Valley (wax palms in the mist) instead of the owl, once `prototype/assets/cocora-valley.webp` exists; until then the owl shows.
-6. **Capital letters count in typed answers** (Juan, 21 Oct: "soy de australia" was accepted in Passport control). In the prototype's typing engine (`grade()` in `js/lesson.js`):
+6. **Look-alike pairs are taught apart** (rule at the top of `spanish_app/lookalike_words.md`). Once **both** words of a pair are taught (not before), the pair is pointed out and practised side by side: a picture or meaning for each, listen and choose, a sentence where only one fits. The pair then stays in later reviews. Sentences that do this carry `"lookalike": "junio/julio"` in `content/sentences_1.1-1.6.json`, and the validator fails one that comes before both words are taught.
+
+   | Pair | Both taught | Pointed out | Practised side by side | Kept in review |
+   |---|---|---|---|---|
+   | *seis / siete* (both start with *s*) | 1.3 L5 | 1.3 L5 card | L5 (*¿Seis? No, siete.*), L6 Number Invaders | 1.3 L11 check, L12 repaso |
+   | *junio / julio* | 1.4 L5 | 1.4 L5 card | L5 (*¿Junio? No, julio.*), L8 Calendar tap, L10 (Matilda 15 *junio*, Valentina 20 *julio*), L12 story | 1.4 L13 check, 1.5 L1 repaso |
+   | *el nombre / noviembre* | 1.3 L16 → 1.4 L6 | 1.4 L6 card | L6 (*¿El nombre? Samuel. ¿El mes? Noviembre.*), L8, L10 | 1.4 L13 check, 1.5 L1 repaso |
+   | *pero / Perú* (accent and capital) | 1.1 L2 → 1.5 L8 | 1.5 L8 card | L8 (*Me gusta Chile, pero prefiero Perú.*), L10 | 1.5 L13 check, 1.6 L1 repaso |
+
+   1.2 has no word pairs; its sound-alike **letters** (*be / uve*, *ce / ese / zeta* with Colombian seseo, *ge / jota* before e and i, *ka / cu*, *ye* vs *ele ele*) are pointed out on the letter cards instead (§5).
+7. **Capital letters count in typed answers** (Juan, 21 Oct: "soy de australia" was accepted in Passport control). In the prototype's typing engine (`grade()` in `js/lesson.js`):
    - A typed answer that is right except for capital letters is **not** right as it is. Like the accent fix-up, a "fix the letters" step names the rule and highlights the letters to change; the student taps them (a ↔ A) or uses "Show me". It then counts as right but **not first-try** (no bonus XP, not 100%), so Review brings the word back sooner.
    - **Capitals needed:** the first letter of a sentence (after *¿* or *¡* too: *¿De dónde eres?*) and names of countries, places and people (*España, Australia, Matilda, Salento*).
    - **Small letters needed:** languages, days and months never take a capital in Spanish (*el español, hispanohablante, lunes, enero*). *el Español* or *Hispanohablante* is flagged: "in Spanish, languages, days and months don't take a capital".
@@ -341,6 +351,7 @@ Why here: the cut falls after the first big block (names, 1–20 and age, practi
 ### 1.3 L5 · learn · Seis… diez
 - **New (5):** seis, siete, ocho, nueve, diez (C). **Clip:** N2.
 - **Examples:** Seis, siete, ocho, nueve, diez. · Dos, cuatro, seis, ocho, diez. · Seis, siete, ocho, nueve, diez: ¡fenomenal!
+- **Look-alike (21 Oct):** *seis / siete* both start with *s*: point it out on the *siete* card, then practise side by side (listen → 6 or 7; *¿Seis? No, siete.*). Back in L6, L11 and L12.
 
 ### 1.3 L6 · game · Game: Number Invaders 0–10 *(title until 21 Oct: «Number Invaders 1–10»)*
 - Hear a number → shoot the digit (audio cue mode); calm mode available. **Examples:** Uno, tres, cinco, siete, nueve. · Diez, ocho, seis, cuatro, dos, cero.
@@ -469,10 +480,12 @@ So **llamarse is the only verb with a conjugation lesson in Unit 1**. Ser and te
 - **New (4):** mayo, junio, julio, agosto (C). **Clip:** D4.
 - **Examples:** Mayo, junio, julio, agosto. · Es julio. Buhísimo está fenomenal. · ¿Junio? ¡Fantástico!
 - **Culture note (in English):** Colombia has no four seasons, while July is winter in Melbourne and Chile.
+- **Look-alike (21 Oct):** *junio / julio*: point it out on the *julio* card (n vs l), then listen → June or July and *¿Junio? No, julio.* Back in L8, L10 (Matilda's and Valentina's birthdays), L12, L13 and 1.5 L1.
 
 #### 1.4 L6 · learn · Septiembre… diciembre
 - **New (5):** septiembre, octubre, noviembre, diciembre, el año (C). **Clip:** D5.
 - **Examples:** Septiembre, octubre, noviembre, diciembre. · El año: enero, febrero, marzo… · Septiembre, octubre, noviembre, diciembre: ¡el año!
+- **Look-alike (21 Oct):** *el nombre* (1.3) / *noviembre*: point it out on the *noviembre* card; then a name-or-month choice (*¿El nombre? Samuel. ¿El mes? Noviembre.*). Back in L8, L10, L13 and 1.5 L1.
 
 #### 1.4 L7 · listen · Radio Búho: the week and the months *(podcast and chant, new, §11; title until 21 Oct: «Radio Búho: la semana y los meses»)*
 - The week chant and the months chant in full, then callers say what day it is. **Examples:** La semana: lunes, martes, miércoles, jueves, viernes, sábado, domingo. · ¿Es martes? — No, es miércoles.
@@ -553,6 +566,7 @@ M:  ¡Fenomenal! ¡Gracias!
 - **New (3):** y, o, pero (C).
 - **Examples:** ¿Rojo o azul? — Azul. · Max es marrón y Matilda es gris. · Me gusta Chile, pero prefiero Perú. · Me encanta el azul, pero no me gusta nada el naranja.
 - **Guardrail (Appendix C):** *y → e* before an *i-* sound and *o → u* before an *o-* sound. Nothing in Unit 1 triggers it; the generators should block it anyway.
+- **Look-alike (21 Oct):** *pero / Perú*: the accent and the capital letter change the word. Point it out on the *pero* card with *Me gusta Chile, pero prefiero Perú.*; a sentence where only one fits. Back in L10, L13 and 1.6 L1.
 
 #### 1.5 L9 · learn · También, además, sin embargo
 - **New (3):** también, además, sin embargo (C).
