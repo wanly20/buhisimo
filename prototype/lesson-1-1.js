@@ -19,7 +19,7 @@ export const lesson = {
 
   // How the placeholder text-to-speech should pronounce names (names.csv "Say as").
   // Pronunciation spellings, never shown on screen.
-  sayAs: { Melbourne: "Mel-bóur-ne" },
+  sayAs: { Melbourne: "Melbúrne" },
 
   // Praise in Spanish must also obey the vocabulary rules, so in 1.1 it is
   // Buhísimo's own name. English praise goes with it.
