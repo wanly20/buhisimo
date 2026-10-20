@@ -149,8 +149,63 @@
 .map-pin.is-wrong { --face: var(--terracotta-50); --face-border: var(--terracotta-400); --edge-c: var(--terracotta-400); }
 .map-pin.is-wrong .map-pin__label { color: var(--terracotta-700); }
 .map-pin:disabled { cursor: default; }
-/* 380px: header, bubble (with its play button), feedback footer; keeps the map step within 1366×768 */
-.ex-maptap .map-frame { width: min(100%, calc((100dvh - 380px) * 1.6)); margin-inline: auto; }
+.map-frame.is-placing .map-pin__label { transition: none; }
+/* 456px: header, bubble (with its play button), the "Show the names" hint, feedback footer;
+   keeps the map step within 1366×768 */
+.ex-maptap .map-frame { width: min(100%, calc((100dvh - 456px) * 1.6)); margin-inline: auto; }
+.ex-mapstudy .map-frame { width: min(100%, calc((100dvh - 400px) * 1.6)); margin-inline: auto; }
+
+/* Quiz markers: a numbered ring on each place, no name (names after CHECK or with the hint) */
+.map-frame--quiz .map-shape.is-tint { fill: var(--turquoise-400); cursor: pointer; }
+.map-mark {
+  position: absolute; width: 48px; height: 48px; margin: -24px 0 0 -24px; padding: 0;
+  border: 0; border-radius: 50%; background: none; z-index: 2; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.map-mark__ring {
+  position: absolute; inset: 6px; border-radius: 50%;
+  border: 3px solid var(--magenta-500); background: rgb(255 255 255 / 0.18);
+  box-shadow: 0 0 0 2px var(--white), 0 2px 6px rgb(44 33 24 / 0.35);
+  transition: transform var(--dur-fast) var(--ease-spring), border-color var(--dur-med), background-color var(--dur-med);
+}
+.map-mark__num {
+  position: absolute; right: -5px; top: -5px; width: 22px; height: 22px; display: grid; place-items: center;
+  font-family: var(--font-display); line-height: 1;
+  border-radius: 50%; background: var(--magenta-500); color: var(--white); border: 2px solid var(--white);
+  font-size: var(--fs-xs); font-weight: 800; box-shadow: 0 1px 3px rgb(44 33 24 / 0.35);
+}
+.map-mark__name {
+  display: none; position: absolute; left: 50%; top: 46px; transform: translateX(-50%);
+  padding: 2px 8px; border-radius: var(--r-md); background: var(--white); border: 2px solid var(--sand-300);
+  color: var(--ink); font-weight: 700; font-size: var(--fs-sm); white-space: nowrap; pointer-events: none;
+}
+.map-frame.is-named .map-mark__name { display: block; }
+.map-mark:hover .map-mark__ring { background: rgb(255 255 255 / 0.4); }
+.map-mark:focus-visible { outline: none; }
+.map-mark:focus-visible .map-mark__ring { outline: 3px solid var(--c-focus); outline-offset: 3px; }
+.map-mark[aria-pressed="true"] { z-index: 3; }
+.map-mark[aria-pressed="true"] .map-mark__ring { border-color: var(--turquoise-600); border-width: 4px; background: rgb(255 255 255 / 0.45); transform: scale(1.12); }
+.map-mark[aria-pressed="true"] .map-mark__num { background: var(--turquoise-600); }
+.map-mark.is-correct { z-index: 4; }
+.map-mark.is-correct .map-mark__ring { border-color: var(--emerald-500); border-width: 4px; background: rgb(226 246 234 / 0.6); }
+.map-mark.is-correct .map-mark__num { background: var(--emerald-500); }
+.map-mark.is-correct .map-mark__name { border-color: var(--emerald-400); color: var(--emerald-700); }
+.map-mark.is-wrong .map-mark__ring { border-color: var(--terracotta-500); border-width: 4px; }
+.map-mark.is-wrong .map-mark__num { background: var(--terracotta-500); }
+.map-mark.is-wrong .map-mark__name { border-color: var(--terracotta-400); color: var(--terracotta-700); }
+.map-frame.is-checked .map-mark:not(.is-correct):not(.is-wrong) { opacity: 0.75; }
+.map-mark:disabled { cursor: default; }
+/* A ring moved off its place (neighbours too close on a small screen): a leader line and a dot mark the real spot */
+.map-anchor {
+  position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; z-index: 1;
+  background: var(--magenta-500); box-shadow: 0 0 0 2px var(--white);
+}
+.map-leader { position: absolute; height: 2px; margin-top: -1px; background: var(--magenta-500); transform-origin: 0 50%; z-index: 1; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.8); }
+.map-anchor[hidden], .map-leader[hidden] { display: none; }
+.map-hint { display: flex; align-items: center; gap: 6px; margin: var(--sp-2) auto 0; font-size: var(--fs-sm); }
+.map-hint small { color: var(--ink-soft); font-weight: 600; }
+.map-hint:disabled { opacity: 0.7; cursor: default; }
+.map-pin.is-heard .map-pin__dot { background: var(--turquoise-600); }
 .ex-maptap .speaker-row--solo .bubble .es { font-size: var(--fs-xl); }
 
 /* =================================================================== rule table */

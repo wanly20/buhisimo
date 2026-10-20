@@ -6,7 +6,7 @@ import { $, $$, esc, es, rich, el, button, footBar, audioButtons, charImg, flagI
 import { tts, stt, fold, speechMatches } from "./speech.js";
 import { sfx } from "./sound.js";
 import { store } from "./store.js";
-import { mapFrame, wireMapPins, placeName } from "./worldmap.js";
+import { mapFrame, wireMapPins, wireMapQuiz, placeName, PLACES } from "./worldmap.js";
 
 const MAX_RETRIES = 2;
 
@@ -172,10 +172,11 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings, onGra
     mode = "feedback";
     const step = queue[idx];
     stats.graded++;
-    if (!step.retry && !result.skipped) onGraded?.(step, !!result.ok, result);
+    // A hinted answer (map names shown) is right, but not a perfect, first-try answer.
+    if (!step.retry && !result.skipped) onGraded?.(step, !!result.ok && !result.hinted, result);
     if (result.ok) {
-      stats.correct++;
-      if (!step.retry) stats.firstTry++;
+      if (!result.hinted) stats.correct++;
+      if (!step.retry && !result.hinted) stats.firstTry++;
       stats.streak++;
       stats.bestStreak = Math.max(stats.bestStreak, stats.streak);
       sfx.correct();
@@ -325,7 +326,7 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings, onGra
 
 // =================================================================== exercises
 const EXERCISES = { intro, pick: pickMeaning, listen, tiles, type: typeIt, match, speak,
-  choose, gap, sort, maptap, table, storyintro, storyline, passport };
+  choose, gap, sort, maptap, mapstudy, table, storyintro, storyline, passport };
 
 /** Which recorded voice role says a line by this character. */
 export function roleOf(who = "") {
@@ -1022,9 +1023,17 @@ function sort(step, api) {
 }
 
 // ------------------------------------------------------------ map tap
+// Show, then practise (decision 2026-10-20): places are first shown with their names (the
+// locator map on each new place's card, and a labelled "Look at the map" step), then the
+// questions use a map WITHOUT names: the student hears or reads the Spanish and taps the
+// numbered ring on the right place. Distractors are neighbours or look-alikes (unit-1-1.js).
+// "Show the names" is a hint: the answer still counts, but not as a first-try answer (no
+// bonus XP, not 100%), and Review brings the place back sooner. No hint in the unit check.
+const mapAspect = () => (window.innerWidth < 500 ? 1 : window.innerWidth < 700 ? 1.2 : 1.6); // taller on phones: more room between rings
 function maptap(step, api) {
   const choices = shuffle(step.choices);
   const answer = choices.indexOf(step.target);
+  const canHint = !api.lesson.check;
   const node = el(`
     <div class="ex ex-maptap">
       ${head(api.lesson.game ? "Where is it?" : "Tap the place on the map")}
@@ -1034,16 +1043,55 @@ function maptap(step, api) {
           ${es(step.sayEs)}
         </div>
       </div>
-      ${mapFrame({ choices, highlight: choices, pins: true, aspect: window.innerWidth < 700 ? 1.2 : 1.6 })}
+      ${mapFrame({ choices, highlight: choices.filter((c) => !PLACES[c]?.island), quiz: true, aspect: mapAspect() })}
+      ${canHint ? `<button class="btn-text map-hint" data-hint>${icon("map", 18, 2.5)} Show the names <small>(no bonus)</small></button>` : ""}
     </div>`);
+  const frame = node.querySelector(".map-frame");
+  let hinted = false;
   const audible = markAudio(node, step.sayEs);
   wireAudio(node, api, step.sayEs);
+  node.querySelector("[data-hint]")?.addEventListener("click", (e) => {
+    hinted = true;
+    frame.classList.add("is-named");
+    e.currentTarget.disabled = true;
+    e.currentTarget.innerHTML = `${icon("map", 18, 2.5)} Names shown`;
+    sfx.tap();
+  });
   const ctrl = choiceController(node, { ...step, answer }, api, {
-    selector: ".map-pin",
-    result: (ok) => ({ ok, answerEs: step.sayEs, answerEn: ok ? step.en : `${step.en} (${placeName(step.target)})` }),
-    ctrl: { mount() { wireMapPins(node); if (audible) setTimeout(() => api.speak(step.sayEs), 350); } },
+    selector: ".map-mark",
+    result: (ok) => {
+      frame.classList.add("is-named", "is-checked"); // after CHECK: every ring gets its name (look again)
+      node.querySelector("[data-hint]")?.setAttribute("hidden", "");
+      return { ok, hinted: ok && hinted, answerEs: step.sayEs, answerEn: ok ? step.en : `${step.en} (${placeName(step.target)})`,
+        body: ok && hinted ? `<span class="feedback__tip">${icon("map", 16, 2.75)} You used the names this time. Next time, try it without them!</span>` : "" };
+    },
+    ctrl: { mount() { wireMapQuiz(node, (m) => m.click()); if (audible) setTimeout(() => api.speak(step.sayEs), 350); } },
   });
   return ctrl;
+}
+
+// ------------------------------------------------------------ look at the map (study)
+// A labelled map of the places the next questions use. Tap a place to hear its name.
+function mapstudy(step, api) {
+  const places = step.places;
+  const node = el(`
+    <div class="ex ex-mapstudy">
+      ${head(esc(step.titleEn || "Look at the map"), `<span class="badge">${icon("map", 16, 2.75)} Map</span>`)}
+      <p class="context">${rich(step.contextEn || "Tap a place to hear its name. Next, you find them on a map without names.")}</p>
+      ${mapFrame({ choices: places, highlight: places.filter((c) => !PLACES[c]?.island), pins: true, keys: false, aspect: mapAspect() })}
+    </div>`);
+  node.querySelectorAll(".map-pin").forEach((b) => b.addEventListener("click", () => {
+    b.classList.add("is-heard");
+    sfx.select();
+    api.speak(PLACES[b.dataset.place].es);
+  }));
+  return {
+    el: node,
+    footer: { label: "Continue", enabled: true },
+    // Measure again once the step's entrance animation (a transform) has finished.
+    mount() { wireMapPins(node); setTimeout(() => wireMapPins(node), 450); },
+    onMain() { sfx.tap(); api.next(); },
+  };
 }
 
 // ------------------------------------------------------------ table (worked example)

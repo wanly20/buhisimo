@@ -5,7 +5,8 @@
 // Serve:  cd prototype && python3 -m http.server 8765 --bind 127.0.0.1   (another port: BASE=http://127.0.0.1:8780/)
 // Run:    NODE_PATH=$PW/node_modules node prototype/tools/e2e-unit.mjs <outDir>
 //
-// Covers: lesson locks (sequential, URL-proof, ?unlock=all / ?unlock=off), every 1.1 lesson played start to finish (keyboard on the Chromebook size, with
+// Covers: lesson locks (sequential, URL-proof, ?unlock=all / ?unlock=off), map questions
+// (study map with names, questions without, 44px targets for small islands at 390×844), every 1.1 lesson played start to finish (keyboard on the Chromebook size, with
 // wrong answers and the retry), "fits 1366×768 without scrolling" for every step, Review
 // (spaced repetition + My knowledge), the story, Radio Búho karaoke highlighting, the
 // phone tab bar, the progress file, offline mode and the service worker.
@@ -100,7 +101,7 @@ async function pickByKey(page, selector, test, { useKeys = true } = {}) {
 async function answer(page, s, { wrong = false, keys = true } = {}) {
   const t = s.type;
   const enter = async () => { if (keys) await page.keyboard.press("Enter"); else await page.click('.lesson-foot [data-act="main"]'); };
-  if (["intro", "table", "storyintro", "storyline"].includes(t)) { await enter(); return "next"; }
+  if (["intro", "table", "storyintro", "storyline", "mapstudy"].includes(t)) { await enter(); return "next"; }
   if (t === "pick" || t === "listen" || t === "choose") {
     const want = s.answer;
     await pickByKey(page, ".lesson-body .ex:not(.step-leave) .option", wrong ? `(b) => +b.dataset.oi !== ${want}` : `(b) => +b.dataset.oi === ${want}`, { useKeys: keys });
@@ -113,7 +114,7 @@ async function answer(page, s, { wrong = false, keys = true } = {}) {
     await wait(page, 150); await enter(); return "graded";
   }
   if (t === "maptap") {
-    await pickByKey(page, ".lesson-body .ex-maptap .map-pin", wrong ? `(b) => b.dataset.place !== ${JSON.stringify(s.target)}` : `(b) => b.dataset.place === ${JSON.stringify(s.target)}`, { useKeys: keys });
+    await pickByKey(page, ".lesson-body .ex-maptap .map-mark", wrong ? `(b) => b.dataset.place !== ${JSON.stringify(s.target)}` : `(b) => b.dataset.place === ${JSON.stringify(s.target)}`, { useKeys: keys });
     await wait(page, 150); await enter(); return "graded";
   }
   if (t === "tiles") {
@@ -217,7 +218,7 @@ log("A. Chromebook 1366×768: every 1.1 lesson in order, keyboard play");
   ok(/locked/i.test(await page.locator(".node-pop").innerText()), "a later lesson is locked until the one before is done");
   await page.keyboard.press("Escape");
 
-  const shotTypes = new Set(["intro", "table", "choose", "gap", "sort", "maptap", "storyintro", "storyline", "tiles", "passport", "match", "type", "speak", "pick", "listen", "maptap:feedback", "gap:feedback"]);
+  const shotTypes = new Set(["intro", "table", "choose", "gap", "sort", "maptap", "mapstudy", "storyintro", "storyline", "tiles", "passport", "match", "type", "speak", "pick", "listen", "maptap:feedback", "gap:feedback"]);
   for (const [i, id] of LESSON_IDS.entries()) {
     await page.goto(BASE + "index.html#/");
     await wait(page, 900);
@@ -366,7 +367,7 @@ log("B. Story lesson details (1366×768)");
   });
   await page.goto(BASE + "index.html");
   await page.evaluate(() => { localStorage.clear(); localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ unlockAll: true, robotVoice: false })); });
-  await page.goto(BASE + "index.html#/lesson/1.1-9");
+  await page.goto(BASE + "index.html?unlock=all#/lesson/1.1-9"); // a full load, so the stored unlockAll is read
   await page.reload();
   await wait(page, 1500);
   ok(await page.locator(".story-cover").count() === 1, "the story opens with its cover (plaza, cast)");
@@ -431,10 +432,12 @@ log("C. Phone 390×844: tab bar, lessons with touch, views");
   }
   const hscroll = await page.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth);
   ok(hscroll <= 0, "phone: no horizontal scrolling");
-  // Play lessons 1–3 and 9 by touch (unlock 9 via the teacher switch)
+  // Play lessons 2, 3, 7–11 by touch (islands and Map tap included; unlocked via the teacher switch)
   await page.evaluate(() => { const s = JSON.parse(localStorage.getItem("buhisimo.prototype.v1") || "{}"); s.unlockAll = true; localStorage.setItem("buhisimo.prototype.v1", JSON.stringify(s)); });
-  const pshots = new Set(["intro", "maptap", "gap", "sort", "table", "storyline", "passport", "choose", "tiles", "maptap:feedback"]);
-  for (const id of ["1.1-2", "1.1-3", "1.1-8", "1.1-9", "1.1-11"]) {
+  await page.reload(); // locked lessons can't be opened by URL, so the app must read unlockAll first
+  await wait(page, 900);
+  const pshots = new Set(["intro", "maptap", "mapstudy", "gap", "sort", "table", "storyline", "passport", "choose", "tiles", "maptap:feedback"]);
+  for (const id of ["1.1-2", "1.1-3", "1.1-7", "1.1-8", "1.1-9", "1.1-10", "1.1-11"]) {
     await page.goto(BASE + `index.html#/lesson/${id}`);
     await wait(page, 1300);
     const r = await playLesson(page, `phone ${id}`, { keys: false, wrongOnce: false, shotTypes: pshots, shotPrefix: "p-" });
@@ -516,6 +519,89 @@ for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width: 390, height: 
   await page.goto(BASE + "index.html?unlock=off#/");
   await wait(page, 1200);
   ok(await page.locator('.node[data-unit="1.1"].is-locked').count() === 9 && await page.locator(".teacher-flag").count() === 0, `${vp.tag}: ?unlock=off locks lessons 3–11 again`);
+  await ctx.close();
+}
+
+// ===================================================================== M. map questions
+log("M. Map questions: a labelled study map first, then no names; small places tappable on a phone");
+for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width: 390, height: 844, tag: "m" }]) {
+  const { ctx, page } = await newPage({ width: vp.width, height: vp.height }, { touch: vp.tag === "m" });
+  await page.goto(BASE + "index.html");
+  await page.evaluate(() => localStorage.clear());
+  await page.goto(BASE + "index.html?unlock=all#/");
+  await wait(page, 900);
+  const SHOT = new Set(["study-l2", "study-l7", "g-study-north", "g-study-south", "g-study-world", "map-pascua", "map-baleares", "map-canarias", "map-gq", "map-filipinas", "map-rd", "g-espana", "g-canarias", "c-map-cuba"]);
+  let maptaps = 0, studies = 0, hintDone = false;
+  const problems = [];
+  for (const id of ["1.1-2", "1.1-3", "1.1-6", "1.1-7", "1.1-10", "1.1-11"]) {
+    await page.goto(BASE + `index.html#/lesson/${id}`);
+    await wait(page, 1300);
+    for (let guard = 0; guard < 90; guard++) {
+      await wait(page, 450);
+      const st = await step(page);
+      if (st.complete || !st.step) break;
+      const s = st.step;
+      if (s.type === "mapstudy") {
+        studies++;
+        await wait(page, 350); // labels are placed again after the entrance animation
+        const labels = await page.$$eval(".ex-mapstudy .map-pin__label", (ls) => ls.filter((l) => l.getBoundingClientRect().width > 0).length);
+        if (labels !== s.places.length) problems.push(`${id} ${s.id}: ${labels} of ${s.places.length} names shown`);
+        const off = await page.evaluate(() => { const f = document.querySelector(".ex-mapstudy .map-frame").getBoundingClientRect(); return [...document.querySelectorAll(".ex-mapstudy .map-pin__label")].filter((l) => { const r = l.getBoundingClientRect(); return r.left < f.left - 1 || r.right > f.right + 1 || r.top < f.top - 1 || r.bottom > f.bottom + 1; }).map((l) => l.textContent.trim()); });
+        if (off.length) problems.push(`${id} ${s.id}: labels outside the map: ${off.join(", ")}`);
+        if (SHOT.has(s.id)) await shot(page, `${vp.tag}-map-${s.id}`);
+      }
+      if (s.type === "maptap" && !s.retry) {
+        maptaps++;
+        const info = await page.evaluate(() => {
+          const f = document.querySelector(".ex-maptap .map-frame").getBoundingClientRect();
+          const marks = [...document.querySelectorAll(".ex-maptap .map-mark")].map((m) => { const r = m.getBoundingClientRect(); return { place: m.dataset.place, x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height, inside: r.left >= f.left - 1 && r.right <= f.right + 1 && r.top >= f.top - 1 && r.bottom <= f.bottom + 1, named: getComputedStyle(m.querySelector(".map-mark__name")).display !== "none" }; });
+          return { marks, pinLabels: document.querySelectorAll(".ex-maptap .map-pin__label").length };
+        });
+        if (info.pinLabels) problems.push(`${id} ${s.id}: labelled pins in a question`);
+        for (const m of info.marks) {
+          if (m.named) problems.push(`${id} ${s.id}: the name of ${m.place} shows before CHECK`);
+          if (m.w < 44 || m.h < 44) problems.push(`${id} ${s.id}: ${m.place} target ${m.w}×${m.h}px (< 44)`);
+          if (!m.inside) problems.push(`${id} ${s.id}: ${m.place} target outside the map`);
+        }
+        for (let i = 0; i < info.marks.length; i++) for (let j = i + 1; j < info.marks.length; j++) {
+          const a = info.marks[i], b = info.marks[j];
+          if (Math.hypot(a.x - b.x, a.y - b.y) < 44) problems.push(`${id} ${s.id}: ${a.place} and ${b.place} targets overlap`);
+        }
+        if (SHOT.has(s.id)) await shot(page, `${vp.tag}-map-${s.id}`);
+        if (id === "1.1-11") ok(await page.locator(".ex-maptap [data-hint]").count() === 0, `${vp.tag}: no "Show the names" hint in the unit check`);
+        if (id === "1.1-10" && !hintDone) {
+          hintDone = true;
+          await page.click(".ex-maptap [data-hint]");
+          await wait(page, 300);
+          ok(await page.evaluate(() => [...document.querySelectorAll(".ex-maptap .map-mark__name")].every((n) => getComputedStyle(n).display !== "none")), `${vp.tag}: "Show the names" shows every name`);
+          await shot(page, `${vp.tag}-map-hint-names`);
+          await answer(page, s, { keys: false });
+          await wait(page, 700);
+          ok(/without them/.test(await page.locator(".feedback").innerText()), `${vp.tag}: a hinted answer is right, with "try it without them" (no bonus XP)`);
+          await shot(page, `${vp.tag}-map-hint-feedback`);
+          await page.click('.feedback [data-act="continue"]');
+          continue;
+        }
+        if (s.id === "map-baleares" || s.id === "g-canarias") {
+          // wrong first, to see the feedback with names
+          await answer(page, s, { keys: false, wrong: true });
+          await wait(page, 700);
+          await shot(page, `${vp.tag}-map-feedback-wrong-${s.id}`);
+          await page.click('.feedback [data-act="continue"]');
+          continue;
+        }
+      }
+      const res = await answer(page, s, { keys: false });
+      if (res === "graded") {
+        await wait(page, 700);
+        if (s.type === "maptap" && SHOT.has(s.id) && s.id.startsWith("map-p")) await shot(page, `${vp.tag}-map-feedback-${s.id}`);
+        if (await page.locator(".ex-fixup").count()) { await page.click("[data-show], [data-act='show']").catch(() => {}); await wait(page, 2200); }
+        await page.click('.feedback [data-act="continue"]').catch(() => {});
+      }
+    }
+  }
+  ok(studies >= 7 && maptaps >= 20, `${vp.tag}: ${studies} study maps and ${maptaps} map questions seen`);
+  ok(problems.length === 0, `${vp.tag}: every map question has no names before CHECK, 44px+ targets inside the map, no overlaps${problems.length ? ": " + problems.join("; ") : ""}`);
   await ctx.close();
 }
 

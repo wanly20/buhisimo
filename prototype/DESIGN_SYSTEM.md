@@ -171,7 +171,7 @@ All 11 lessons of Unit 1.1 are playable (`unit-1-1.js`, following `docs/content_
 | Choose | `.ex-choose`, `.pic-option` | One exercise for Spanish/English/picture options (sí/no, picture of *el mapa*, story checks). |
 | Gap fill | `.ex-gap`, `.gap-slot` | The chosen word drops into a dashed slot; turquoise, then emerald or terracotta. |
 | Sort | `.ex-sort` | One card at a time into 2–3 buckets (soy/eres/es, famoso/famosa); keys 1–3. |
-| Map | `.map-frame`, `.map-pin` | Natural Earth shapes (`js/worldmap-data.js`). Locator maps on new-word cards; Map tap pins are labelled buttons (keys 1–4) whose labels move so they never overlap. |
+| Map | `.map-frame`, `.map-pin`, `.map-mark` | Natural Earth shapes (`js/worldmap-data.js`). Locator maps on new-word cards. "Look at the map" (`mapstudy`): labelled pins (tap to hear) whose labels move so they never overlap or cover another dot. Map questions (`maptap`): no names; numbered 48 px rings (`.map-mark`, keys 1–4) on each place, spread apart with a leader line when they would overlap; a tap on a tinted country picks its ring; names appear after CHECK or with the "Show the names" hint (costs the bonus). |
 | Rule table | `.rule-card` | Worked example: soy/eres/es, histórico/histórica. One line per row on short screens. |
 | Story | `.story-line`, `.story-bubble` | Comic-style panels, the last three lines only (no scrolling), EN toggle, tap a line to hear it. |
 | Passport | `.passport` | The unit check finale: listen (or read) and type; the passport gets a stamp. |
