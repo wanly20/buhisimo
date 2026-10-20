@@ -2,10 +2,10 @@
 // software rendering, never the GPU, never a visible window).
 //
 // Setup (outside the repo):  mkdir -p $PW && cd $PW && npm i playwright-core@1.48.2
-// Serve:  cd prototype && python3 -m http.server 8765 --bind 127.0.0.1
+// Serve:  cd prototype && python3 -m http.server 8765 --bind 127.0.0.1   (another port: BASE=http://127.0.0.1:8780/)
 // Run:    NODE_PATH=$PW/node_modules node prototype/tools/e2e-unit.mjs <outDir>
 //
-// Covers: every 1.1 lesson played start to finish (keyboard on the Chromebook size, with
+// Covers: lesson locks (sequential, URL-proof, ?unlock=all / ?unlock=off), every 1.1 lesson played start to finish (keyboard on the Chromebook size, with
 // wrong answers and the retry), "fits 1366×768 without scrolling" for every step, Review
 // (spaced repetition + My knowledge), the story, Radio Búho karaoke highlighting, the
 // phone tab bar, the progress file, offline mode and the service worker.
@@ -18,7 +18,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require("playwright-core"); // resolved through NODE_PATH
 const OUT = process.argv[2] || "e2e-unit-shots";
 mkdirSync(OUT, { recursive: true });
-const BASE = "http://127.0.0.1:8765/";
+const BASE = process.env.BASE || "http://127.0.0.1:8765/"; // e.g. BASE=http://127.0.0.1:8780/
 const PROTO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
 let OFFLINE = false;
@@ -455,6 +455,67 @@ log("D. Tablet 820×1180");
   await page.goto(BASE + "index.html#/radio");
   await wait(page, 1300);
   ok(await page.locator(".tab-bar").isVisible(), "tablet: tab bar visible");
+  await ctx.close();
+}
+
+// ===================================================================== L. lessons lock one after the other
+log("L. Locks: sequential unlocking, no way round it by URL, the teacher override");
+for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width: 390, height: 844, tag: "m" }]) {
+  const { ctx, page } = await newPage({ width: vp.width, height: vp.height }, { touch: vp.tag === "m" });
+  await page.goto(BASE + "index.html");
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await wait(page, 1300);
+  const lockedIds = await page.$$eval('.node[data-unit="1.1"].is-locked', (ns) => ns.map((n) => n.dataset.node));
+  ok(lockedIds.length === 10 && !lockedIds.includes("1.1-1"), `${vp.tag}: fresh start: lesson 1 open, the other 10 locked (${lockedIds.length})`);
+  ok(await page.locator('.node[data-unit="1.1"] .node-lock').count() === 10, `${vp.tag}: every locked lesson shows a padlock`);
+  ok(/locked/.test(await page.locator('.node[data-node="1.1-2"]').getAttribute("aria-label")), `${vp.tag}: the locked state is in the node's label`);
+  await page.evaluate(() => document.querySelector('.node[data-node="1.1-4"]').scrollIntoView({ block: "center" }));
+  await wait(page, 300);
+  await shot(page, `${vp.tag}-lock-path`);
+  await page.click('.node[data-node="1.1-4"]');
+  await wait(page, 400);
+  ok(await page.locator(".node-pop button:disabled").count() === 1, `${vp.tag}: a locked lesson's popover has no Start button`);
+  await shot(page, `${vp.tag}-lock-popover`);
+  // the address bar can't open a locked lesson
+  await page.goto(BASE + "index.html#/lesson/1.1-7");
+  await wait(page, 1200);
+  ok(await page.locator(".screen.lesson").count() === 0 && await page.evaluate(() => location.hash === "#/"), `${vp.tag}: #/lesson/1.1-7 while locked goes back to the path`);
+  ok(/locked/i.test(await page.locator(".toast").last().innerText().catch(() => "")), `${vp.tag}: and says the lesson is locked`);
+  await shot(page, `${vp.tag}-lock-url-refused`);
+  // finishing lesson 1 opens lesson 2 only
+  await page.evaluate(() => { const s = JSON.parse(localStorage.getItem("buhisimo.prototype.v1") || "{}"); s.completed = s.completed || {}; s.completed["1.1-1"] = { xp: 10, accuracy: 100, at: Date.now(), plays: 1 }; localStorage.setItem("buhisimo.prototype.v1", JSON.stringify(s)); });
+  await page.reload();
+  await wait(page, 900);
+  await page.goto(BASE + "index.html#/lesson/1.1-3");
+  await wait(page, 1200);
+  ok(await page.locator(".screen.lesson").count() === 0, `${vp.tag}: after lesson 1, lesson 3 is still locked`);
+  await page.goto(BASE + "index.html#/lesson/1.1-2");
+  await wait(page, 1500);
+  ok(await page.locator(".screen.lesson").count() === 1, `${vp.tag}: after lesson 1, lesson 2 opens`);
+  // teacher settings are hidden from students
+  await page.goto(BASE + "index.html#/");
+  await wait(page, 900);
+  await page.locator('[data-act="settings"]:visible, [data-nav="settings"]:visible').first().click();
+  await wait(page, 500);
+  ok(await page.locator('[data-switch="unlock"]').count() === 0, `${vp.tag}: students don't see the "Open every lesson" switch`);
+  await page.keyboard.press("Escape");
+  // ?unlock=all opens everything, shows the flag and the teacher settings; ?unlock=off relocks
+  await page.goto(BASE + "index.html?unlock=all#/lesson/1.1-10");
+  await wait(page, 1500);
+  ok(await page.locator(".screen.lesson").count() === 1, `${vp.tag}: ?unlock=all opens a later lesson by URL`);
+  ok(await page.evaluate(() => !location.search.includes("unlock")), `${vp.tag}: the override is removed from the address bar after use`);
+  await page.goto(BASE + "index.html#/");
+  await wait(page, 1000);
+  ok(await page.locator(".teacher-flag").count() === 1 && await page.locator('.node[data-unit="1.1"].is-locked').count() === 0, `${vp.tag}: teacher preview flag shown, nothing locked`);
+  await shot(page, `${vp.tag}-lock-teacher-preview`);
+  await page.locator('[data-act="settings"]:visible, [data-nav="settings"]:visible').first().click();
+  await wait(page, 500);
+  ok(await page.locator('[data-switch="unlock"][aria-checked="true"]').count() === 1, `${vp.tag}: the teacher settings show "Open every lesson" on`);
+  await page.keyboard.press("Escape");
+  await page.goto(BASE + "index.html?unlock=off#/");
+  await wait(page, 1200);
+  ok(await page.locator('.node[data-unit="1.1"].is-locked').count() === 9 && await page.locator(".teacher-flag").count() === 0, `${vp.tag}: ?unlock=off locks lessons 3–11 again`);
   await ctx.close();
 }
 

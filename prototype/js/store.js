@@ -21,7 +21,8 @@ const defaults = () => ({
   listenOffUntil: 0,
   voiceMaria: "maria_bogota", // recorded-voice test: maria_bogota | maria_paisa
   voiceBuho: "buho_profesor", // buho_profesor | buho_abuelo
-  unlockAll: false,      // teacher preview: every lesson open
+  unlockAll: false,      // teacher preview: every lesson open (?unlock=all, see js/app.js)
+  teacher: false,        // show the "For teachers" settings (?unlock=all or ?teacher=1)
   robotVoice: false,     // computer voice for lines that aren't recorded yet
 });
 
@@ -45,7 +46,7 @@ function save() {
 export const store = {
   get: () => state,
   set(patch) { state = { ...state, ...patch }; save(); return state; },
-  reset() { state = { ...defaults(), font: state.font, voiceMaria: state.voiceMaria, voiceBuho: state.voiceBuho, unlockAll: state.unlockAll }; save(); return state; },
+  reset() { state = { ...defaults(), font: state.font, voiceMaria: state.voiceMaria, voiceBuho: state.voiceBuho, unlockAll: state.unlockAll, teacher: state.teacher }; save(); return state; },
 
   speakOn: () => Date.now() >= state.speakOffUntil,
   listenOn: () => Date.now() >= state.listenOffUntil,

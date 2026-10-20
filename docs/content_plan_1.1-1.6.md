@@ -38,6 +38,15 @@
 5. **Irregular plurals are taught explicitly**, in three 1.6 lessons, and the validator rejects a plural before its rule card (§8, `docs/irregular_plurals.md`).
 6. **Songs, chants and Radio Búho podcasts** for sequences: the alphabet (1.2), numbers 1–31 (1.3) and, added here, days and months (1.4) (§11).
 
+### Decisions applied on 20 October 2026
+
+1. **Unit 1.3 is shown as two map sections**, 1.3a and 1.3b, with a new section check and repaso between them (§6, §12 question 4).
+2. **Lessons are locked one after the other.** Juan: *"lessons are to be locked one after the other as the vocabulary builds and thus is pre-requisite."* Every lesson uses the items of the lessons before it (the validator's lesson-level check is built on that order), so a student can open only the next unfinished lesson, plus any lesson already finished (to replay it). In the v2 prototype:
+   - Locked lessons are sand-coloured with a padlock badge on the path; their popover says which lesson to finish first and has no Start button; screen readers hear "locked" in the node's label.
+   - A locked lesson can't be opened from the address bar or an old link either (`#/lesson/1.1-7` goes back to the path with a "That lesson is locked" message).
+   - **Teacher override (hidden from students):** add `?unlock=all` to the address, e.g. `https://wanly20.github.io/buhisimo/prototype/?unlock=all`. Every lesson opens, a dashed padlock chip appears in the path header (tap it to lock again) and the "For teachers" settings appear (Open every lesson, computer voice). `?unlock=off` locks the lessons again; `?teacher=1` only shows the teacher settings; `?teacher=0` hides them and relocks. The choice is remembered on that device and survives "Reset prototype progress".
+   - The full app keeps the same rule. A teacher dashboard can later open a lesson for one student or a class (e.g. after a whole-class lesson), but students never skip ahead on their own.
+
 ---
 
 ## 1. How to read this plan

@@ -268,6 +268,21 @@
 /* =================================================================== path: locked nodes */
 .node.is-locked:not(.is-done):not(.is-current) { --face: var(--sand-200); --face-border: var(--sand-200); --edge-c: var(--sand-300); color: var(--ink-soft); }
 .node.is-locked:not(.is-done):not(.is-current)::after { opacity: 0.4; }
+.node.is-locked:not(.is-done):not(.is-current) .face .icon { opacity: 0.55; }
+/* A padlock badge on lessons that exist but aren't open yet (the next one opens when this one is done). */
+.node-lock {
+  position: absolute; right: -4px; bottom: -2px; z-index: 2;
+  display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--white); color: var(--ink-soft); border: 2px solid var(--sand-300);
+  box-shadow: 0 2px 0 var(--sand-300); pointer-events: none;
+}
+/* Teacher preview (?unlock=all): a chip in the path header; tapping it locks the lessons again. */
+.chip.teacher-flag { cursor: pointer; background: var(--mustard-50); color: var(--mustard-ink); border: 2px dashed var(--mustard-500); font: inherit; font-weight: 700; }
+@media (max-width: 480px) {
+  .chip.teacher-flag { padding: 0 8px; }
+  .chip.teacher-flag span { display: none; }
+  .path-top:has(.teacher-flag) .brand__name { display: none; } /* room for the chip */
+}
 
 /* =================================================================== views (Review, Radio, Me) */
 .view-area { min-height: 100%; }

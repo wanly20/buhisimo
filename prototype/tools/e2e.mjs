@@ -12,7 +12,7 @@ import { mkdirSync } from "node:fs";
 const OUT = process.argv[2] || "shots";
 const DSF = +(process.argv[3] || 1);
 mkdirSync(OUT, { recursive: true });
-const BASE = "http://127.0.0.1:8765/";
+const BASE = process.env.BASE || "http://127.0.0.1:8765/"; // e.g. BASE=http://127.0.0.1:8780/
 const errors = [];
 const log = (...a) => console.log(...a);
 let n = 0;

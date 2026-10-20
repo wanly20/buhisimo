@@ -18,7 +18,7 @@ const ok = (c, m) => { console.log(c ? "  ✓" : "  ✗", m); if (!c) errors.pus
 const wait = (ms) => p.waitForTimeout(ms);
 const key = (k) => p.keyboard.press(k);
 const active = () => p.evaluate(() => { const a = document.activeElement; return a ? (a.className?.baseVal ?? a.className) + "|" + (a.textContent || "").trim().slice(0, 30) : ""; });
-await p.goto("http://127.0.0.1:8765/index.html"); await p.evaluate(() => localStorage.clear()); await p.reload(); await wait(1300);
+await p.goto((process.env.BASE || "http://127.0.0.1:8765/") + "index.html"); await p.evaluate(() => localStorage.clear()); await p.reload(); await wait(1300);
 let n = 0; while (n++ < 40 && !(await active()).includes("is-current")) await key("Tab");
 ok((await active()).includes("is-current"), `Tab reaches the current lesson node (${n} presses)`);
 const ring = await p.evaluate(() => getComputedStyle(document.activeElement).outlineStyle + " " + getComputedStyle(document.activeElement).outlineColor);

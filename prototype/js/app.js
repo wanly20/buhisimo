@@ -14,7 +14,7 @@ import { gradeStep, meetLesson, buildReview, reviewViewHtml, dueItems, metItems 
 import { mountRadio, stopRadio } from "./radio.js";
 
 // Bump together with VERSION in sw.js for every release (tools/e2e-unit.mjs checks they match).
-export const APP_VERSION = "2026-10-18.l2-art";
+export const APP_VERSION = "2026-10-20.lock-map";
 
 const app = document.getElementById("app");
 applyFont(store.get().font);
@@ -37,11 +37,37 @@ let justCompleted = null;
 let activeLesson = null;
 let reloadWhenFree = false;
 
+// =================================================================== teacher override
+// Lessons unlock one after the other: each one's vocabulary is the next one's prerequisite
+// (Juan, 20 Oct 2026; docs/content_plan_1.1-1.6.md §1). For testing, a hidden teacher switch
+// opens every lesson. It is set from the address bar and remembered on this device:
+//   ?unlock=all   open every lesson (and show the "For teachers" settings)
+//   ?unlock=off   lock them again (sequential, as students see it)
+//   ?teacher=1    only show the "For teachers" settings; ?teacher=0 hides them and relocks
+(function teacherOverride() {
+  let q;
+  try { q = new URLSearchParams(location.search); } catch { return; }
+  if (!q.has("unlock") && !q.has("teacher")) return;
+  const u = (q.get("unlock") || "").toLowerCase(), t = q.get("teacher");
+  if (u === "all" || u === "1" || u === "on") store.set({ unlockAll: true, teacher: true });
+  if (u === "off" || u === "0" || u === "none") store.set({ unlockAll: false });
+  if (t === "1" || t === "on" || t === "") store.set({ teacher: true });
+  if (t === "0" || t === "off") store.set({ teacher: false, unlockAll: false });
+  q.delete("unlock"); q.delete("teacher");
+  const rest = q.toString();
+  try { history.replaceState(null, "", location.pathname + (rest ? `?${rest}` : "") + location.hash); } catch { /* file:// */ }
+})();
+
 // =================================================================== progress helpers
 const isDone = (id) => !!store.get().completed[id];
 /** Index of the first unfinished 1.1 lesson (the "current" node). */
 const currentIndex = () => { const i = LESSONS.findIndex((l) => !isDone(l.id)); return i < 0 ? LESSONS.length : i; };
-const isOpen = (id) => store.get().unlockAll || LESSONS.findIndex((l) => l.id === id) <= currentIndex();
+/** Open = the current lesson, any lesson before it, or one already finished (replay). Everything after the current one is locked. */
+const isOpen = (id) => {
+  const i = LESSONS.findIndex((l) => l.id === id);
+  if (i < 0) return false;
+  return !!store.get().unlockAll || isDone(id) || i <= currentIndex();
+};
 const titleHtml = (l) => (l.titleEs ? es(l.titleEs) : esc(l.titleEn));
 
 // =================================================================== router
@@ -86,12 +112,13 @@ function showPath(view = "path") {
       const locked = !l || !isOpen(n.id);
       const cls = ["press", "node", `node--${u.theme}`, done ? "is-done" : "", current ? "is-current" : "", locked ? "is-locked" : "", justCompleted === n.id ? "just-done" : ""].join(" ");
       const ico = done ? "check" : NODE_ICON[n.kind];
+      const lockBadge = l && locked && !done ? `<span class="node-lock" aria-hidden="true">${icon("lock", 16, 3)}</span>` : "";
       const label = `${n.labelEn}${l ? `: ${l.titleEn}` : ""}, unit ${u.id}${done ? ", completed" : current ? ", start here" : !l ? ", coming soon" : locked ? ", locked" : ""}`;
       return `
         <div class="node-wrap ${current ? "is-current" : ""}" style="--x:${x}px">
           ${current ? `<div class="start-bubble" aria-hidden="true">${cur === 0 ? "Start" : "Next"}</div>` : ""}
           <button class="${cls}" data-node="${n.id}" data-unit="${u.id}" aria-label="${esc(label)}">
-            <span class="face">${icon(ico, 34, 3)}</span>
+            <span class="face">${icon(ico, 34, 3)}</span>${lockBadge}
           </button>
           ${peek && peek.at === k ? `<img class="peek peek--${peek.side} ${peek.img.startsWith("owl") ? "peek--owl" : ""}" src="assets/${peek.img}.webp" alt="" draggable="false">` : ""}
         </div>`;
@@ -123,6 +150,7 @@ function showPath(view = "path") {
         <div class="path-stats">
           <span class="chip chip--streak ${s.streak ? "" : "is-zero"}" title="Day streak" aria-label="${s.streak} day streak">${icon("flame", 24, 2.25)}<span>${s.streak}</span></span>
           <span class="chip chip--xp" title="Total XP" aria-label="${s.xp} XP">${icon("zap", 22, 2.25)}<span>${s.xp}</span></span>
+          ${s.unlockAll ? `<button class="chip teacher-flag" data-act="relock" title="Teacher preview: every lesson is open. Tap to lock them again." aria-label="Teacher preview: every lesson is open. Lock them again">${icon("lock-open", 22, 2.5)}<span>Teacher</span></button>` : ""}
           <button class="bar-btn" data-act="settings" aria-label="Settings">${icon("settings", 26, 2.5)}</button>
         </div>
       </header>
@@ -149,6 +177,7 @@ function showPath(view = "path") {
   screen.addEventListener("click", (e) => {
     const t = e.target;
     if (t.closest('[data-act="settings"], [data-nav="settings"]')) return openSettings();
+    if (t.closest('[data-act="relock"]')) { store.set({ unlockAll: false }); toast("Lessons lock one after the other again.", "lock"); return route.force(); }
     if (t.closest("[data-guide]")) return toast("Guidebooks are coming soon.", "book-open");
     const st = t.closest("[data-start]");
     if (st) { sfx.tap(); location.hash = `#/lesson/${st.dataset.start}`; return; }
@@ -239,7 +268,14 @@ function setView(screen, view, { first = false } = {}) {
 // =================================================================== lesson + review
 async function showLesson(id) {
   const lesson = lessonById(id);
-  if (!lesson) { location.hash = "#/"; return; }
+  if (!lesson) { location.replace("#/"); return; }
+  if (!isOpen(id)) {
+    // A locked lesson can't be opened from the address bar or an old link either.
+    const prev = LESSONS[currentIndex()] || LESSONS[LESSONS.indexOf(lesson) - 1];
+    toast(`That lesson is locked. Finish “${esc(prev.titleEs || prev.titleEn)}” first.`, "lock", 3200);
+    location.replace("#/");
+    return;
+  }
   await tts.ready();
   if (viewOf(location.hash) !== "lesson") return; // navigated away while loading
   activeLesson = runLesson(app, lesson, {
@@ -455,9 +491,9 @@ export function openSettings() {
       <p class="modal__section" id="voices-label">Voices (test)</p>
       ${voiceRow("maria", "María (Mamá)", lesson1.titleEs)}
       ${voiceRow("buho", "Buhísimo", lesson1.praiseEs[0])}
-      <p class="modal__section">For teachers (prototype)</p>
-      ${row("unlock", "lock", "Open every lesson", "Students normally unlock lessons one at a time", s.unlockAll)}
-      ${row("robot", "volume-2", "Computer voice for unrecorded lines", "Off: those lines show “Audio coming soon”", s.robotVoice)}
+      ${s.teacher || s.unlockAll ? `<p class="modal__section">For teachers (prototype)</p>
+      ${row("unlock", "lock", "Open every lesson", "Students unlock lessons one at a time. Address bar: ?unlock=all / ?unlock=off", s.unlockAll)}
+      ${row("robot", "volume-2", "Computer voice for unrecorded lines", "Off: those lines show “Audio coming soon”", s.robotVoice)}` : ""}
       <button class="btn-text settings-reset" data-reset>${icon("rotate-ccw", 18, 2.75)} Reset prototype progress</button>
       <p class="settings-foot">Version ${APP_VERSION}. Recorded voices are Qwen3 test recordings; Raúl (Papá) has one voice.</p>
     </div>`);
