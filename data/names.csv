@@ -21,7 +21,7 @@ México,place,,3.7 México (fin de año),,conversation M2,Not in the 1.1 country
 Medellín,place,,,,conversation P2,
 Córdoba,place,,,,conversation P3,
 Australia,place,,1.1 El español global,Australia,Buhísimo v2 (the visitors are from Melbourne),Spanish pronunciation: aus-TRA-lia
-Melbourne,place,,1.1 El español global,Mélburn,Buhísimo v2 (the visitors are from Melbourne),"Spanish pronunciation; ""Say as"" is the spelling fed to the voice"
+Melbourne,place,,1.1 El español global,Mel-bóur-ne,Buhísimo v2 (the visitors are from Melbourne),"Spanish reading of the spelling, mel-BOUR-ne with the final -e said (Juan, 21 Oct 2026); ""Say as"" is the spelling fed to the voice. The hyphens make Qwen3-TTS say each part; replaces ""Mélburn"" (English-ish). Comparison: video_generation/voice_samples/melbourne/"
 Shakira,person (artist),f,3.5 ¡Somos fanátic@s de la música!,,slides agent: 3.5 deck,
 Bad Bunny,person (artist),m,3.5 ¡Somos fanátic@s de la música!,Bad Bóni,slides agent: 3.5 deck,"""Say as"" to check by ear"
 J Balvin,person (artist),m,3.5 ¡Somos fanátic@s de la música!,Jota Balvin,slides agent: 3.5 deck,"""Say as"" to check by ear"
