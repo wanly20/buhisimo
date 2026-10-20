@@ -34,7 +34,7 @@ let guard = 0, pickWrong = false, escTested = false; const seen = {};
 while (guard++ < 30) {
   const t = await type(); if (t === "complete" || t === "none") break;
   seen[t] = (seen[t] || 0) + 1; console.log("step", t);
-  if (t === "intro") {
+  if (t === "intro" || t === "table") {
     if (!escTested) { await key("Escape"); await wait(500); ok(await p.locator(".modal").count() === 1, "Esc opens the quit dialog"); await p.screenshot({ path: `${OUT}/k02-quit.png` }); await key("Escape"); await wait(500); ok(await p.locator(".modal").count() === 0, "Esc closes it again"); escTested = true; }
     await key("Enter"); await wait(800); continue;
   }
@@ -67,6 +67,8 @@ while (guard++ < 30) {
       ok((await active()).includes("type-input"), "accent key returns focus to the input");
       await p.keyboard.type("a");
       ok(await p.inputValue(".type-input") === "España", "typed España with the accent bar: " + await p.inputValue(".type-input"));
+    } else if (prompt === "I'm from Colombia.") {
+      await p.keyboard.type("Soy de Colombia.");
     } else {
       await p.keyboard.type("el país");
     }

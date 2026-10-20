@@ -613,6 +613,43 @@ if (RUN("M")) for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width:
   await ctx.close();
 }
 
+// ===================================================================== K. capital letters in typed answers
+log("K. Capital letters: names and sentences need them; languages, days and months don't");
+if (RUN("K")) for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width: 390, height: 844, tag: "m" }]) {
+  const { ctx, page } = await newPage({ width: vp.width, height: vp.height }, { touch: vp.tag === "m" });
+  await page.goto(BASE + "index.html");
+  await page.evaluate(() => localStorage.clear());
+  if (vp.tag === "d") {
+    const cases = await page.evaluate(async () => {
+      const { grade } = await import("./js/lesson.js");
+      const t = [["soy de australia", "Soy de Australia."], ["Soy de Australia", "Soy de Australia."], ["el Español", "el español"], ["El español", "el español"],
+        ["Hispanohablante", "hispanohablante"], ["el destino", "el destino"], ["El destino", "el destino"], ["españa", "España"], ["¿de dónde eres?", "¿De dónde eres?"],
+        ["De dónde eres", "¿De dónde eres?"], ["Soy De Australia.", "Soy de Australia."], ["peru", "Perú"], ["buenos días", "Buenos días"], ["salento", "Salento"]];
+      return t.map(([a, b]) => [a, b, grade(a, b).verdict]);
+    });
+    const want = { "soy de australia": "caps", "Soy de Australia": "correct", "el Español": "caps", "El español": "correct", "Hispanohablante": "caps", "el destino": "correct",
+      "El destino": "correct", "españa": "caps", "¿de dónde eres?": "caps", "De dónde eres": "correct", "Soy De Australia.": "caps", "peru": "accents", "buenos días": "correct", salento: "caps" };
+    for (const [a, b, v] of cases) ok(v === want[a], `grade("${a}", "${b}") → ${v} (want ${want[a]})`);
+  }
+  // In a lesson: the 1.1 check opens on "Spain"; type "españa".
+  await page.goto(BASE + "index.html?unlock=all#/lesson/1.1-11");
+  await page.reload();
+  await wait(page, 1500);
+  await page.fill(".lesson-body .type-input", "españa");
+  await page.click('.lesson-foot [data-act="main"]');
+  await wait(page, 700);
+  ok(await page.locator(".ex-fixup").count() === 1 && /Capital letters/.test(await page.locator(".fix-ask").innerText()), `${vp.tag}: “españa” is not accepted: the fix-up names the capital-letter rule`);
+  ok(await page.locator(".fix-letter.is-hint").count() === 1, `${vp.tag}: the letter that needs a capital is highlighted`);
+  await shot(page, `${vp.tag}-caps-fixup`);
+  await page.locator(".fix-letter.is-hint").first().click();
+  await wait(page, 1200);
+  ok(await sheet(page) === "correct" && (await page.locator(".feedback__answer .es").innerText()) === "España", `${vp.tag}: tapping it makes España: right, with the rule repeated`);
+  await shot(page, `${vp.tag}-caps-feedback`);
+  const it = await page.evaluate(() => JSON.parse(localStorage.getItem("buhisimo.prototype.v1")).items.espana);
+  ok(it && it.box === 0 && it.wrong >= 1, `${vp.tag}: not a first-try answer, so Review brings España back soon (box ${it?.box})`);
+  await ctx.close();
+}
+
 // ===================================================================== E. audio coverage
 log("E. Audio coverage");
 if (RUN("E")) {

@@ -86,7 +86,7 @@ log("RUN A: full lesson with right, wrong, accent fix-up, tiles, match, speech")
     seen[t] = (seen[t] || 0) + 1;
     const tag = `${t}${seen[t] > 1 ? seen[t] : ""}`;
     log(`step: ${tag}`);
-    if (t === "intro") {
+    if (t === "intro" || t === "table") {
       await shot(page, `lesson-${tag}`);
       await main(page);
       await settle(page);
@@ -132,6 +132,23 @@ log("RUN A: full lesson with right, wrong, accent fix-up, tiles, match, speech")
       await settle(page, 600);
       assert(await sheetState(page) === "correct", "tiles sentence built correctly (after removing a tile)");
       await shot(page, `lesson-${tag}-feedback`);
+      await cont(page);
+      continue;
+    }
+    if (t === "type" && (await page.locator(".type-prompt__en").innerText()) === "I'm from Colombia.") {
+      // Capital letters (21 Oct 2026): "soy de colombia" is not accepted as it is.
+      await page.fill(".type-input", "soy de colombia");
+      await main(page);
+      await settle(page, 600);
+      assert(await page.locator(".ex-fixup").count() === 1, "capital-letter fix-up appears for “soy de colombia”");
+      assert(/Capital letters/.test(await page.locator(".fix-ask").innerText()), "it names the rule (capital letters)");
+      assert(await page.locator(".fix-letter.is-hint").count() === 2, "the two letters that need a capital are highlighted (s, c)");
+      await shot(page, `lesson-${tag}-caps-fixup`);
+      for (let k = 0; k < 2; k++) { await page.locator(".fix-letter.is-hint").first().click(); await settle(page, 250); }
+      await settle(page, 900);
+      assert(await sheetState(page) === "correct", "capitals fixed → green sheet (not a first-try answer)");
+      assert(await page.locator(".feedback__answer .es").innerText() === "Soy de Colombia.", "the corrected sentence is shown");
+      await shot(page, `lesson-${tag}-caps-feedback`);
       await cont(page);
       continue;
     }
@@ -261,7 +278,7 @@ log("RUN B: Can't listen now + Can't speak now");
   while (guard++ < 30) {
     const t = await stepType(page);
     if (t === "complete" || t === "none") break;
-    if (t === "intro") { await main(page); await settle(page); continue; }
+    if (t === "intro" || t === "table") { await main(page); await settle(page); continue; }
     if (t === "listen") { await page.click('[data-cant="listen"]'); listenSkipped = true; await settle(page, 600); await shot(page, "cant-listen-toast"); continue; }
     if (t === "speak") { await page.click('[data-cant="speak"]'); speakSkipped = true; await settle(page, 700); continue; }
     if (t === "pick") { const b = page.locator(".lesson-body .ex-pick .option"); const l = await b.allInnerTexts(); await b.nth(l.findIndex((x) => x.includes("Where are you from?"))).click(); await main(page); await settle(page, 500); await cont(page); continue; }
@@ -270,6 +287,7 @@ log("RUN B: Can't listen now + Can't speak now");
       const prompt = await page.locator(".type-prompt__en").innerText();
       // keyboard path: type with accent bar + Enter
       if (prompt === "Spain") { await page.type(".type-input", "Espa"); await page.click('.accent-key[data-k="ñ"]'); await page.type(".type-input", "a"); }
+      else if (prompt === "I'm from Colombia.") { await page.type(".type-input", "Soy de Colombia."); }
       else { await page.type(".type-input", "pais"); }
       await page.keyboard.press("Enter");
       await settle(page, 600);

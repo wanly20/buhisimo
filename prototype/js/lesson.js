@@ -603,24 +603,70 @@ function tiles(step, api) {
   };
 }
 
-// ------------------------------------------------------------ type it (+ accent fix-up)
+// ------------------------------------------------------------ type it (+ accent and capital-letter fix-up)
 const ACCENT = { a: "á", e: "é", i: "í", o: "ó", u: "ú" };
 const ARTICLES = ["el", "la", "los", "las"];
-const normalize = (s) => s.normalize("NFC").toLowerCase().replace(/[¡!¿?.,;:"“”'‘’…—–]/g, " ").replace(/\s+/g, " ").trim();
+const PUNCT = /[¡!¿?.,;:"“”'‘’…—–«»]/g;
+const normalize = (s) => s.normalize("NFC").toLowerCase().replace(PUNCT, " ").replace(/\s+/g, " ").trim();
+/** Like normalize, but keeps capital letters (for the capital-letter check). */
+const keepCase = (s) => s.normalize("NFC").replace(PUNCT, " ").replace(/\s+/g, " ").trim();
+
+// Capital letters (Juan, 21 Oct 2026). Spanish capitalises the first word of a sentence and names of
+// countries, places and people, and NOT languages, days or months (el español, lunes, enero).
+// Words that always need a capital: every place on the map and every name in the course.
+const NAMES = ["Buhísimo", "Matilda", "Max", "Melbourne", "Salento", "Cocora", "Valentina", "Samuel", "Restrepo"];
+const PROPER = new Set([...Object.values(PLACES).map((p) => p.es), ...NAMES].flatMap((n) => n.split(" ")).filter((w) => /^[A-ZÁÉÍÓÚÑ]/.test(w)));
+// Words that never take a capital in Spanish (classic English-speaker mistakes).
+export const SMALL_WORDS = new Set(["español", "hispanohablante", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo",
+  "enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]);
+const isUpper = (c) => c !== c.toLowerCase();
+/** A full sentence (ends in . ? ! or starts with ¿ ¡) must start with a capital letter. A word or
+ *  phrase on its own (el destino, Buenos días) may start either way, unless it is a name (always
+ *  a capital) or a language, day or month (never a capital). */
+export const isSentence = (target) => /[.?!…]\s*$/.test(target.trim()) || /^[¿¡]/.test(target.trim());
+
+/** Letters whose case is wrong: [{ i, need: "upper"|"lower", word }]; typed and want are keepCase strings of equal length. */
+export function capsIssues(typed, want, sentence) {
+  const out = [];
+  let w = 0, start = 0;
+  for (let i = 0; i <= want.length; i++) {
+    if (i < want.length && want[i] !== " ") continue;
+    const word = want.slice(start, i);
+    for (let k = start; k < i; k++) {
+      if (typed[k] === want[k] || isUpper(typed[k]) === isUpper(want[k])) continue;
+      const first = k === start, low = word.toLowerCase();
+      const free = first && w === 0 && !sentence && !PROPER.has(word) && !SMALL_WORDS.has(low);
+      if (!free) out.push({ i: k, need: isUpper(want[k]) ? "upper" : "lower", word });
+    }
+    w++; start = i + 1;
+  }
+  return out;
+}
+
+/** Explain a capital-letter slip in one kind sentence. */
+export function capsMessage(issues) {
+  if (issues.some((x) => x.need === "lower" && SMALL_WORDS.has(x.word.toLowerCase()))) return "Small letters: in Spanish, languages, days and months don't take a capital (el español, lunes, enero).";
+  if (issues.some((x) => x.need === "upper")) return "Capital letters: Spanish starts a sentence with a capital (after ¿ or ¡ too), and names of countries, places and people always have one.";
+  return "Small letters: only the first word of a sentence and names take a capital letter.";
+}
 
 export function grade(input, target) {
   const a = normalize(input), t = normalize(target);
   if (!a) return { verdict: "empty" };
-  if (a === t) return { verdict: "correct" };
-  let full = a, missingArticle = false;
+  let full = a, typed = keepCase(input), missingArticle = false;
   const tw = t.split(" ");
-  if (ARTICLES.includes(tw[0]) && fold(a) === fold(tw.slice(1).join(" "))) {
+  if (a !== t && ARTICLES.includes(tw[0]) && fold(a) === fold(tw.slice(1).join(" "))) {
     full = `${tw[0]} ${a}`;
+    typed = `${keepCase(target).split(" ")[0]} ${typed}`; // the article we add, as the target writes it
     missingArticle = true;
   }
-  if (full === t) return { verdict: "correct", missingArticle };
-  if (fold(full) === fold(t)) return { verdict: "accents", full, missingArticle };
-  return { verdict: "wrong" };
+  if (fold(full) !== fold(t)) return { verdict: "wrong" };
+  const want = keepCase(target);
+  const sentence = isSentence(target);
+  const accents = full !== t;
+  const caps = accents ? [] : capsIssues(typed, want, sentence);
+  if (!accents && !caps.length) return { verdict: "correct", missingArticle };
+  return { verdict: accents ? "accents" : "caps", full, typed, want, sentence, caps, missingArticle };
 }
 
 function typeIt(step, api) {
@@ -668,7 +714,7 @@ function typeIt(step, api) {
       const g = grade(input.value, step.answerEs);
       input.readOnly = true;
       input.blur();
-      if (g.verdict === "accents") return startFixup(g);
+      if (g.verdict === "accents" || g.verdict === "caps") return startFixup(g);
       const ok = g.verdict === "correct";
       step.onResult?.(ok, node);
       node.querySelector(".type-field").classList.add(ok ? "is-correct" : "is-wrong");
@@ -682,24 +728,28 @@ function typeIt(step, api) {
     },
   };
 
+  // The fix-up: the student's own letters, to be fixed by tapping. Stage 1 fixes accents and ñ
+  // (tap a vowel: a → á; tap n: ñ). Stage 2 fixes capital letters (tap a letter: a ↔ A); the letters
+  // that need it are highlighted and the rule is named. A capitals fix is right, but not first-try.
   function startFixup(g) {
     const target = step.answerEs;
-    const typed = g.full;
-    const lockedUpTo = g.missingArticle ? typed.indexOf(" ") : -1; // article we added for them
-    const cur = [...typed];
-    const want = [...target.toLowerCase()];
-    let misses = 0;
+    const lockedUpTo = g.missingArticle ? g.typed.indexOf(" ") : -1; // article we added for them
+    const cur = [...g.typed];
+    const want = [...g.want];
+    const original = [...g.typed];
+    let stage = g.verdict === "accents" ? "accents" : "caps";
+    let misses = 0, capsFixed = false;
     const fix = el(`
       <div class="ex ex-fixup">
         <div class="speaker-row">
           ${charImg("owl-thinking")}
-          <div class="bubble"><span class="en">So close! Tap the letters that need an accent or ñ.</span></div>
+          <div class="bubble"><span class="en fix-ask"></span></div>
         </div>
         <div class="fix-letters" lang="es" role="group" aria-label="Your answer, letter by letter">
           ${cur.map((c, i) => c === " " ? `<span class="fix-space"></span>` :
             `<button class="press fix-letter ${i <= lockedUpTo ? "is-added" : ""}" data-i="${i}" ${i <= lockedUpTo ? "disabled" : ""} aria-label="${c}"><span class="face">${c}</span></button>`).join("")}
         </div>
-        <p class="fix-help">${icon("lightbulb", 18, 2.5)}<span>Tap a vowel to add an accent (a → á). Tap n to make ñ. Tap again to undo.${g.missingArticle ? " We added the little word in front for you." : ""}</span></p>
+        <p class="fix-help">${icon("lightbulb", 18, 2.5)}<span class="fix-help__text"></span></p>
         <div class="fix-result" aria-live="polite"></div>
         <div class="ex-escape"><button class="btn-text" data-show>${icon("sparkles", 18, 2.5)} Show me</button></div>
       </div>`);
@@ -715,31 +765,61 @@ function typeIt(step, api) {
       const b = letters.get(i);
       b.querySelector(".face").textContent = cur[i];
       b.setAttribute("aria-label", cur[i]);
-      b.classList.toggle("is-changed", cur[i] !== typed[i]);
+      b.classList.toggle("is-changed", cur[i] !== original[i]);
     };
-    const solved = () => cur.join("") === want.join("");
+    const lower = (a) => a.map((c) => c.toLowerCase()).join("");
+    const accentsDone = () => lower(cur) === lower(want);
+    const capsLeft = () => capsIssues(cur.join(""), want.join(""), g.sentence);
+    const setStage = (st) => {
+      stage = st;
+      fix.dataset.stage = st;
+      if (st === "accents") {
+        fix.querySelector(".fix-ask").textContent = "So close! Tap the letters that need an accent or ñ.";
+        fix.querySelector(".fix-help__text").textContent = `Tap a vowel to add an accent (a → á). Tap n to make ñ. Tap again to undo.${g.missingArticle ? " We added the little word in front for you." : ""}`;
+      } else {
+        const issues = capsLeft();
+        fix.querySelector(".fix-ask").textContent = capsMessage(issues);
+        fix.querySelector(".fix-help__text").textContent = "Tap a highlighted letter to change it: a ↔ A.";
+        // Show which letters need it straight away (explicit teaching, not a guessing game).
+        $$(".fix-letter", fix).forEach((x) => x.classList.toggle("is-hint", issues.some((k) => k.i === +x.dataset.i)));
+      }
+    };
     const toggle = (i) => {
-      const c = cur[i], base = fold(c);
-      if (base === "n") cur[i] = c === "ñ" ? "n" : "ñ";
-      else if (ACCENT[base]) cur[i] = c === base ? ACCENT[base] : base;
+      const c = cur[i], up = isUpper(c), base = fold(c);
+      let next;
+      if (stage === "caps") next = up ? c.toLowerCase() : c.toUpperCase();
+      else if (base === "n") next = c.toLowerCase() === "ñ" ? "n" : "ñ";
+      else if (ACCENT[base]) next = c.toLowerCase() === base ? ACCENT[base] : base;
       else return false;
+      cur[i] = stage === "accents" && up ? next.toUpperCase() : next;
       return true;
     };
+    const stageDone = () => (stage === "accents" ? accentsDone() : capsLeft().length === 0);
+
+    function afterStage(shown) {
+      if (stage === "accents" && capsLeft().length) { setStage("caps"); misses = 0; sfx.select(); return; }
+      win(shown);
+    }
 
     function win(shown) {
       step.onResult?.(true, fix);
       fix.classList.add("is-solved");
       api.setAside([]);
-      $$(".fix-letter", fix).forEach((b, k) => { b.disabled = true; setTimeout(() => restartAnim(b, "pop"), k * 45); });
+      $$(".fix-letter", fix).forEach((b, k) => { b.disabled = true; b.classList.remove("is-hint"); setTimeout(() => restartAnim(b, "pop"), k * 45); });
       fix.querySelector(".fix-result").innerHTML = `${icon("check", 22, 3)} ${es(target)}`;
       fix.querySelector("[data-show]").hidden = true;
       sfx.fix();
+      const tips = [];
+      if (g.verdict === "accents") tips.push("Accents and ñ matter: they change how a word sounds.");
+      if (capsFixed) tips.push(capsMessage(g.caps.length ? g.caps : capsIssues(original.join(""), want.join(""), g.sentence)).replace(/^[^:]+: /, ""));
+      if (g.missingArticle) tips.push("Remember the little word in front, too.");
       setTimeout(() => api.complete({
         ok: true,
         nearly: true,
+        hinted: capsFixed, // capital letters fixed: right, but not first-try, so Review brings it back sooner
         owl: "owl-celebrating",
         title: shown ? "Now you know!" : es(api.lesson.praiseEs[0]),
-        body: `<span class="feedback__tip">Accents and ñ matter: they change how a word sounds.${g.missingArticle ? " Remember the little word in front, too." : ""}</span>`,
+        body: `<span class="feedback__tip">${esc(tips.join(" "))}</span>`,
         answerEs: target,
         answerEn: step.en,
       }), reducedMotion() ? 200 : 750);
@@ -750,10 +830,15 @@ function typeIt(step, api) {
       if (showing || fix.classList.contains("is-solved")) return;
       showing = true;
       api.setAside([]);
-      // Animate the needed fixes one by one.
-      const need = cur.map((c, i) => (c !== want[i] ? i : -1)).filter((i) => i >= 0);
+      // Animate the needed fixes one by one (accents and capitals).
+      const issues = new Set(capsIssues(cur.join(""), want.join(""), g.sentence).map((k) => k.i));
+      if (issues.size) capsFixed = true;
+      const need = cur.map((c, i) => (c.toLowerCase() !== want[i].toLowerCase() || issues.has(i) ? i : -1)).filter((i) => i >= 0);
       need.forEach((i, k) => setTimeout(() => { cur[i] = want[i]; render(i); restartAnim(letters.get(i), "pop"); if (k === need.length - 1) win(true); }, 250 * k));
+      if (!need.length) win(true);
     };
+    setStage(stage);
+    if (stage === "caps") capsFixed = true;
     setTimeout(() => fix.querySelector(".fix-letter:not([disabled])")?.focus({ preventScroll: true }), 120);
 
     fix.addEventListener("click", (e) => {
@@ -761,19 +846,21 @@ function typeIt(step, api) {
       const b = e.target.closest(".fix-letter");
       if (!b || fix.classList.contains("is-solved")) return;
       const i = +b.dataset.i;
-      const wasRight = cur[i] === want[i];
+      const wasRight = cur[i].toLowerCase() === want[i].toLowerCase();
       if (!toggle(i)) {
         restartAnim(b, "shake");
         sfx.wrong();
         fix.querySelector(".fix-help").classList.add("is-flash");
         return;
       }
+      if (stage === "caps") capsFixed = true;
       sfx.tap();
       render(i);
       restartAnim(b, "pop");
-      if (wasRight && cur[i] !== want[i]) misses++;
-      if (misses >= 2) $$(".fix-letter", fix).forEach((x) => x.classList.toggle("is-hint", cur[+x.dataset.i] !== want[+x.dataset.i]));
-      if (solved()) win(false);
+      if (stage === "accents" && wasRight && cur[i].toLowerCase() !== want[i].toLowerCase()) misses++;
+      if (stage === "caps") $$(".fix-letter", fix).forEach((x) => x.classList.toggle("is-hint", capsLeft().some((k) => k.i === +x.dataset.i)));
+      else if (misses >= 2) $$(".fix-letter", fix).forEach((x) => x.classList.toggle("is-hint", cur[+x.dataset.i].toLowerCase() !== want[+x.dataset.i].toLowerCase()));
+      if (stageDone()) afterStage(false);
     });
   }
 

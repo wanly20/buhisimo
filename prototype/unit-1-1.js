@@ -285,6 +285,12 @@ const L6 = {
       noteEn: "A small e, and the little word in front: [[el español]]." },
     { id: "pick-hisp", type: "pick", character: "owl-explaining", promptEs: "Chile es hispanohablante.",
       options: ["Chile is Spanish-speaking.", "Chile is a country.", "Chile is on the map.", "Spanish is the language of Chile."], answer: 0 },
+    { id: "rule-small", type: "table", titleEn: "Small letters", contextEn: "English writes “Spanish” with a capital S. Spanish doesn't.",
+      rows: [
+        { es: "el español", en: "a language: small letter", exampleEs: "El español es la lengua de Cuba.", exampleEn: "Spanish is the language of Cuba." },
+        { es: "hispanohablante", en: "Spanish-speaking: small letter", exampleEs: "Chile es hispanohablante.", exampleEn: "Chile is Spanish-speaking." },
+      ],
+      noteEn: "Countries keep their capital ([[Chile]]), but languages don't: [[el español]]. Days and months don't either (Unit 1.4)." },
     { id: "type-espanol", type: "type", en: "Spanish (the language)", answerEs: "el español" },
     { id: "listen-mapa", type: "listen", sayEs: "el mapa", en: "the map",
       optionsEs: ["el mapa", "el mundo", "el país", "la lengua"], answer: 0 },

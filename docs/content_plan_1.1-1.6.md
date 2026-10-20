@@ -61,6 +61,13 @@
 3. **Crowded study maps split on phones.** In Map tap (1.1 L10), «Spain, Africa and Asia» becomes two maps below 700 px wide: Spain and Africa, then Asia and Australia. Wider screens keep one.
 4. **Story canon approved** (§3): birthdays and favourite colours.
 5. **A scene picture for Cocora.** 1.1 L8's *Cocora es famoso.* card shows a picture of the Cocora Valley (wax palms in the mist) instead of the owl, once `prototype/assets/cocora-valley.webp` exists; until then the owl shows.
+6. **Capital letters count in typed answers** (Juan, 21 Oct: "soy de australia" was accepted in Passport control). In the prototype's typing engine (`grade()` in `js/lesson.js`):
+   - A typed answer that is right except for capital letters is **not** right as it is. Like the accent fix-up, a "fix the letters" step names the rule and highlights the letters to change; the student taps them (a ↔ A) or uses "Show me". It then counts as right but **not first-try** (no bonus XP, not 100%), so Review brings the word back sooner.
+   - **Capitals needed:** the first letter of a sentence (after *¿* or *¡* too: *¿De dónde eres?*) and names of countries, places and people (*España, Australia, Matilda, Salento*).
+   - **Small letters needed:** languages, days and months never take a capital in Spanish (*el español, hispanohablante, lunes, enero*). *el Español* or *Hispanohablante* is flagged: "in Spanish, languages, days and months don't take a capital".
+   - **A word or phrase on its own is not a sentence** (a word card's *el destino*, *regular*, *Buenos días*): its first letter may be either case, because students type a dictionary form, not a sentence, unless the word is a name (always a capital) or a language, day or month (always small). A sentence is an answer that ends in *. ? !* or starts with *¿ ¡*. End punctuation itself stays optional.
+   - Taught explicitly: a "Capital letters" card in 1.1 L1 just before the first typed country (*España*; a sentence starts with a capital, after *¿* too), then a practice item (*I'm from Colombia.* → *Soy de Colombia.*); a "Small letters" card in 1.1 L6 before typing *el español* and *hispanohablante*.
+   - Word-bank tiles and spelling grids in Radio Búho stay case-insensitive (tiles show the words already written); in a listening grid a capital or accent slip counts as right but not first-try.
 ---
 
 ## 1. How to read this plan

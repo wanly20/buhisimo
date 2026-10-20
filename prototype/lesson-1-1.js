@@ -107,6 +107,18 @@ export const lesson = {
       en: "Spain",
       noteEn: "Buhísimo loves the letter ñ! It sounds like the “ny” in canyon.",
     },
+    // Capital letters (Juan, 21 Oct 2026): taught explicitly before the first typed country.
+    {
+      id: "rule-capitals",
+      type: "table",
+      titleEn: "Capital letters",
+      contextEn: "Before you type: Spanish uses capital letters like this.",
+      rows: [
+        { es: "España", en: "countries, cities and names: always a capital", exampleEs: "Max es de Australia.", exampleEn: "Max is from Australia." },
+        { es: "Soy de Colombia.", en: "a sentence: starts with a capital", exampleEs: "¿De dónde eres?", exampleEn: "After ¿ or ¡, the first letter is still a capital." },
+      ],
+      noteEn: "Type [[España]], not “españa”. Buhísimo checks capital letters too!",
+    },
     {
       id: "type-espana",
       type: "type",
@@ -124,6 +136,12 @@ export const lesson = {
         { es: "¿De dónde eres?", en: "Where are you from?" },
         { es: "él", en: "he" },
       ],
+    },
+    {
+      id: "type-soy-colombia",
+      type: "type",
+      en: "I'm from Colombia.",
+      answerEs: "Soy de Colombia.",
     },
     {
       id: "speak-soy",
