@@ -329,6 +329,18 @@ B:  ¡Hasta luego, Max!
 
 Why here: the cut falls after the first big block (names, 1–20 and age, practised together in L10) and before 21–31, so 1.3a ends on something students can already do in full (*Me llamo Samuel. Tengo trece años.*). 21–31 then sits next to the counting-song episode, which needs the whole 1–31 sequence, and the ID card. The halves are 11 and 9 lessons, close to Unit 1.1 (11). The new L11 check and L12 repaso keep the rule that each section opens with retrieval and closes with a check. Moving the podcast into 1.3a was considered and rejected: the song runs 1–31, so it can't come before 21–31.
 
+**Number songs: letras first, then con números (note, 21 Oct 2026; proposal for the planning session).** The short number songs (`video_generation/music/songs/number_songs_plan.md`, index `music/songs/index.html`) now have two karaoke versions with the same audio: **letras** (numbers spelled out: *veintidós*) and **con números** (digits on screen: *22*, *31*; *¡muy bien!* stays as words). Reading digits while hearing the word is a later skill (it is what the "audio → digit" and dictation tasks practise), so the numerals version always comes **at least one lesson after** its letras version, usually in a repaso or Radio Búho lesson. Proposed:
+
+| Song | Letras | Con números |
+|---|---|---|
+| Del uno al diez (Version A) | 1.3 L5 | 1.3 L6 (Number Invaders 0–10: the song is the warm-up for "hear → shoot the digit") |
+| Del diez al veinte | 1.3 L9 | 1.3 L12 repaso |
+| Uno, once · Dos, doce | 1.3 L10 | 1.3 L15 Radio Búho (students write the numbers they hear) |
+| Dos, doce, veintidós (being remade) | 1.3 L13 | 1.4 L1 repaso (numbers 1–31, audio → digit) |
+| Del veinte al treinta y uno | 1.3 L14 | 1.4 L10 La fecha (dates are written with digits: *el 31 de julio*) |
+| Uno, diez, once… treinta y uno | 1.3 L15 | 1.5 L1 repaso (dates and numbers) |
+| Once, doce… cuarenta y dos · Diez, veinte… ¡cien! · Sesenta, setenta (being remade) | 2.1 | 2.1, a repaso or Radio Búho «Los números II» after 32–100 |
+
 **Section 1.3a · ¿Cómo te llamas? (L1–L11)**
 
 ### 1.3 L1 · repaso · Buenas tardes, ¿qué tal? *(title until 21 Oct: «¿Qué tal?»)*
