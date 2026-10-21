@@ -14,7 +14,7 @@ import { gradeStep, meetLesson, buildReview, reviewViewHtml, dueItems, metItems 
 import { mountRadio, stopRadio } from "./radio.js";
 
 // Bump together with VERSION in sw.js for every release (tools/e2e-unit.mjs checks they match).
-export const APP_VERSION = "2026-10-21.u12";
+export const APP_VERSION = "2026-10-21.u12-audio2";
 
 const app = document.getElementById("app");
 applyFont(store.get().font);
@@ -504,7 +504,7 @@ export function openSettings() {
       ${row("unlock", "lock", "Open every lesson", "Students unlock lessons one at a time. Address bar: ?unlock=all / ?unlock=off", s.unlockAll)}
       ${row("robot", "volume-2", "Computer voice for unrecorded lines", "Off: those lines show “Audio coming soon”", s.robotVoice)}` : ""}
       <button class="btn-text settings-reset" data-reset>${icon("rotate-ccw", 18, 2.75)} Reset prototype progress</button>
-      <p class="settings-foot">Version ${APP_VERSION}. Recorded voices are Qwen3 test recordings; Raúl (Papá) has one voice.</p>
+      <p class="settings-foot">Version ${APP_VERSION}. Recorded voices are Qwen3 test recordings; Raúl (Papá) and Max have one voice each.</p>
     </div>`);
   function voiceRow(role, title, sample) {
     const cur = role === "buho" ? s.voiceBuho : s.voiceMaria;

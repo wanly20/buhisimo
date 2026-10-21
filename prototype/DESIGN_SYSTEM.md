@@ -220,7 +220,7 @@ prototype/
   js/shell.js                desktop sidebar, right panel, phone tab bar
   js/speech.js · sound.js · store.js · fonts.js · ui.js · icons.js (Lucide, ISC) · ds.js
   assets/ · icons/           WebP art + flags · app icons
-  audio/                     recorded clips, manifest.json (lesson_audio.py), manifest-extra.json, manifest-l2.json, TODO_lines.json
+  audio/                     recorded clips, manifest.json (lesson_audio.py), manifest-extra.json, manifest-l2.json, manifest-max.json (Max's voice), TODO_lines.json
   radio/                     episodes.json + episode JSON/MP3
   tools/check_vocab.mjs      vocabulary validator (unit and lesson level; --todo writes audio/TODO_lines.json)
   tools/e2e-unit.mjs         headless Chromium test of all of Unit 1.1 (plus e2e.mjs, e2e-keyboard.mjs for lesson 1)

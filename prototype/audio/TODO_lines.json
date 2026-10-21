@@ -4,6 +4,7 @@
   "maria_bogota": "co_f_adult_bogota.wav",
   "maria_paisa": "co_f_adult_paisa.wav",
   "raul": "co_m_30.wav",
+  "max": "co_m_kid_max.wav",
   "buho_profesor": "co_m_old_profesor.wav",
   "buho_abuelo": "co_m_old_abuelo.wav"
  },
@@ -435,12 +436,12 @@
   {
    "text": "¡Fenomenal! ¡Fantástico! ¡Muy, muy bien!",
    "tts": "¡Fenomenal! ¡Fantástico! ¡Muy, muy bien!",
-   "voice": "raul",
-   "role": "raul",
+   "voice": "max",
+   "role": "max",
    "speaker": "Max",
    "unit": "1.2",
    "slug": "fenomenal-fantastico-muy-muy-bien-6e0d8c",
-   "file": "audio/raul/fenomenal-fantastico-muy-muy-bien-6e0d8c.mp3",
+   "file": "audio/max/fenomenal-fantastico-muy-muy-bien-6e0d8c.mp3",
    "where": [
     "1.2-7 story.lines[6]"
    ]
@@ -677,12 +678,12 @@
   {
    "text": "¡Hola, Buhísimo! ¡Hola, Matilda!",
    "tts": "¡Hola, Buhísimo! ¡Hola, Matilda!",
-   "voice": "raul",
-   "role": "raul",
+   "voice": "max",
+   "role": "max",
    "speaker": "Max",
    "unit": "1.2",
    "slug": "hola-buhisimo-hola-matilda-59cfc6",
-   "file": "audio/raul/hola-buhisimo-hola-matilda-59cfc6.mp3",
+   "file": "audio/max/hola-buhisimo-hola-matilda-59cfc6.mp3",
    "where": [
     "1.2-7 story.lines[4]"
    ]
@@ -1218,7 +1219,7 @@
   },
   {
    "text": "¡Hola! Soy Matilda. Soy de Melbourne.",
-   "tts": "¡Hola! Soy Matilda. Soy de Mel-bóur-ne.",
+   "tts": "¡Hola! Soy Matilda. Soy de Melbúrne.",
    "voice": "maria_bogota",
    "role": "maria",
    "speaker": "(any: lesson voice)",
@@ -1231,7 +1232,7 @@
   },
   {
    "text": "¡Hola! Soy Matilda. Soy de Melbourne.",
-   "tts": "¡Hola! Soy Matilda. Soy de Mel-bóur-ne.",
+   "tts": "¡Hola! Soy Matilda. Soy de Melbúrne.",
    "voice": "maria_paisa",
    "role": "maria",
    "speaker": "(any: lesson voice)",
@@ -1244,7 +1245,7 @@
   },
   {
    "text": "¡Hola! Soy Matilda. Soy de Melbourne.",
-   "tts": "¡Hola! Soy Matilda. Soy de Mel-bóur-ne.",
+   "tts": "¡Hola! Soy Matilda. Soy de Melbúrne.",
    "voice": "raul",
    "role": "raul",
    "speaker": "(any: lesson voice)",
@@ -2017,12 +2018,12 @@
   {
    "text": "¿Cómo se escribe Max? — ¡Eme, a, equis! ¡Fenomenal!",
    "tts": "¿Cómo se escribe Max? — ¡Eme, a, equis! ¡Fenomenal!",
-   "voice": "raul",
-   "role": "raul",
+   "voice": "max",
+   "role": "max",
    "speaker": "Max",
    "unit": "1.2",
    "slug": "como-se-escribe-max-eme-a-equis-fenomena-d53c0f",
-   "file": "audio/raul/como-se-escribe-max-eme-a-equis-fenomena-d53c0f.mp3",
+   "file": "audio/max/como-se-escribe-max-eme-a-equis-fenomena-d53c0f.mp3",
    "where": [
     "radio 1.2-12 line 10"
    ]
@@ -2071,7 +2072,7 @@
   },
   {
    "text": "¿Cómo se escribe Melbourne? — Eme, e, ele, be, o, u, erre, ene, e.",
-   "tts": "¿Cómo se escribe Mel-bóur-ne? — Eme, e, ele, be, o, u, erre, ene, e.",
+   "tts": "¿Cómo se escribe Melbúrne? — Eme, e, ele, be, o, u, erre, ene, e.",
    "voice": "maria_bogota",
    "role": "maria",
    "speaker": "Matilda",
@@ -2084,7 +2085,7 @@
   },
   {
    "text": "¿Cómo se escribe Melbourne? — Eme, e, ele, be, o, u, erre, ene, e.",
-   "tts": "¿Cómo se escribe Mel-bóur-ne? — Eme, e, ele, be, o, u, erre, ene, e.",
+   "tts": "¿Cómo se escribe Melbúrne? — Eme, e, ele, be, o, u, erre, ene, e.",
    "voice": "maria_paisa",
    "role": "maria",
    "speaker": "Matilda",
@@ -5047,12 +5048,12 @@
   {
    "text": "Mal… muy mal.",
    "tts": "Mal… muy mal.",
-   "voice": "raul",
-   "role": "raul",
+   "voice": "max",
+   "role": "max",
    "speaker": "Max",
    "unit": "1.2",
    "slug": "mal-muy-mal-7c1014",
-   "file": "audio/raul/mal-muy-mal-7c1014.mp3",
+   "file": "audio/max/mal-muy-mal-7c1014.mp3",
    "where": [
     "1.2-7 story.lines[11]"
    ]
@@ -5373,7 +5374,7 @@
   },
   {
    "text": "Melbourne",
-   "tts": "Mel-bóur-ne.",
+   "tts": "Melbúrne.",
    "voice": "maria_bogota",
    "role": "maria",
    "speaker": "(any: lesson voice)",
@@ -5386,7 +5387,7 @@
   },
   {
    "text": "Melbourne",
-   "tts": "Mel-bóur-ne.",
+   "tts": "Melbúrne.",
    "voice": "maria_paisa",
    "role": "maria",
    "speaker": "(any: lesson voice)",
@@ -5399,7 +5400,7 @@
   },
   {
    "text": "Melbourne",
-   "tts": "Mel-bóur-ne.",
+   "tts": "Melbúrne.",
    "voice": "raul",
    "role": "raul",
    "speaker": "(any: lesson voice)",

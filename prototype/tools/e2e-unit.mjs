@@ -26,9 +26,9 @@ let OFFLINE = false;
 const log = (...a) => console.log(...a);
 const ok = (c, msg) => { if (!c) { errors.push("ASSERT: " + msg); log("  ✗", msg); } else log("  ✓", msg); return c; };
 const shots = new Set();
-// Every recorded clip (the three manifests js/speech.js merges): text -> voices.
+// Every recorded clip (the four manifests js/speech.js merges): text -> voices.
 const CLIPS = {};
-for (const m of ["manifest.json", "manifest-extra.json", "manifest-l2.json"]) {
+for (const m of ["manifest.json", "manifest-extra.json", "manifest-l2.json", "manifest-max.json"]) {
   try { for (const [t, by] of Object.entries(JSON.parse(readFileSync(join(PROTO, "audio", m), "utf8")).clips)) CLIPS[t] = { ...CLIPS[t], ...by }; } catch { /* optional */ }
 }
 const hasClip = (t) => !!CLIPS[t];

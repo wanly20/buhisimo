@@ -99,8 +99,8 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings, onGra
   };
 
   // Which recorded voice says this step: Buhísimo's own lines in his voice,
-  // Matilda in María's and Max in Raúl's (no kid voices yet); everything else
-  // alternates María / Raúl from one exercise to the next.
+  // Matilda in María's (her kid voice isn't chosen yet), Max in his own voice (Raúl's where
+  // a line has no Max clip); everything else alternates María / Raúl from one exercise to the next.
   function roleFor(step, i) {
     return roleOf(step?.speaker || step?.character || "") || (i % 2 ? "raul" : "maria");
   }
@@ -338,7 +338,8 @@ const EXERCISES = { intro, pick: pickMeaning, listen, tiles, type: typeIt, match
 export function roleOf(who = "") {
   if (who === "owl" || who === "buho" || who.startsWith("owl")) return "buho";
   if (who.startsWith("matilda")) return "maria";
-  if (who.startsWith("max") || who === "traveller") return "raul";
+  if (who.startsWith("max")) return "max";
+  if (who === "traveller") return "raul";
   // Radio Búho callers have no fixed voice: the lesson alternates María and Raúl.
   return "";
 }
