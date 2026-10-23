@@ -329,17 +329,23 @@ B:  ¡Hasta luego, Max!
 
 Why here: the cut falls after the first big block (names, 1–20 and age, practised together in L10) and before 21–31, so 1.3a ends on something students can already do in full (*Me llamo Samuel. Tengo trece años.*). 21–31 then sits next to the counting-song episode, which needs the whole 1–31 sequence, and the ID card. The halves are 11 and 9 lessons, close to Unit 1.1 (11). The new L11 check and L12 repaso keep the rule that each section opens with retrieval and closes with a check. Moving the podcast into 1.3a was considered and rejected: the song runs 1–31, so it can't come before 21–31.
 
-**Number songs: letras first, then con números (note, 21 Oct 2026; proposal for the planning session).** The short number songs (`video_generation/music/songs/number_songs_plan.md`, index `music/songs/index.html`) now have two karaoke versions with the same audio: **letras** (numbers spelled out: *veintidós*) and **con números** (digits on screen: *22*, *31*; *¡muy bien!* stays as words). Reading digits while hearing the word is a later skill (it is what the "audio → digit" and dictation tasks practise), so the numerals version always comes **at least one lesson after** its letras version, usually in a repaso or Radio Búho lesson. Proposed:
+**Number songs: letras, then con números (Juan's rule, 23 Oct 2026; replaces the 21 Oct proposal).** The short number songs (`video_generation/music/songs/number_songs_plan.md`, index `music/songs/index.html`) have two karaoke versions with the same audio: **letras** (numbers spelled out: *veintidós*) and **con números** (digits on screen: *22*, *31*; *¡muy bien!* stays as words). **Rule: each numerals version goes in the lesson right after the lesson that has introduced all the numbers that song needs** (*cero* included, if the song has it; none of the set does). If that next lesson is a check or a story, it still goes there.
 
-| Song | Letras | Con números |
-|---|---|---|
-| Del uno al diez (Version A) | 1.3 L5 | 1.3 L6 (Number Invaders 0–10: the song is the warm-up for "hear → shoot the digit") |
-| Del diez al veinte | 1.3 L9 | 1.3 L12 repaso |
-| Uno, once · Dos, doce | 1.3 L10 | 1.3 L15 Radio Búho (students write the numbers they hear) |
-| Dos, doce, veintidós (being remade) | 1.3 L13 | 1.4 L1 repaso (numbers 1–31, audio → digit) |
-| Del veinte al treinta y uno | 1.3 L14 | 1.4 L10 La fecha (dates are written with digits: *el 31 de julio*) |
-| Uno, diez, once… treinta y uno | 1.3 L15 | 1.5 L1 repaso (dates and numbers) |
-| Once, doce… cuarenta y dos · Diez, veinte… ¡cien! · Sesenta, setenta (being remade) | 2.1 | 2.1, a repaso or Radio Búho «Los números II» after 32–100 |
+| Song | Numbers it needs | All taught by | Letras | Con números | Kind of lesson |
+|---|---|---|---|---|---|
+| Del uno al diez (Version A) | 1–10 | 1.3 L5 | 1.3 L5 | **1.3 L6** | game (Number Invaders 0–10) |
+| Del diez al veinte | 10–20 | 1.3 L9 | 1.3 L9 | **1.3 L10** | practice (Tengo, tienes, tiene) |
+| Uno, once · Dos, doce | 1–20 | 1.3 L9 | 1.3 L10 | **1.3 L10** | practice: the same lesson as its letras version |
+| Dos, doce, veintidós (remake, any version) | 1–5, 11–15, 21–25 | 1.3 L13 | 1.3 L13 | **1.3 L14** | learn (Veintiséis… treinta y uno) |
+| Del veinte al treinta y uno | 20–31 | 1.3 L14 | 1.3 L14 | **1.3 L15** | listen (Radio Búho: the numbers song) |
+| Uno, diez, once… treinta y uno | 1, 10, 11, 20, 21, 30, 31 | 1.3 L14 | 1.3 L15 | **1.3 L15** | listen: the same lesson as its letras version |
+| Once, doce… cuarenta y dos | 1, 2, 11, 12, 21, 22, 31, 32, 41, 42 | the 2.1 lesson that teaches 32 and 41–42 | 2.1 | **the 2.1 lesson after 32, 41 and 42 are taught** | 2.1 lessons not numbered yet |
+| Diez, veinte… ¡cien! | 10, 20 … 90, 100 | the 2.1 lesson that completes the tens (40–100) | 2.1 | **the 2.1 lesson after all the tens to 100 are taught** | 2.1 lessons not numbered yet |
+| Sesenta, setenta (remake) | 5–8, 15–18, 50, 60, 70, 80 | the 2.1 lesson that teaches 50, 60, 70 and 80 | 2.1 | **the 2.1 lesson after 50–80 are taught** | 2.1 lessons not numbered yet |
+
+Letras placement against the same rule: all 1.3 letras versions are in or after the lesson that completes their numbers. Two things to watch: (1) *Uno, once · Dos, doce* and *Uno, diez, once…* get both versions in the same lesson (L10, L15); (2) for 2.1, *Sesenta, setenta* was placed "after 60/70", but the remake also needs 50 and 80, and *Diez, veinte… ¡cien!* was placed in "the first lesson on the tens", which only works if that lesson teaches every ten to 100.
+
+**Later on.** The numerals versions come back in later reviews (repasos and unit checks, e.g. 1.4 L1 repaso of 0–31, 1.4 L10 *La fecha*, 1.5 L1) and on Radio Búho.
 
 **Section 1.3a · ¿Cómo te llamas? (L1–L11)**
 
