@@ -26,21 +26,28 @@ function pickVoice() {
 
 // ---------------------------------------------------------------- recorded clips
 // manifest.clips: Spanish text -> { voiceId: "audio/<voice>/<file>.mp3" }.
-// Roles: "maria" | "raul" | "max" | "buho". María and Buhísimo have two test voices each
-// (Settings → Voices (test)); Raúl (Papá) and Max (his kid voice, Juan 21 Oct 2026) have one.
+// Roles: "maria" | "raul" | "max" | "matilda" | "caller" | "buho". María and Buhísimo have two
+// test voices each (Settings → Voices (test)); Raúl (Papá), Max (his kid voice, Juan 21 Oct 2026)
+// and Matilda (her kid voice, Juan 24 Oct 2026) have one. Each Radio Búho caller has a voice of
+// their own ("caller_<country>", manifest-callers.json); role "caller" plays whichever caller
+// voice recorded that line (every call is said by one caller).
 export const VOICE_OPTIONS = {
   maria: [{ id: "maria_bogota", label: "Bogotá" }, { id: "maria_paisa", label: "Paisa" }],
   buho: [{ id: "buho_profesor", label: "Profesor" }, { id: "buho_abuelo", label: "Abuelo" }],
 };
-const FALLBACK_ROLES = { maria: ["maria", "raul"], raul: ["raul", "maria"], max: ["max", "raul", "maria"], buho: ["buho", "maria", "raul"] };
+const FALLBACK_ROLES = { maria: ["maria", "raul"], raul: ["raul", "maria"], max: ["max", "raul", "maria"], matilda: ["matilda", "maria", "raul"],
+  caller: ["caller", "maria", "raul"], buho: ["buho", "maria", "raul"] };
 
 // audio/manifest.json is written by lesson_audio.py; audio/manifest-extra.json holds
 // clips copied from the voice-design test (tools/import_design_clips.py); audio/manifest-l2.json
 // holds the Unit 1.1 lines recorded from TODO_lines.json (same pipeline); audio/manifest-max.json
-// holds Max's lines in his own voice (video_generation/scripts/voice_tools/max_voice.py). Merged here.
+// holds Max's lines in his own voice (video_generation/scripts/voice_tools/max_voice.py and u12_audio.py);
+// audio/manifest-matilda.json Matilda's in hers and audio/manifest-callers.json the Radio Búho
+// callers' (u12_audio.py). Merged here.
 let manifest = null;
 const getJson = (url) => fetch(url).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-const manifestReady = Promise.all([getJson("audio/manifest.json"), getJson("audio/manifest-extra.json"), getJson("audio/manifest-l2.json"), getJson("audio/manifest-max.json")])
+const manifestReady = Promise.all([getJson("audio/manifest.json"), getJson("audio/manifest-extra.json"), getJson("audio/manifest-l2.json"), getJson("audio/manifest-max.json"),
+  getJson("audio/manifest-matilda.json"), getJson("audio/manifest-callers.json")])
   .then(([main, ...extras]) => {
     const clips = {};
     for (const m of [main, ...extras]) for (const [text, byVoice] of Object.entries(m?.clips || {})) clips[text] = { ...clips[text], ...byVoice };
@@ -52,6 +59,7 @@ function voiceFor(role) {
   const s = store.get();
   if (role === "raul") return "raul";
   if (role === "max") return "max";
+  if (role === "matilda") return "matilda";
   if (role === "buho") return VOICE_OPTIONS.buho.some((v) => v.id === s.voiceBuho) ? s.voiceBuho : VOICE_OPTIONS.buho[0].id;
   return VOICE_OPTIONS.maria.some((v) => v.id === s.voiceMaria) ? s.voiceMaria : VOICE_OPTIONS.maria[0].id;
 }
@@ -61,7 +69,7 @@ function clipFor(text, role = "maria") {
   const byVoice = manifest?.clips?.[text];
   if (!byVoice) return null;
   for (const r of FALLBACK_ROLES[role] || FALLBACK_ROLES.maria) {
-    const src = byVoice[voiceFor(r)];
+    const src = r === "caller" ? byVoice[Object.keys(byVoice).find((v) => v.startsWith("caller_"))] : byVoice[voiceFor(r)];
     if (src) return src;
   }
   return null;
@@ -123,7 +131,7 @@ export const tts = {
   ready: () => manifestReady,
 
   /**
-   * Speak Spanish text: the recorded clip for `role` ("maria" | "raul" | "max" | "buho")
+   * Speak Spanish text: the recorded clip for `role` ("maria" | "raul" | "max" | "matilda" | "caller" | "buho")
    * when there is one, otherwise speechSynthesis. Resolves when finished.
    */
   async speak(text, { slow = false, sayAs = {}, role = "maria" } = {}) {

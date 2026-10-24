@@ -90,7 +90,7 @@ for (const it of ITEMS) {
 }
 for (const ep of RADIO) {
   const [unit, n] = ep.lesson.split("-");
-  ep.lines.forEach((ln, i) => strings.push({ where: `radio ${ep.id} line ${i + 1}`, text: ln.es, unit, lesson: +n, key: "radio", who: ln.who, spoken: ln.who !== "song", unitOnly: false, spell: !!ep.spell || isSpellText(ln.es), clip: ln.clip }));
+  ep.lines.forEach((ln, i) => strings.push({ where: `radio ${ep.id} line ${i + 1}`, text: ln.es, unit, lesson: +n, key: "radio", who: ln.who, voice: ln.voice, spoken: ln.who !== "song", unitOnly: false, spell: !!ep.spell || isSpellText(ln.es), clip: ln.clip }));
   if (ep.titleEs) strings.push({ where: `radio ${ep.id} title`, text: ep.titleEs, unit, lesson: +n, key: "titleEs", spoken: false, unitOnly: false, spell: false });
 }
 // The 1.1 Radio Búho demo episode (radio/*.json): reachable from the Radio tab after 1.1.
@@ -174,20 +174,28 @@ console.log(`  unit and lesson level (tools/check_vocab.mjs --sentences, ${forVa
 if (r.status !== 0) failures++;
 
 // ---------------------------------------------------------------- audio TODO
+// Radio Búho callers: one synthetic voice each (Juan, 24 Oct 2026), named on the RADIO line as
+// `voice`. Reference wavs in video_generation/conversations/voices (u12_audio.py records them).
+const CALLER_REFS = { caller_argentina: "ar_m_35.wav", caller_cuba: "cu_f_old.wav", caller_espana: "es_m_20.wav",
+  caller_peru: "pe_f_teen.wav", caller_chile: "cl_m_45.wav", caller_neutral_f: "neu_f_35.wav" };
+
 if (WRITE_TODO) { writeTodo(); writeSongs(); }
 
 function writeTodo() {
   const clips = {};
-  for (const m of ["manifest.json", "manifest-extra.json", "manifest-l2.json", "manifest-max.json"]) {
+  for (const m of ["manifest.json", "manifest-extra.json", "manifest-l2.json", "manifest-max.json", "manifest-matilda.json", "manifest-callers.json"]) {
     const p = join(PROTO, "audio", m);
     if (existsSync(p)) for (const [t, by] of Object.entries(JSON.parse(readFileSync(p, "utf8")).clips)) clips[t] = { ...clips[t], ...by };
   }
   // Voice rules (Juan, Oct 2026; lesson_audio.py): every neutral line in both Marías and Raúl;
   // él / él es only in Raúl (and ella only in the Marías); Buhísimo's lines (and the Spanish praise)
-  // also in his two voices; story, radio and passport lines in the speaker's voice: Matilda = the
-  // Marías (her kid voice isn't chosen yet), Max = his own kid voice "max" (co_m_kid_max, Juan 21 Oct 2026),
-  // the traveller = Raúl; Radio Búho callers are neutral.
-  const NEUTRAL = ["maria_bogota", "maria_paisa", "raul"], MARIA = ["maria_bogota", "maria_paisa"], RAUL = ["raul"], MAX = ["max"], BUHO = ["buho_profesor", "buho_abuelo"];
+  // also in his two voices; story, radio and passport lines in the speaker's voice: Matilda = her own
+  // kid voice "matilda" (co_f_kid_matilda, Juan 24 Oct 2026), Max = his own kid voice "max" (co_m_kid_max,
+  // Juan 21 Oct 2026), the traveller = Raúl; each Radio Búho caller in the voice named on the line
+  // (`voice: "caller_<country>"`, neutral if none). Step lines that Matilda or Max actually say are
+  // recorded in their kid voices from hand-made lists (video_generation/scripts/voice_tools/max_voice.py,
+  // u12_audio.py): a step only shows the character, it doesn't say who speaks.
+  const NEUTRAL = ["maria_bogota", "maria_paisa", "raul"], MARIA = ["maria_bogota", "maria_paisa"], RAUL = ["raul"], MAX = ["max"], MATILDA = ["matilda"], BUHO = ["buho_profesor", "buho_abuelo"];
   const SPEAKER = { buho: "Buhísimo", matilda: "Matilda", max: "Max", traveller: "A traveller", caller: "a Radio Búho caller" };
   const want = new Map(); // text -> { voices, where, speaker, unit }
   const add = (text, voices, where, speaker, unit) => {
@@ -199,7 +207,7 @@ function writeTodo() {
     if (speaker) w.speaker.add(speaker);
   };
   const base = (who) => (who.startsWith("owl") || who === "buho" ? "buho" : who.startsWith("matilda") ? "matilda" : who.startsWith("max") ? "max" : who);
-  const voicesOf = (who) => ({ buho: BUHO, matilda: MARIA, max: MAX, traveller: RAUL }[base(who)] || NEUTRAL);
+  const voicesOf = (who, voice) => (voice ? [voice] : { buho: BUHO, matilda: MATILDA, max: MAX, traveller: RAUL }[base(who)] || NEUTRAL);
   for (const s of strings) {
     if (!s.spoken) continue;
     const who = String(s.who || "");
@@ -208,7 +216,7 @@ function writeTodo() {
     const t = s.text, low = t.toLowerCase();
     const stepObj = step && LESSONS.find((l) => l.id === step[1])?.steps[+step[2]];
     const isPassport = stepObj?.type === "passport";
-    if (/ story/.test(s.where) || s.key === "radio") add(t, voicesOf(who), where, SPEAKER[base(who)], s.unit);
+    if (/ story/.test(s.where) || s.key === "radio") add(t, voicesOf(who, s.voice), where, SPEAKER[base(who)], s.unit);
     else if (s.key === "askEs") add(t, BUHO, where, "Buhísimo", s.unit);
     else if (isPassport && s.key === "answerEs") add(t, voicesOf(who), where, SPEAKER[base(who)] || who, s.unit);
     else if (s.key === "praiseEs") add(t, BUHO, where, "Buhísimo", s.unit);
@@ -236,7 +244,7 @@ function writeTodo() {
     for (const voice of missing) {
       const unit = [...w.unit].sort()[0];
       byUnit[unit] = (byUnit[unit] || 0) + 1;
-      lines.push({ text, tts: ttsText(text), voice, role: voice.startsWith("buho") ? "buho" : voice === "raul" || voice === "max" ? voice : "maria",
+      lines.push({ text, tts: ttsText(text), voice, role: voice.startsWith("buho") ? "buho" : voice.startsWith("caller_") ? "caller" : ["raul", "max", "matilda"].includes(voice) ? voice : "maria",
         speaker: [...w.speaker].join(", ") || "(any: lesson voice)", unit, slug: slug(text), file: `audio/${voice}/${slug(text)}.mp3`, where: [...w.where].sort() });
     }
   }
@@ -244,7 +252,7 @@ function writeTodo() {
   const outFile = join(PROTO, "audio", "TODO_lines.json");
   writeFileSync(outFile, JSON.stringify({
     _about: "Every Spanish line the prototype (Units 1.1 and 1.2) can say that has no recording yet, one entry per voice. Same fields as video_generation/scripts/voice_tools/lesson_audio.py clips.json (text, tts, voice, slug), plus the target file, the role, who says it, the unit and where it is used. Letter names (efe, eme…) and spellings (Ese, a, ele…) are said as letter names. Songs and chants are in TODO_songs.json, not here. Generated by prototype/tools/check_vocab.mjs --todo; do not edit by hand. Recording needs the GPU (Qwen3-TTS): ask Juan first.",
-    voices: { maria_bogota: "co_f_adult_bogota.wav", maria_paisa: "co_f_adult_paisa.wav", raul: "co_m_30.wav", max: "co_m_kid_max.wav", buho_profesor: "co_m_old_profesor.wav", buho_abuelo: "co_m_old_abuelo.wav" },
+    voices: { maria_bogota: "co_f_adult_bogota.wav", maria_paisa: "co_f_adult_paisa.wav", raul: "co_m_30.wav", max: "co_m_kid_max.wav", matilda: "co_f_kid_matilda.wav", buho_profesor: "co_m_old_profesor.wav", buho_abuelo: "co_m_old_abuelo.wav", ...CALLER_REFS },
     summary: { linesWithNoRecordingAtAll: none, linesMissingAtLeastOneVoice: texts, clipsToRecord: lines.length, clipsToRecordByUnit: byUnit },
     lines,
   }, null, 1) + "\n");

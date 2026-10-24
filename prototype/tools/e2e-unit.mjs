@@ -26,9 +26,9 @@ let OFFLINE = false;
 const log = (...a) => console.log(...a);
 const ok = (c, msg) => { if (!c) { errors.push("ASSERT: " + msg); log("  ✗", msg); } else log("  ✓", msg); return c; };
 const shots = new Set();
-// Every recorded clip (the four manifests js/speech.js merges): text -> voices.
+// Every recorded clip (the six manifests js/speech.js merges): text -> voices.
 const CLIPS = {};
-for (const m of ["manifest.json", "manifest-extra.json", "manifest-l2.json", "manifest-max.json"]) {
+for (const m of ["manifest.json", "manifest-extra.json", "manifest-l2.json", "manifest-max.json", "manifest-matilda.json", "manifest-callers.json"]) {
   try { for (const [t, by] of Object.entries(JSON.parse(readFileSync(join(PROTO, "audio", m), "utf8")).clips)) CLIPS[t] = { ...CLIPS[t], ...by }; } catch { /* optional */ }
 }
 const hasClip = (t) => !!CLIPS[t];
@@ -288,6 +288,9 @@ if (RUN("A")) {
   ok(rr.fitIssues.length === 0, `review steps fit 1366×768${rr.fitIssues.length ? ": " + rr.fitIssues.join("; ") : ""}`);
   ok((await page.locator(".complete-title").innerText()).includes("Review"), "“Review done!” screen");
   await shot(page, "d04-review-done");
+  // The complete screen ignores Enter for its first 300 ms (a held key can't race past it) and focuses
+  // Continue at 600 ms: press Enter once it has focus, as a student would.
+  await page.waitForFunction(() => document.activeElement?.matches("[data-done]"), null, { timeout: 5000 }).catch(() => {});
   await page.keyboard.press("Enter");
   await wait(page, 1000);
   const after = await page.evaluate(() => JSON.parse(localStorage.getItem("buhisimo.prototype.v1")));

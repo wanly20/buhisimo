@@ -92,6 +92,8 @@
 .radio-row__answer { display: flex; align-items: center; gap: var(--sp-2); font-weight: 700; color: var(--emerald-700); }
 .radio-row__answer .art-face { width: 32px; height: 32px; }
 .radio-row__answer small { color: var(--mustard-ink, #3d2a00); font-weight: 400; }
+.radio-row__answer { flex-wrap: wrap; }
+.radio-row__answer .radio-row__call { font-weight: 400; color: var(--ink); }
 .ex-radio.is-checked .face-pick:not([aria-checked="true"]) { opacity: 0.5; }
 @media (min-width: 700px) {
   .radio-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); align-items: center; }
@@ -134,4 +136,14 @@
   .tr-lines--many .tr-who > span:last-child { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .tr-lines--many .tr-who__img, .tr-lines--many .tr-who__icon { width: 24px; height: 24px; }
   .ex-transcript .tr-tools { margin-top: calc(-1 * var(--sp-8)); }
+  /* Recorded lines have a play button: keep the words beside it (not wrapped under it). */
+  .tr-lines--many .tr-text { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: var(--sp-2); flex: 1; }
+  .tr-lines--many .tr-text > :not(.icon-btn):first-child { grid-column: 1 / -1; }
+  .tr-lines--many .tr-en { grid-column: 1 / -1; }
+}
+/* Short laptop screens (1366×768): smaller play buttons and on-air owl so recorded episodes still fit. */
+@media (min-width: 700px) and (max-height: 820px) and (pointer: fine) {
+  .tr-lines--many .icon-btn--sm { --size: 34px; }
+  .tr-lines--many .icon-btn--sm .icon { width: 18px; height: 18px; }
+  .radio-onair__owl { width: 48px; height: 48px; }
 }

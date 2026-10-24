@@ -90,6 +90,11 @@ def export():
     out = {"note": "Unit 1.1 lines from audio/TODO_lines.json (Oct 2026), recorded with Qwen3-TTS (x-vector clone) "
                    "from the same reference wavs and with the same export filter as manifest.json (lesson_audio.py). "
                    "Merged with manifest.json and manifest-extra.json by js/speech.js.", "clips": {}}
+    # Keep the clips video_generation/scripts/voice_tools/u12_audio.py merged in (Unit 1.2, Oct 2026).
+    mp = PROTO / "audio/manifest-l2.json"
+    if mp.exists():
+        old = json.loads(mp.read_text())
+        out["note"], out["clips"] = old.get("note", out["note"]), old["clips"]
     doubtful = []
     for c, takes in verdicts():
         if not takes:

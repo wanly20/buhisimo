@@ -97,7 +97,7 @@ function renderLessonEpisode(view, ep, titleOf) {
     const b = e.target.closest("[data-radio=en]");
     if (b) { const on = b.getAttribute("aria-pressed") !== "true"; b.setAttribute("aria-pressed", String(on)); $$(".k-en", view).forEach((p) => (p.hidden = !on)); return; }
     const s = e.target.closest("[data-say]");
-    if (s) { const l = ep.lines[+s.dataset.say]; tts.speak(l.es, { role: l.who === "buho" ? "buho" : l.who === "max" ? "max" : "maria" }); }
+    if (s) { const l = ep.lines[+s.dataset.say]; tts.speak(l.es, { role: ["buho", "max", "matilda", "caller"].includes(l.who) ? l.who : "maria" }); }
   });
 }
 

@@ -5,7 +5,7 @@
    "clip": "A0",
    "kind": "spoken intro (Buhísimo), over the Radio Búho jingle",
    "file": "audio/songs/A0.mp3",
-   "exists": false,
+   "exists": true,
    "unit": "1.2",
    "firstLesson": 12,
    "lines": [
@@ -19,7 +19,7 @@
    "clip": "A1",
    "kind": "sung: a simple repeated tune at about 90 BPM (A5 twice, the second time with gaps); a slow 70 BPM version for the first listen",
    "file": "audio/songs/A1.mp3",
-   "exists": false,
+   "exists": true,
    "unit": "1.2",
    "firstLesson": 9,
    "lines": [
@@ -33,7 +33,7 @@
    "clip": "A2",
    "kind": "sung: a simple repeated tune at about 90 BPM (A5 twice, the second time with gaps); a slow 70 BPM version for the first listen",
    "file": "audio/songs/A2.mp3",
-   "exists": false,
+   "exists": true,
    "unit": "1.2",
    "firstLesson": 9,
    "lines": [
@@ -48,7 +48,7 @@
    "clip": "A3",
    "kind": "sung: a simple repeated tune at about 90 BPM (A5 twice, the second time with gaps); a slow 70 BPM version for the first listen",
    "file": "audio/songs/A3.mp3",
-   "exists": false,
+   "exists": true,
    "unit": "1.2",
    "firstLesson": 10,
    "lines": [
@@ -62,7 +62,7 @@
    "clip": "A4",
    "kind": "sung: a simple repeated tune at about 90 BPM (A5 twice, the second time with gaps); a slow 70 BPM version for the first listen",
    "file": "audio/songs/A4.mp3",
-   "exists": false,
+   "exists": true,
    "unit": "1.2",
    "firstLesson": 11,
    "lines": [
@@ -76,7 +76,7 @@
    "clip": "A5",
    "kind": "sung: a simple repeated tune at about 90 BPM (A5 twice, the second time with gaps); a slow 70 BPM version for the first listen",
    "file": "audio/songs/A5.mp3",
-   "exists": false,
+   "exists": true,
    "unit": "1.2",
    "firstLesson": 12,
    "lines": [
@@ -95,7 +95,7 @@
    "clip": "A6",
    "kind": "spoken call-in (callers, Matilda, Max)",
    "file": "audio/songs/A6.mp3",
-   "exists": false,
+   "exists": true,
    "unit": "1.2",
    "firstLesson": 12,
    "lines": [
@@ -112,7 +112,7 @@
    "clip": "A7",
    "kind": "spoken outro (Buhísimo)",
    "file": "audio/songs/A7.mp3",
-   "exists": false,
+   "exists": true,
    "unit": "1.2",
    "firstLesson": 12,
    "lines": [

@@ -54,7 +54,7 @@ Juan's rule: point them out explicitly, practise them side by side once both are
 | `transcript` | `js/lesson.js` | Listen again with the transcript: every line, tap to hear, EN toggle. |
 | Radio tab | `js/radio.js` | Lists every episode: the 1.1 demo, plus each lesson episode once its lesson is open; unrecorded episodes show the transcript and "Audio coming soon". |
 | Spelling lines in the checker | `prototype/tools/check_vocab.mjs` | Multi-unit; bare letter names pass only in spelling lines (`spell: true`, or *se escribe* / *alfabeto*), exactly as in the repo validator; titles must equal the manifest's. |
-| Audio TODO | `check_vocab.mjs --todo` | `audio/TODO_lines.json` lists every unrecorded 1.1 and 1.2 line per voice (Buhísimo, María = Matilda's stand-in, Max = his own kid voice `max` since 21 Oct 2026, `co_m_kid_max.wav`; Raúl = Papá and the male neutral voice); `audio/TODO_songs.json` lists the song clips A0–A7 with their lines, lesson and tempo. |
+| Audio TODO | `check_vocab.mjs --todo` | `audio/TODO_lines.json` lists every unrecorded 1.1 and 1.2 line per voice (Buhísimo; Matilda = her own kid voice `matilda` since 24 Oct 2026, `co_f_kid_matilda.wav`, María's clips kept as the fallback; Max = his own kid voice `max` since 21 Oct 2026, `co_m_kid_max.wav`; each Radio Búho caller = their own voice `caller_<country>` (the line's `voice`), 24 Oct 2026; Raúl = Papá and the male neutral voice). Recorded with `video_generation/scripts/voice_tools/u12_audio.py`; `audio/TODO_songs.json` lists the song clips A0–A7 with their lines, lesson and tempo. |
 
 ## 4. Assets
 
@@ -64,7 +64,7 @@ Juan's rule: point them out explicitly, practise them side by side once both are
 | Time of day | SVG scenes in `js/art.js` | Painted morning / afternoon Salento plaza, Cocora in the fog |
 | Feelings | SVG faces in `js/art.js` | Optional: character faces for each feeling |
 | Audio | "Audio coming soon" (computer voice only with the teacher switch); listening steps fall back to reading | GPU run of `audio/TODO_lines.json` (voices per line) |
-| Songs | Placeholder: words light up on the beat, "Song coming soon" | ACE-Step songs (Juan's choice, 20 Oct) cut into clips A0–A7 per `audio/TODO_songs.json` |
+| Songs | Placeholder: words light up on the beat, "Song coming soon" | ACE-Step songs (Juan's choice, 20 Oct) cut into clips A0–A7 per `audio/TODO_songs.json`: made 24 Oct (`audio/songs/`, `video_generation/scripts/alphabet_songs.py`; versions compared in `music/songs/alfabeto.html`). The words still light up on the 90 BPM beat, not on the sung timing. |
 
 ## 5. Tests
 

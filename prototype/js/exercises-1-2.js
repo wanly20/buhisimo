@@ -91,7 +91,10 @@ export function spell(step, api) {
 // ------------------------------------------------------------ song clip
 // Songs (content plan §11): the words light up on a 90 BPM beat so students can chant along;
 // the recorded song plays with them once it exists (audio/TODO_songs.json lists the clips).
-let songList = null;
+// When audio/songs/clips.json has the sung timing of a clip's words (alphabet_songs.py), the words
+// light up as they are sung instead.
+let songList = null, songTimes = null;
+const wordTimes = () => (songTimes ??= fetch("audio/songs/clips.json").then((r) => (r.ok ? r.json() : {})).then((d) => d.clips || {}).catch(() => ({})));
 const songs = () => (songList ??= fetch("audio/TODO_songs.json").then((r) => (r.ok ? r.json() : { clips: [] })).then((d) => new Map(d.clips.filter((c) => c.exists).map((c) => [c.clip, c.file]))).catch(() => new Map()));
 
 export function clip(step, api) {
@@ -112,7 +115,8 @@ export function clip(step, api) {
     </div>`);
   const wordEls = $$(".clip-w", node);
   const beats = $$(".clip-beat i", node);
-  let timers = [], audio = null, src = null;
+  let timers = [], audio = null, src = null, times = null;
+  const at = (k) => (times ? times[k][0] * 1000 : k * BEAT_MS);
   const stop = () => { timers.forEach(clearTimeout); timers = []; audio?.pause(); node.classList.remove("is-playing"); };
   const play = () => {
     stop();
@@ -124,8 +128,8 @@ export function clip(step, api) {
       wordEls[k - 1]?.classList.replace("is-now", "is-done");
       w.classList.add("is-now");
       beats.forEach((b, j) => b.classList.toggle("is-on", j === k % 4));
-    }, k * BEAT_MS)));
-    timers.push(setTimeout(() => { wordEls.at(-1)?.classList.replace("is-now", "is-done"); beats.forEach((b) => b.classList.remove("is-on")); node.classList.remove("is-playing"); }, wordEls.length * BEAT_MS));
+    }, at(k))));
+    timers.push(setTimeout(() => { wordEls.at(-1)?.classList.replace("is-now", "is-done"); beats.forEach((b) => b.classList.remove("is-on")); node.classList.remove("is-playing"); }, times ? times.at(-1)[1] * 1000 : wordEls.length * BEAT_MS));
   };
   node.querySelector(".clip-play").addEventListener("click", () => { sfx.tap(); play(); });
   return {
@@ -133,6 +137,8 @@ export function clip(step, api) {
     footer: { label: "Continue", enabled: true },
     async mount() {
       src = (await songs()).get(step.clip) || null;
+      const t = src && (await wordTimes())[step.clip]?.words;
+      times = t?.length === wordEls.length ? t : null;
       if (src) node.querySelector(".clip-status").innerHTML = `<span class="clip-ready">${icon("radio", 16, 2.5)} Radio Búho</span>`;
       setTimeout(play, 400);
     },
@@ -236,6 +242,8 @@ export function radio(step, api) {
         const ans = row.querySelector(".radio-row__answer");
         ans.hidden = false;
         ans.innerHTML = faces ? `${face(r.answer)}<span>${esc(faceEn(r.answer))}</span>` : `${es(r.answerEs)}${almost ? `<small>Check the ${/[A-ZÁÉÍÓÚÑ]/.test(r.answerEs[0]) ? "capital letter and accents" : "accents"}</small>` : ""}`;
+        // Recorded calls were heard, not read: now show what each caller said, on the answer line.
+        if (audible) ans.insertAdjacentHTML("beforeend", `<span class="radio-row__call">${es(lines[r.line].es)}</span>`);
         if (!ok && !skipped) restartAnim(row, "shake");
       });
       const all = right === step.rows.length;

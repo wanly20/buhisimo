@@ -45,6 +45,48 @@
   },
   "Soy de Melbourne.": {
    "max": "audio/max/soy-de-melbourne-f22ccf.mp3"
+  },
+  "¡Fenomenal! ¡Fantástico! ¡Muy, muy bien!": {
+   "max": "audio/max/fenomenal-fantastico-muy-muy-bien-6e0d8c.mp3"
+  },
+  "¡Hola, Buhísimo! ¡Hola, Matilda!": {
+   "max": "audio/max/hola-buhisimo-hola-matilda-59cfc6.mp3"
+  },
+  "¿Cómo se escribe Max? — ¡Eme, a, equis! ¡Fenomenal!": {
+   "max": "audio/max/como-se-escribe-max-eme-a-equis-fenomena-d53c0f.mp3"
+  },
+  "Mal… muy mal.": {
+   "max": "audio/max/mal-muy-mal-7c1014.mp3"
+  },
+  "¡Hola!": {
+   "max": "audio/max/hola-6610e6.mp3"
+  },
+  "¡Hola, Matilda!": {
+   "max": "audio/max/hola-matilda-07e68c.mp3"
+  },
+  "¡Hasta luego!": {
+   "max": "audio/max/hasta-luego-3e20d2.mp3"
+  },
+  "¡Hola! Soy Max. Soy de Australia.": {
+   "max": "audio/max/hola-soy-max-soy-de-australia-2fb070.mp3"
+  },
+  "¡Hasta luego, Matilda!": {
+   "max": "audio/max/hasta-luego-matilda-ef921a.mp3"
+  },
+  "fantástico": {
+   "max": "audio/max/fantastico-4d7d5f.mp3"
+  },
+  "¡Fantástico, gracias!": {
+   "max": "audio/max/fantastico-gracias-d71f96.mp3"
+  },
+  "¿Cómo se escribe Max? — Eme, a, equis.": {
+   "max": "audio/max/como-se-escribe-max-eme-a-equis-30eccd.mp3"
+  },
+  "¿Max es de Chile?": {
+   "max": "audio/max/max-es-de-chile-de9ef4.mp3"
+  },
+  "¿Max es de Chile? — No, es de Australia.": {
+   "max": "audio/max/max-es-de-chile-no-es-de-australia-7187b1.mp3"
   }
  }
 }

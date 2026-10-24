@@ -80,15 +80,16 @@ const LETTERS = Object.fromEntries(ITEMS.filter((it) => it.letters).map((it) => 
 
 // ------------------------------------------------------------------ Radio Búho episodes
 // Played inside their lessons (call-in grid, then the transcript) and listed in the Radio tab
-// once their lesson is open. No recordings yet: unrecorded lines are shown to read.
+// once their lesson is open. Unrecorded lines are shown to read. Each caller has a voice of their
+// own (`voice`, Juan 24 Oct 2026: a synthetic voice from their country where there is one).
 export const RADIO = [
   { id: "1.2-8", lesson: "1.2-8", unit: "1.2", titleEs: "¡Hola, Buhísimo!", titleEn: "Radio Búho: how are the callers?",
     lines: [
       { who: "buho", es: "¡Buenas tardes! Soy Buhísimo. ¿Qué tal?", en: "Good afternoon! I'm Buhísimo. How's it going?" },
-      { who: "caller", nameEn: "Caller 1", es: "¡Hola, Buhísimo! Soy de Argentina. Muy bien, gracias.", en: "Hi, Buhísimo! I'm from Argentina. Very well, thanks." },
-      { who: "caller", nameEn: "Caller 2", es: "¡Hola! Soy de Cuba. Regular.", en: "Hi! I'm from Cuba. So-so." },
-      { who: "caller", nameEn: "Caller 3", es: "Buenas tardes. Soy de España. ¡Fenomenal!", en: "Good afternoon. I'm from Spain. Great!" },
-      { who: "caller", nameEn: "Caller 4", es: "¡Hola! Soy de Perú. Fatal.", en: "Hi! I'm from Peru. Awful." },
+      { who: "caller", nameEn: "Caller 1", voice: "caller_argentina", es: "¡Hola, Buhísimo! Soy de Argentina. Muy bien, gracias.", en: "Hi, Buhísimo! I'm from Argentina. Very well, thanks." },
+      { who: "caller", nameEn: "Caller 2", voice: "caller_cuba", es: "¡Hola! Soy de Cuba. Regular.", en: "Hi! I'm from Cuba. So-so." },
+      { who: "caller", nameEn: "Caller 3", voice: "caller_espana", es: "Buenas tardes. Soy de España. ¡Fenomenal!", en: "Good afternoon. I'm from Spain. Great!" },
+      { who: "caller", nameEn: "Caller 4", voice: "caller_peru", es: "¡Hola! Soy de Perú. Fatal.", en: "Hi! I'm from Peru. Awful." },
       { who: "buho", es: "¡Hasta luego, Argentina, Cuba, España, Perú!", en: "See you later, Argentina, Cuba, Spain, Peru!" },
     ] },
   { id: "1.2-12", lesson: "1.2-12", unit: "1.2", spell: true, titleEs: "¡El alfabeto!", titleEn: "Radio Búho: the spelling show",
@@ -99,8 +100,8 @@ export const RADIO = [
       { who: "song", clip: "A5", es: "ene, eñe, o, pe, cu, erre,", en: "N, Ñ, O, P, Q, R," },
       { who: "song", clip: "A5", es: "ese, te, u, uve, doble ve,", en: "S, T, U, V, W," },
       { who: "song", clip: "A5", es: "equis, ye, zeta. ¡El alfabeto!", en: "X, Y, Z. The alphabet!" },
-      { who: "caller", nameEn: "Caller 1", clip: "A6", es: "¡Hola, Buhísimo! Soy de Chile. Ce, hache, i, ele, e.", maskEs: "Chile", en: "Hi, Buhísimo! I'm from Chile. C, H, I, L, E." },
-      { who: "caller", nameEn: "Caller 2", clip: "A6", es: "¿Cómo se escribe Colombia? — Ce, o, ele, o, eme, be, i, a.", maskEs: "Colombia", en: "How do you spell Colombia? — C, O, L, O, M, B, I, A." },
+      { who: "caller", nameEn: "Caller 1", voice: "caller_chile", clip: "A6", es: "¡Hola, Buhísimo! Soy de Chile. Ce, hache, i, ele, e.", maskEs: "Chile", en: "Hi, Buhísimo! I'm from Chile. C, H, I, L, E." },
+      { who: "caller", nameEn: "Caller 2", voice: "caller_neutral_f", clip: "A6", es: "¿Cómo se escribe Colombia? — Ce, o, ele, o, eme, be, i, a.", maskEs: "Colombia", en: "How do you spell Colombia? — C, O, L, O, M, B, I, A." },
       { who: "matilda", clip: "A6", es: "¿Cómo se escribe Melbourne? — Eme, e, ele, be, o, u, erre, ene, e.", maskEs: "Melbourne", en: "How do you spell Melbourne? — M, E, L, B, O, U, R, N, E." },
       { who: "max", clip: "A6", es: "¿Cómo se escribe Max? — ¡Eme, a, equis! ¡Fenomenal!", maskEs: "Max", en: "How do you spell Max? — M, A, X! Great!" },
       { who: "buho", clip: "A7", es: "¡Muy bien! ¡Fenomenal! ¡Hasta luego!", en: "Very good! Great! See you later!" },
