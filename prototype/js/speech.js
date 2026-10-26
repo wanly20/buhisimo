@@ -51,11 +51,19 @@ const getJson = (url) => fetch(url).then((r) => (r.ok ? r.json() : null)).catch(
 const manifestReady = Promise.all([getJson("audio/manifest.json"), getJson("audio/manifest-extra.json"), getJson("audio/manifest-l2.json"), getJson("audio/manifest-max.json"),
   getJson("audio/manifest-matilda.json"), getJson("audio/manifest-callers.json")])
   .then(([main, ...extras]) => {
-    const clips = {};
-    for (const m of [main, ...extras]) for (const [text, byVoice] of Object.entries(m?.clips || {})) clips[text] = { ...clips[text], ...byVoice };
-    manifest = { ...(main || {}), clips };
+    const clips = {}, speakers = {};
+    for (const m of [main, ...extras]) {
+      for (const [text, byVoice] of Object.entries(m?.clips || {})) clips[text] = { ...clips[text], ...byVoice };
+      Object.assign(speakers, m?.speakers || {});
+    }
+    manifest = { ...(main || {}), clips, speakers };
     return manifest;
   });
+
+// manifest.speakers: Spanish text -> role. A line with a fixed speaker plays in that character's voice
+// whichever role the step asked for (Juan, 27 Oct 2026: «¡Adiós, Max!» is always Matilda, «Buenos días,
+// Matilda. ¿Cómo estás?» always Buhísimo, in the owl voice chosen in Settings).
+const speakerOf = (text, role) => manifest?.speakers?.[text] || role;
 
 function voiceFor(role) {
   const s = store.get();
@@ -149,7 +157,7 @@ export const tts = {
     tts.stop();
     const token = speakToken;
     await manifestReady;
-    const src = player && clipFor(text, role);
+    const src = player && clipFor(text, speakerOf(text, role));
     if (src) {
       const url = await blobUrl(src);
       if (token !== speakToken) return false; // something newer started meanwhile

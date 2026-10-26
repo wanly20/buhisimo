@@ -507,11 +507,6 @@
    "maria_paisa": "audio/maria_paisa/tu-eres-de-australia-0fe9dc.mp3",
    "raul": "audio/raul/tu-eres-de-australia-0fe9dc.mp3"
   },
-  "¡Adiós, Max!": {
-   "maria_bogota": "audio/maria_bogota/adios-max-4ca817.mp3",
-   "maria_paisa": "audio/maria_paisa/adios-max-4ca817.mp3",
-   "raul": "audio/raul/adios-max-4ca817.mp3"
-  },
   "¡Adiós!": {
    "maria_bogota": "audio/maria_bogota/adios-6353e0.mp3",
    "maria_paisa": "audio/maria_paisa/adios-6353e0.mp3",
@@ -557,11 +552,6 @@
   "¡Hasta luego, Argentina, Cuba, España, Perú!": {
    "buho_abuelo": "audio/buho_abuelo/hasta-luego-argentina-cuba-espana-peru-3edfbf.mp3",
    "buho_profesor": "audio/buho_profesor/hasta-luego-argentina-cuba-espana-peru-3edfbf.mp3"
-  },
-  "¡Hasta luego, Buhísimo! — ¡Adiós, Max!": {
-   "maria_bogota": "audio/maria_bogota/hasta-luego-buhisimo-adios-max-60b6f2.mp3",
-   "maria_paisa": "audio/maria_paisa/hasta-luego-buhisimo-adios-max-60b6f2.mp3",
-   "raul": "audio/raul/hasta-luego-buhisimo-adios-max-60b6f2.mp3"
   },
   "¡Hasta luego, Matilda!": {
    "maria_bogota": "audio/maria_bogota/hasta-luego-matilda-ef921a.mp3",
@@ -624,11 +614,6 @@
    "maria_bogota": "audio/maria_bogota/hola-soy-de-peru-fatal-8d17f7.mp3",
    "maria_paisa": "audio/maria_paisa/hola-soy-de-peru-fatal-8d17f7.mp3",
    "raul": "audio/raul/hola-soy-de-peru-fatal-8d17f7.mp3"
-  },
-  "¡Hola! Soy Matilda. Soy de Melbourne.": {
-   "maria_bogota": "audio/maria_bogota/hola-soy-matilda-soy-de-melbourne-d0a99e.mp3",
-   "maria_paisa": "audio/maria_paisa/hola-soy-matilda-soy-de-melbourne-d0a99e.mp3",
-   "raul": "audio/raul/hola-soy-matilda-soy-de-melbourne-d0a99e.mp3"
   },
   "¡Hola! Soy Max. Soy de Australia.": {
    "maria_bogota": "audio/maria_bogota/hola-soy-max-soy-de-australia-2fb070.mp3",
@@ -831,11 +816,6 @@
    "maria_bogota": "audio/maria_bogota/buenos-dias-buhisimo-e0ef5e.mp3",
    "maria_paisa": "audio/maria_paisa/buenos-dias-buhisimo-e0ef5e.mp3",
    "raul": "audio/raul/buenos-dias-buhisimo-e0ef5e.mp3"
-  },
-  "Buenos días, Matilda. ¿Cómo estás?": {
-   "maria_bogota": "audio/maria_bogota/buenos-dias-matilda-como-estas-3b5949.mp3",
-   "maria_paisa": "audio/maria_paisa/buenos-dias-matilda-como-estas-3b5949.mp3",
-   "raul": "audio/raul/buenos-dias-matilda-como-estas-3b5949.mp3"
   },
   "Buhísimo": {
    "maria_bogota": "audio/maria_bogota/buhisimo-b57850.mp3",
@@ -1905,6 +1885,18 @@
    "maria_bogota": "audio/maria_bogota/veintiuno-veintidos-veintitres-veinticua-cb9ed9.mp3",
    "maria_paisa": "audio/maria_paisa/veintiuno-veintidos-veintitres-veinticua-cb9ed9.mp3",
    "raul": "audio/raul/veintiuno-veintidos-veintitres-veinticua-cb9ed9.mp3"
+  },
+  "¡Hasta luego, Buhísimo! — ¡Adiós, Max!": {
+   "buho_profesor": "audio/buho_profesor/hasta-luego-buhisimo-adios-max-60b6f2-r5.mp3",
+   "buho_abuelo": "audio/buho_abuelo/hasta-luego-buhisimo-adios-max-60b6f2-r5.mp3"
+  },
+  "Buenos días, Matilda. ¿Cómo estás?": {
+   "buho_profesor": "audio/buho_profesor/buenos-dias-matilda-como-estas-3b5949-r5.mp3",
+   "buho_abuelo": "audio/buho_abuelo/buenos-dias-matilda-como-estas-3b5949-r5.mp3"
   }
+ },
+ "speakers": {
+  "¡Hasta luego, Buhísimo! — ¡Adiós, Max!": "buho",
+  "Buenos días, Matilda. ¿Cómo estás?": "buho"
  }
 }
