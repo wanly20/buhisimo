@@ -1,0 +1,257 @@
+/* Unit 1.3 «Mi carnet de identidad»: numbers, number songs, Number Invaders and the ID card
+   (js/exercises-1-3.js, js/art.js). Same tokens and press recipe as the rest of the prototype;
+   phone first, then ≥ 700px; every lesson step fits 1366×768 without scrolling (e2e-unit.mjs). */
+
+/* =================================================================== digits (js/art.js) */
+.art-digit { display: block; width: 100%; height: auto; }
+.ex-intro--digit .intro-art { background: none; border-radius: var(--r-lg); width: 168px; height: auto; aspect-ratio: 5 / 4; }
+@media (min-width: 700px) { .ex-intro--digit .intro-art { width: var(--art); height: calc(var(--art) * 0.8); align-self: center; } }
+
+/* A spoken line to play, or to read while it isn't recorded */
+.cue { display: flex; align-items: center; justify-content: center; gap: var(--sp-3); flex-wrap: wrap; }
+.cue--read { gap: var(--sp-2); }
+.cue__read { font-family: var(--font-display); font-weight: var(--display-weight-bold); color: var(--ink-soft); }
+.cue__es { font-size: var(--fs-2xl); font-weight: 700; color: var(--emerald-700); line-height: 1.2; }
+.bubble .cue { justify-content: flex-start; }
+.bubble .cue__es { font-size: var(--fs-xl); }
+
+/* =================================================================== number cards */
+.num-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-3); }
+.num-grid--few { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.num-grid--many { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-2); }
+.num-card { --e: 4px; border-radius: var(--r-lg); color: var(--ink); }
+.num-card > .face { display: grid; justify-items: center; gap: 2px; padding: var(--sp-3) var(--sp-2); min-height: 104px; align-content: center; }
+.num-card__n { font-family: var(--font-display); font-weight: 700; font-size: 3rem; line-height: 1; color: var(--emerald-600); }
+.num-card__es { font-size: var(--fs-lg); font-weight: 700; }
+.num-grid--many .num-card > .face { min-height: 76px; padding: var(--sp-2) 4px; }
+.num-grid--many .num-card__n { font-size: 2rem; }
+.num-grid--many .num-card__es { font-size: var(--fs-sm); }
+.num-card.is-heard { --face: var(--emerald-50); --face-border: var(--emerald-400); }
+@media (min-width: 700px) {
+  .num-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .num-grid--few { grid-template-columns: repeat(2, minmax(0, 220px)); justify-content: center; }
+  .num-grid--many { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .num-card > .face { min-height: clamp(110px, 18vh, 160px); }
+  .num-card__n { font-size: clamp(3rem, 8vh, 4.2rem); }
+  .num-grid--many .num-card > .face { min-height: clamp(84px, 13vh, 110px); }
+  .num-grid--many .num-card__n { font-size: clamp(2rem, 5vh, 2.6rem); }
+}
+
+/* =================================================================== number pick */
+.numpick-stage { display: flex; align-items: center; justify-content: center; min-height: 96px; }
+.num-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); }
+.num-option > .face { justify-content: center; min-height: 88px; }
+.num-option__n { font-family: var(--font-display); font-weight: 700; font-size: 2.6rem; line-height: 1; }
+@media (min-width: 700px) { .lesson .num-options { grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); } .lesson .num-option > .face { min-height: 112px; } }
+
+/* =================================================================== digit → word */
+.numtype-prompt { display: grid; place-items: center; }
+.numtype-prompt .art-digit { width: min(52vw, 210px); }
+@media (min-width: 700px) and (max-height: 820px) { .numtype-prompt .art-digit { width: 170px; } }
+
+/* =================================================================== number dictation */
+.dict-stage { display: grid; place-items: center; padding: var(--sp-3) var(--sp-4); border-radius: var(--r-xl); background: var(--white); border: 2px solid var(--sand-200); }
+.dict-who .char { width: 96px; }
+.dict-boxes { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--sp-3); }
+.dict-boxes--many { gap: var(--sp-2); }
+.dict-box { position: relative; display: grid; justify-items: center; gap: 4px; }
+.dict-box__k { font-size: var(--fs-xs); font-weight: 700; color: var(--ink-soft); }
+.dict-input { width: 76px; min-height: 64px; padding: 0; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: 2rem; }
+.dict-boxes--many .dict-input { width: 58px; min-height: 56px; font-size: 1.6rem; }
+.dict-box.is-correct .dict-input { border-color: var(--emerald-400); background: var(--emerald-50); color: var(--emerald-700); }
+.dict-box.is-wrong .dict-input { border-color: var(--terracotta-400); background: var(--terracotta-50); color: var(--terracotta-700); text-decoration: line-through; }
+.dict-box__ans { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-lg); color: var(--emerald-700); }
+
+/* =================================================================== count up / countdown */
+.count-stage { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "char big" "track track"; align-items: center; gap: var(--sp-2) var(--sp-4);
+  padding: var(--sp-3) var(--sp-4); border-radius: var(--r-xl); background: var(--white); border: 2px solid var(--sand-200); }
+.count-char { grid-area: char; }
+.count-char__img { width: 88px; height: 104px; object-fit: contain; object-position: bottom; transition: transform 500ms var(--ease-out); }
+.count-big { grid-area: big; justify-self: center; width: min(40vw, 150px); }
+.count-track { grid-area: track; list-style: none; margin: 0; padding: 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; }
+.count-dot { min-width: 34px; height: 34px; padding: 0 6px; display: grid; place-items: center; border-radius: var(--r-pill); background: var(--sand-100); font-family: var(--font-display); font-weight: 700; color: var(--ink-soft); }
+.count-dot.is-done { background: var(--emerald-50); color: var(--emerald-700); box-shadow: inset 0 0 0 2px var(--emerald-400); }
+.count-bank .tile.is-ghost { opacity: 0.35; }
+.ex-count.is-launched .count-char__img { transform: translateY(-36px) rotate(-8deg); }
+@media (prefers-reduced-motion: reduce) { .ex-count.is-launched .count-char__img { transform: none; } }
+@media (min-width: 700px) {
+  .count-stage { grid-template-columns: 120px minmax(0, 1fr) minmax(0, 1.4fr); grid-template-areas: "char big track"; }
+  .count-char__img { width: 112px; height: clamp(96px, 16vh, 130px); }
+  .count-big { width: clamp(110px, 18vh, 160px); }
+  .count-track { justify-content: flex-start; }
+}
+
+/* =================================================================== pattern card */
+.pattern-card { display: grid; gap: var(--sp-2); }
+.pattern-row { --e: 4px; border-radius: var(--r-lg); color: var(--ink); }
+.pattern-row > .face { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1.4fr); align-items: center; gap: var(--sp-2); padding: var(--sp-2) var(--sp-3); }
+.pattern-cell { display: grid; justify-items: center; line-height: 1.15; }
+.pattern-cell .es { font-weight: 700; font-size: var(--fs-md); }
+.pattern-cell b { font-family: var(--font-display); font-size: var(--fs-xl); color: var(--emerald-600); }
+.pattern-cell--out .es { color: var(--emerald-700); font-size: var(--fs-lg); }
+.pattern-op { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-xl); color: var(--ink-soft); display: grid; place-items: center; }
+@media (min-width: 700px) { .pattern-cell .es { font-size: var(--fs-lg); } .pattern-cell--out .es { font-size: var(--fs-xl); } }
+
+/* =================================================================== Number Invaders */
+.ex-invaders { gap: var(--sp-3); }
+.inv-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-3); }
+.inv-calm { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 var(--sp-3); border-radius: var(--r-pill); border: 2px solid var(--sand-200); background: var(--white); color: var(--ink); font: inherit; font-weight: 700; font-size: var(--fs-sm); cursor: pointer; flex: none; }
+.inv-calm[aria-pressed="true"] { border-color: var(--emerald-500); background: var(--emerald-50); color: var(--emerald-700); }
+.inv-cue { min-height: 64px; display: grid; place-items: center; }
+.inv-win { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-weight: 700; font-size: var(--fs-xl); color: var(--emerald-700); }
+.inv-sky { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-2); height: clamp(220px, 40vh, 330px); padding: var(--sp-2);
+  border-radius: var(--r-xl); overflow: hidden; background: linear-gradient(#1d3557, #2c5d8a 70%, #3f7cae); }
+.inv-sky::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle, rgb(255 255 255 / 0.7) 1px, transparent 1.5px); background-size: 46px 38px; opacity: 0.5; pointer-events: none; }
+.inv-lane { position: relative; display: flex; justify-content: center; }
+.inv-ground { position: absolute; left: 0; right: 0; bottom: 0; height: 26px; background: var(--emerald-500); box-shadow: 0 -6px 0 var(--emerald-400); }
+.inv-ship { --e: 4px; position: relative; z-index: 1; width: min(100%, 104px); height: 76px; border-radius: 22px; color: var(--ink);
+  animation: inv-fall var(--fall, 9000ms) linear forwards; animation-play-state: paused; }
+.ex-invaders.is-arcade .inv-ship { animation-play-state: running; }
+.inv-ship > .face { position: relative; height: 100%; display: grid; place-items: center; border-radius: 22px; font-family: var(--font-display); font-weight: 700; font-size: 2.2rem; --face: var(--mustard-50); --face-border: var(--mustard-400); }
+.inv-ship .key { position: absolute; left: 6px; top: 4px; font-size: 11px; color: var(--ink-soft); display: none; }
+@media (pointer: fine), (pointer: none) { .inv-ship .key { display: block; } }
+.inv-ship.is-hit { animation: inv-hit 420ms var(--ease-out) forwards; }
+.inv-ship.is-answer > .face { --face: var(--emerald-50); --face-border: var(--emerald-400); }
+.ex-invaders.is-landed .inv-sky { box-shadow: inset 0 0 0 4px var(--terracotta-400); }
+@keyframes inv-fall { from { transform: translateY(0); } to { transform: translateY(calc(clamp(220px, 40vh, 330px) - 76px - 46px)); } }
+@keyframes inv-hit { to { transform: scale(1.5); opacity: 0; } }
+.inv-score { text-align: center; font-weight: 700; color: var(--ink-soft); }
+@media (prefers-reduced-motion: reduce) { .inv-ship { animation: none !important; } }
+@media (min-width: 700px) and (max-height: 820px) { .inv-sky { height: clamp(200px, 34vh, 300px); } }
+
+/* =================================================================== songs (karaoke) */
+.song-title { margin: -8px 0 0; }
+.song-title .es { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-lg); color: var(--magenta-700, #870b47); }
+.song-box { display: grid; gap: var(--sp-3); }
+.song-lines { display: grid; gap: 2px var(--sp-5); }
+.song-line { font-size: var(--fs-xl); }
+.song-box--digits .song-num { font-family: var(--font-display); font-size: 1.25em; color: var(--emerald-700); }
+.song-box--digits .song-num.is-done { color: var(--magenta-700, #870b47); }
+@media (min-width: 700px) {
+  .song-line { font-size: clamp(1.3rem, 3.3vh, 1.8rem); }
+  .song-lines--many { grid-template-columns: 1fr 1fr; grid-auto-flow: column; grid-template-rows: repeat(4, auto); }
+  .song-lines--many .song-line { font-size: clamp(1.15rem, 2.8vh, 1.5rem); }
+}
+
+/* Radio Búho's set (1.3 L15) and the songs in the Radio tab */
+.songset { display: grid; gap: var(--sp-3); }
+.songset-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-2); }
+.songset-item { --e: 3px; width: 100%; border-radius: var(--r-md); color: var(--ink); text-align: left; }
+.songset-item > .face { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--sp-2); padding: 6px var(--sp-3); min-height: 48px; }
+.songset-item__n { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; background: var(--magenta-600, #b3135f); color: var(--white); font-size: var(--fs-xs); font-weight: 700; }
+.songset-item__t { display: grid; font-weight: 700; line-height: 1.2; }
+.songset-item__t small { font-weight: 400; color: var(--ink-soft); font-size: var(--fs-xs); }
+.songset-item__i { color: var(--magenta-600, #b3135f); }
+.songset-item[aria-pressed="true"] { --face: var(--magenta-50, #fde8f1); --face-border: var(--magenta-400, #ee4f97); }
+.songset-pick { margin: 0; display: flex; align-items: center; gap: 8px; color: var(--ink-soft); }
+.songset-player .song-line, .radio-song .song-line { font-size: var(--fs-lg); }
+.songset-intro .char { width: 72px; }
+@media (min-width: 700px) {
+  .songset { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); align-items: start; }
+  .songset-player .song-lines--many, .radio-song .song-lines--many { grid-template-columns: 1fr; grid-auto-flow: row; grid-template-rows: none; }
+  .songset-player .song-line, .radio-song .song-line { font-size: clamp(1rem, 2.4vh, 1.25rem); }
+}
+@media (min-width: 700px) and (max-height: 820px) { .songset-item > .face { min-height: 42px; padding-block: 3px; } .songset-intro .char { width: 56px; } }
+.radio-songs { display: grid; gap: var(--sp-3); margin-bottom: var(--sp-4); }
+@media (min-width: 900px) { .radio-songs { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); align-items: start; } }
+
+/* =================================================================== the ID card («carnet», js/art.js) */
+.idcard { --id-ink: #2c2118; position: relative; display: grid; grid-template-rows: auto 1fr auto; width: 100%; max-width: 420px; border-radius: 18px; overflow: hidden;
+  background: linear-gradient(135deg, #fffdf6 0%, #f3f8ef 60%, #e9f4ee 100%); border: 2px solid var(--sand-200); box-shadow: 0 var(--edge) 0 var(--sand-200); text-align: left; color: var(--id-ink); }
+.idcard__flag { display: grid; grid-template-rows: 2fr 1fr 1fr; height: 16px; }
+.idcard__flag i:nth-child(1) { background: #f7c51e; } .idcard__flag i:nth-child(2) { background: #1f4fa3; } .idcard__flag i:nth-child(3) { background: #d6253a; }
+.idcard__body { display: grid; grid-template-columns: 30% minmax(0, 1fr); gap: 10px; padding: 10px 12px 4px; align-items: start; }
+.idcard__photo { aspect-ratio: 4 / 5; border-radius: 10px; background: #dfe9f2; overflow: hidden; display: grid; place-items: end center; }
+.idcard__photo img { width: 100%; height: 125%; object-fit: cover; object-position: top center; transform: translateY(18%); }
+.idcard__fields { margin: 0; display: grid; gap: 6px; }
+.idcard__field { display: grid; gap: 1px; padding: 2px 6px; border-radius: 8px; }
+.idcard__field dt { font-size: var(--fs-xs); font-weight: 700; color: #5b6b62; }
+.idcard__field dd { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-weight: 700; font-size: var(--fs-lg); min-height: 26px; }
+.idcard__num { font-family: var(--font-display); font-size: 1.15em; }
+.idcard__blank { display: block; width: 70%; height: 3px; margin-top: 12px; border-radius: 2px; background: var(--sand-200); }
+.idcard__field.is-hl { background: var(--mustard-50); box-shadow: inset 0 0 0 2px var(--mustard-400); }
+.idcard__foot { display: flex; align-items: center; justify-content: space-between; padding: 0 12px 8px; }
+.idcard__sign { width: 60px; height: 30px; opacity: 0.7; }
+.idcard__no { font-family: ui-monospace, monospace; font-size: var(--fs-xs); letter-spacing: 0.08em; color: #5b6b62; }
+.idcard__field.is-correct { background: var(--emerald-50); box-shadow: inset 0 0 0 2px var(--emerald-400); }
+.idcard__field.is-almost { background: var(--mustard-50); box-shadow: inset 0 0 0 2px var(--mustard-400); }
+.idcard__field.is-wrong { background: var(--terracotta-50); box-shadow: inset 0 0 0 2px var(--terracotta-400); }
+.idcard__answer { display: inline-flex; align-items: center; gap: 6px; color: var(--emerald-700); }
+.idcard__answer small { color: var(--mustard-ink, #3d2a00); font-weight: 400; font-size: var(--fs-xs); }
+.ex-idcard.is-checked .id-chip[aria-checked="false"] { opacity: 0.45; }
+
+/* the card as an intro picture */
+.ex-intro--card .intro-art { background: none; border-radius: var(--r-lg); overflow: visible; aspect-ratio: auto; }
+.ex-intro--card .idcard { max-width: none; font-size: 0.9em; }
+.ex-intro--card .idcard__field dd { font-size: var(--fs-md); }
+@media (min-width: 700px) { .ex-intro--card .intro-art { height: auto; align-self: center; } }
+
+/* fill in the card */
+.idcards { display: grid; gap: var(--sp-3); justify-items: center; }
+.idcard-wrap { display: grid; gap: var(--sp-2); width: 100%; max-width: 440px; }
+.idcard-wrap.is-playing .idcard { box-shadow: 0 var(--edge) 0 var(--magenta-400, #ee4f97); border-color: var(--magenta-400, #ee4f97); }
+.idcard-call { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; font-size: var(--fs-sm); }
+.idcard-call .es { font-weight: 700; }
+.id-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.id-chip { --e: 3px; border-radius: var(--r-pill); color: var(--ink); }
+.id-chip > .face { padding: 4px 12px; min-height: 36px; font-size: var(--fs-md); font-weight: 700; border-radius: var(--r-pill); }
+.id-chip[aria-checked="true"] { --face: var(--turquoise-50); --face-border: var(--turquoise-600); }
+.id-input { min-height: 40px; padding: 4px 10px; font-size: var(--fs-md); border-radius: var(--r-md); }
+.id-input--num { width: 72px; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: var(--fs-lg); }
+.ex-idcard--many .idcards { gap: var(--sp-2); }
+@media (min-width: 700px) {
+  .ex-idcard--many .idcards { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); align-items: start; }
+  .ex-idcard--many .idcard__body { grid-template-columns: 24% minmax(0, 1fr); padding-block: 6px 2px; }
+  .ex-idcard--many .idcard__fields { gap: 3px; }
+  .ex-idcard--many .idcard__field dd { font-size: var(--fs-md); min-height: 0; }
+  .ex-idcard--many .idcard-call { font-size: var(--fs-xs); min-height: 2.6em; }
+}
+@media (min-width: 700px) and (max-height: 820px) {
+  .ex-idcard .id-chip > .face { min-height: 32px; padding: 2px 10px; }
+  .ex-idcard .id-input { min-height: 34px; }
+  .ex-idcard--many .idcard__flag { height: 10px; }
+  .ex-idcard--many .idcard__foot { display: none; }
+}
+
+/* read the card, then answer */
+.idcard-read { display: grid; gap: var(--sp-4); justify-items: center; }
+.idcard-q { display: grid; gap: var(--sp-3); width: 100%; }
+@media (min-width: 700px) { .idcard-read { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; } }
+
+/* the story cover has five people in 1.3 */
+.story-cover__cast img:nth-child(n + 4) { display: none; }
+@media (min-width: 700px) { .story-cover__cast img:nth-child(n + 4) { display: block; } }
+
+/* "Who is it?": three or four people to choose from (1.3) */
+.pic-options--n3 .pic-option > .face, .pic-options--n4 .pic-option > .face { justify-content: center; min-height: 120px; }
+.pic-options--n3 .pic-option img, .pic-options--n4 .pic-option img { height: clamp(88px, 16vh, 140px); }
+@media (min-width: 700px) {
+  .lesson .pic-options--n3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lesson .pic-options--n4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .lesson .pic-options--n3 .pic-option > .face, .lesson .pic-options--n4 .pic-option > .face { min-height: clamp(150px, 26vh, 200px); }
+  .lesson .pic-options--n3 .pic-option img, .lesson .pic-options--n4 .pic-option img { height: clamp(110px, 20vh, 160px); }
+}
+.song-box.is-recorded .clip-beat { display: none; }
+
+/* =================================================================== fitting 1366×768 without scrolling */
+/* Radio Búho's song set: a small Buhísimo, no bubble gap */
+.lesson .songset-intro .char { width: 64px; }
+.lesson .songset-intro .bubble { margin-bottom: 0; padding-block: var(--sp-2); }
+/* Pattern cards: tighter rows on short laptop screens */
+@media (min-width: 700px) and (max-height: 820px) {
+  .pattern-row > .face { padding-block: 2px; }
+  .pattern-cell b { font-size: var(--fs-lg); }
+  .pattern-card { gap: 6px; }
+}
+/* One card to fill: wider, its fields in two columns */
+@media (min-width: 700px) {
+  .ex-idcard:not(.ex-idcard--many):not(.ex-idcard--read) .idcard-wrap { max-width: 640px; }
+  .ex-idcard:not(.ex-idcard--many):not(.ex-idcard--read) .idcard { max-width: 640px; }
+  .ex-idcard:not(.ex-idcard--many):not(.ex-idcard--read) .idcard__body { grid-template-columns: 22% minmax(0, 1fr); }
+  .ex-idcard:not(.ex-idcard--many):not(.ex-idcard--read) .idcard__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-2) var(--sp-3); }
+}
+/* Three cards from Radio Búho: side by side, a little wider than the lesson column */
+@media (min-width: 1100px) {
+  .ex-idcard--many .idcards { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-inline: -140px; }
+  .ex-idcard--many .idcard-wrap { max-width: none; }
+}

@@ -14,19 +14,19 @@ import { gradeStep, meetLesson, buildReview, reviewViewHtml, dueItems, metItems 
 import { mountRadio, stopRadio } from "./radio.js";
 
 // Bump together with VERSION in sw.js for every release (tools/e2e-unit.mjs checks they match).
-export const APP_VERSION = "2026-10-24.audio3";
+export const APP_VERSION = "2026-10-26.u13";
 
 const app = document.getElementById("app");
 applyFont(store.get().font);
 const lesson1 = LESSONS[0];
 
-const NODE_ICON = { lesson: "star", repaso: "repeat", story: "book-open", practice: "dumbbell", check: "trophy", listen: "headphones", game: "gamepad-2", speak: "mic", boss: "crown" };
+const NODE_ICON = { lesson: "star", repaso: "repeat", story: "book-open", practice: "dumbbell", conjugation: "dumbbell", check: "trophy", listen: "headphones", game: "gamepad-2", speak: "mic", boss: "crown" };
 const OFFSETS = [0, -56, -84, -56, 0, 56, 84, 56];
 const PEEKS = {
   "1.1": { img: "owl-explaining", side: "right", at: 1 },
   "1.2": { img: "matilda", side: "left", at: 0 },
-  "1.3a": { img: "max", side: "right", at: 0 },
-  "1.3b": { img: "matilda", side: "left", at: 1 },
+  "1.3a": { img: "valentina", side: "right", at: 1 },
+  "1.3b": { img: "samuel", side: "left", at: 3 },
   "1.4": { img: "owl-thinking", side: "left", at: 0 },
   "1.5": { img: "owl-encouraging", side: "right", at: 0 },
   "1.6": { img: "max", side: "left", at: 0 },
@@ -304,8 +304,10 @@ async function showReview() {
 }
 
 // =================================================================== complete
-const COMPLETE_TITLE = { learn: "Lesson complete!", repaso: "Review complete!", practice: "Practice complete!", story: "Story complete!", game: "Game complete!", listen: "Radio Búho complete!", review: "Review done!" };
-const completeTitle = (l) => (l.kind === "check" ? `Unit ${l.unit} complete!` : COMPLETE_TITLE[l.kind] || "Lesson complete!");
+const COMPLETE_TITLE = { learn: "Lesson complete!", repaso: "Review complete!", practice: "Practice complete!", conjugation: "Practice complete!", story: "Story complete!", game: "Game complete!", listen: "Radio Búho complete!", review: "Review done!" };
+// A unit shown as two map sections (1.3a, 1.3b): the first section's check closes that part, not the unit.
+const partDone = (l) => l.part && LESSONS.some((x) => x.unit === l.unit && x.n > l.n);
+const completeTitle = (l) => (l.kind === "check" ? (partDone(l) ? `Unit ${l.unit}, part ${l.part.slice(-1).toUpperCase()} complete!` : `Unit ${l.unit} complete!`) : COMPLETE_TITLE[l.kind] || "Lesson complete!");
 
 async function showComplete(lesson, { xp, accuracy }) {
   activeLesson = null;

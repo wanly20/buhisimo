@@ -9,6 +9,7 @@ import { $, $$, esc, charImg } from "./ui.js";
 import { tts } from "./speech.js";
 import { RADIO } from "../course.js";
 import { audioSoon, hasAudio } from "./lesson.js";
+import { songPlayer } from "./exercises-1-3.js";
 
 let episodes = null;
 async function loadEpisodes() {
@@ -35,11 +36,12 @@ export function normalise(d) {
 }
 
 const fmt = (t) => { t = Math.max(0, t || 0); return `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`; };
-const SPEAKER_ART = { "Buhísimo": "owl-explaining", Matilda: "matilda", Max: "max" };
+const SPEAKER_ART = { "Buhísimo": "owl-explaining", Matilda: "matilda", Max: "max", Valentina: "valentina", Samuel: "samuel" };
 
 let player = null; // the one live player (paused when the view goes away)
 
-export function stopRadio() { player?.dispose(); player = null; }
+export function stopRadio() { player?.dispose(); player = null; songs?.destroy(); songs = null; }
+let songs = null; // the song playing in a lesson episode (1.3 L15)
 
 /**
  * Render Radio Búho into `host` (the view area of the path screen): a list of episodes (the 1.1
@@ -73,7 +75,7 @@ export async function mountRadio(host, { isOpen = () => true, titleOf = (id) => 
 
 /** A lesson episode that isn't recorded yet: the transcript to read, a play button per recorded line. */
 function renderLessonEpisode(view, ep, titleOf) {
-  const NAME = { buho: "Buhísimo", matilda: "Matilda", max: "Max", song: "Song", caller: "Caller" };
+  const NAME = { buho: "Buhísimo", matilda: "Matilda", max: "Max", valentina: "Valentina", samuel: "Samuel", song: "Song", caller: "Caller" };
   view.innerHTML = `
     <header class="view-hero view-hero--radio">
       ${charImg("owl-explaining", "view-hero__owl")}
@@ -81,9 +83,13 @@ function renderLessonEpisode(view, ep, titleOf) {
         <span class="panel-kicker">${icon("radio", 16, 2.75)} Radio Búho · Unit ${esc(ep.unit)}</span>
         <h1 class="h-title" tabindex="-1">${ep.titleEs ? `<span lang="es" class="es">${esc(ep.titleEs)}</span>` : esc(ep.titleEn)}</h1>
         <p class="view-sub">“${esc(ep.titleEn)}” From the lesson ${esc(titleOf(ep.lesson))}. Read along; tap EN for the English.</p>
-        <p class="radio-demo">${audioSoon(true)}<span>This episode isn't recorded yet. ${ep.lines.some((l) => l.who === "song") ? "The song is on its way too." : ""}</span></p>
+        <p class="radio-demo">${audioSoon(true)}<span>${ep.songs ? "The talk isn't recorded yet, but the songs are: play them below." : `This episode isn't recorded yet. ${ep.lines.some((l) => l.who === "song") ? "The song is on its way too." : ""}`}</span></p>
       </div>
     </header>
+    ${ep.songs ? `<section class="radio-songs" aria-label="The songs"><ol class="songset-list">${ep.songs.map((s, k) => `
+      <li><button class="press songset-item" data-song="${k}" aria-pressed="false"><span class="face"><span class="songset-item__n">${k + 1}</span>
+        <span class="songset-item__t">${s.titleEs ? `<span lang="es" class="es">${esc(s.titleEs)}</span><small>${esc(s.titleEn)}</small>` : esc(s.titleEn)}</span>
+        <span class="songset-item__i">${icon("play", 20, 2.75)}</span></span></button></li>`).join("")}</ol><div class="clip-card radio-song"></div></section>` : ""}
     <div class="tr-tools"><button class="radio-chip" data-radio="en" aria-pressed="false">EN</button></div>
     <ol class="karaoke karaoke--read" aria-label="Transcript">
       ${ep.lines.map((l, i) => `
@@ -97,7 +103,19 @@ function renderLessonEpisode(view, ep, titleOf) {
     const b = e.target.closest("[data-radio=en]");
     if (b) { const on = b.getAttribute("aria-pressed") !== "true"; b.setAttribute("aria-pressed", String(on)); $$(".k-en", view).forEach((p) => (p.hidden = !on)); return; }
     const s = e.target.closest("[data-say]");
-    if (s) { const l = ep.lines[+s.dataset.say]; tts.speak(l.es, { role: ["buho", "max", "matilda", "caller"].includes(l.who) ? l.who : "maria" }); }
+    if (s) { const l = ep.lines[+s.dataset.say]; tts.speak(l.es, { role: ["buho", "max", "matilda", "caller", "valentina", "samuel"].includes(l.who) ? l.who : "maria" }); return; }
+    const sg = e.target.closest("[data-song]");
+    if (sg) {
+      songs?.destroy();
+      $$("[data-song]", view).forEach((b) => b.setAttribute("aria-pressed", String(b === sg)));
+      const one = ep.songs[+sg.dataset.song];
+      songs = songPlayer({ song: one.song, linesEs: one.linesEs });
+      const box = $(".radio-song", view);
+      box.innerHTML = "";
+      box.appendChild(songs.el);
+      const mine = songs;
+      songs.ready.then(() => { if (songs === mine && view.isConnected) mine.play(); });
+    }
   });
 }
 

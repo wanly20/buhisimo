@@ -260,8 +260,8 @@ export function radio(step, api) {
 // ------------------------------------------------------------ transcript (listen again)
 export function transcript(step, api) {
   const ep = episodeById(step.episode);
-  const NAME = { buho: "Buhísimo", matilda: "Matilda", max: "Max", song: "Song", caller: "Caller" };
-  const ART = { buho: "owl-explaining", matilda: "matilda", max: "max" };
+  const NAME = { buho: "Buhísimo", matilda: "Matilda", max: "Max", valentina: "Valentina", samuel: "Samuel", song: "Song", caller: "Caller" };
+  const ART = { buho: "owl-explaining", matilda: "matilda", max: "max", valentina: "valentina", samuel: "samuel" };
   const node = el(`
     <div class="ex ex-transcript">
       ${head(esc(step.titleEn || "Listen again with the words"), `<span class="badge badge--magenta">${icon("radio", 16, 2.75)} Radio Búho</span>`)}

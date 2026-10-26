@@ -7,8 +7,9 @@ import { tts, stt, fold, speechMatches } from "./speech.js";
 import { sfx } from "./sound.js";
 import { store } from "./store.js";
 import { mapFrame, wireMapPins, wireMapQuiz, placeName, PLACES } from "./worldmap.js";
-import { timeScene, face, faceEn } from "./art.js";
+import { timeScene, face, faceEn, digitArt, idCard } from "./art.js";
 import { EXERCISES_1_2 } from "./exercises-1-2.js";
+import { EXERCISES_1_3 } from "./exercises-1-3.js";
 
 const MAX_RETRIES = 2;
 
@@ -330,15 +331,19 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings, onGra
 }
 
 // =================================================================== exercises
-// Unit 1.2 adds letters, letterpick, spell, clip, radio and transcript (js/exercises-1-2.js).
+// Unit 1.2 adds letters, letterpick, spell, clip, radio and transcript (js/exercises-1-2.js); Unit 1.3
+// numbers, songs, Number Invaders and the ID card (js/exercises-1-3.js).
 const EXERCISES = { intro, pick: pickMeaning, listen, tiles, type: typeIt, match, speak,
-  choose, gap, sort, maptap, mapstudy, table, storyintro, storyline, passport, ...EXERCISES_1_2 };
+  choose, gap, sort, maptap, mapstudy, table, storyintro, storyline, passport, ...EXERCISES_1_2, ...EXERCISES_1_3 };
 
 /** Which recorded voice role says a line by this character. */
 export function roleOf(who = "") {
   if (who === "owl" || who === "buho" || who.startsWith("owl")) return "buho";
   if (who.startsWith("matilda")) return "matilda";
   if (who.startsWith("max")) return "max";
+  // Valentina and Samuel (Unit 1.3): their own voices once recorded (co_f_teen, co_m_teen), María / Raúl until then.
+  if (who.startsWith("valentina")) return "valentina";
+  if (who.startsWith("samuel")) return "samuel";
   if (who === "traveller") return "raul";
   // Radio Búho callers: each call in its caller's own voice (María / Raúl where it has none).
   if (who === "caller") return "caller";
@@ -352,6 +357,8 @@ export function head(title, badge = "") {
 /** Picture for a step: a character, a noun picture, or a locator map. */
 function artHtml(step, cls = "intro-char") {
   if (step.map) return `<div class="intro-map">${mapFrame({ focus: step.map, aspect: 1, pins: false })}</div>`;
+  if (step.idcard) return idCard(step.idcard);
+  if (step.digit != null) return digitArt(step.digit, { label: String(step.digit) });
   if (step.time) return timeScene(step.time);
   if (step.face) return face(step.face, { label: faceEn(step.face) });
   if (step.art) return `<img class="${cls} intro-noun" src="assets/${step.art}.webp" alt="" draggable="false">`;
@@ -393,7 +400,7 @@ function intro(step, api) {
     : artHtml(step);
   const badge = step.badgeEn ? `${icon("sparkles", 16, 2.75)} ${esc(step.badgeEn)}` : `${icon("sparkles", 16, 2.75)} New ${isPhrase ? "phrase" : step.map && step.map !== "hispanic" && !/^(el|la|las|los) /.test(step.es) ? "place" : "word"}`;
   const node = el(`
-    <div class="ex ex-intro ${step.map ? "ex-intro--map" : ""} ${step.time ? "ex-intro--scene" : ""} ${step.face ? "ex-intro--face" : ""}">
+    <div class="ex ex-intro ${step.map ? "ex-intro--map" : ""} ${step.time || step.idcard ? "ex-intro--scene" : ""} ${step.idcard ? "ex-intro--card" : ""} ${step.digit != null ? "ex-intro--digit" : ""} ${step.face ? "ex-intro--face" : ""}">
       ${head("", `<span class="badge">${badge}</span>`)}
       ${step.contextEn ? `<p class="context">${rich(step.contextEn)}</p>` : ""}
       <div class="intro-card">
@@ -1021,7 +1028,7 @@ function choose(step, api) {
       <button class="press option pic-option" data-oi="${k}" aria-pressed="false" aria-label="${esc(faceEn(f))}">
         <span class="face"><span class="key" aria-hidden="true">${k + 1}</span>${face(f)}</span>
       </button>`).join("")}</div>`
-    : picture ? `<div class="pic-options" role="group">${step.optionsArt.map((o, k) => `
+    : picture ? `<div class="pic-options pic-options--n${step.optionsArt.length}" role="group">${step.optionsArt.map((o, k) => `
       <button class="press option pic-option" data-oi="${k}" aria-pressed="false" aria-label="${esc(o.labelEn)}">
         <span class="face"><span class="key" aria-hidden="true">${k + 1}</span><img src="assets/${o.art}.webp" alt="" draggable="false"></span>
       </button>`).join("")}</div>` : "";
@@ -1042,7 +1049,7 @@ function choose(step, api) {
 // ------------------------------------------------------------ gap fill
 const reEsc = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 function gapParts(sentence, word) {
-  const m = new RegExp(`(^|[\\s¿¡—])(${reEsc(word)})(?=[\\s.,?!…]|$)`, "u").exec(sentence);
+  const m = new RegExp(`(^|[\\s¿¡—])(${reEsc(word)})(?=[\\s.,:;?!…]|$)`, "u").exec(sentence);
   if (!m) throw new Error(`gap: "${word}" is not in "${sentence}"`);
   const at = m.index + m[1].length;
   return [sentence.slice(0, at), sentence.slice(at + word.length)];
@@ -1225,7 +1232,7 @@ function table(step, api) {
 }
 
 // ------------------------------------------------------------ story
-const STORY_NAME = { buho: "Buhísimo", matilda: "Matilda", max: "Max" };
+const STORY_NAME = { buho: "Buhísimo", matilda: "Matilda", max: "Max", valentina: "Valentina", samuel: "Samuel" };
 function storyintro(step, api) {
   const st = api.lesson.story;
   const node = el(`

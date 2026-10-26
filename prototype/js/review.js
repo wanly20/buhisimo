@@ -10,7 +10,8 @@ import { hasAudio } from "./lesson.js";
 // ------------------------------------------------------------------ item matching
 const toks = (s) => String(s).normalize("NFC").toLowerCase().replace(/[¡!¿?.,;:"“”'‘’…—–()]/g, " ").split(/\s+/).filter(Boolean);
 // Letter groups (1.2) are matched only in spelling lines: "de" is a letter there, a word elsewhere.
-const FORMS = ITEMS.map((it) => ({ id: it.id, spellOnly: !!it.letters, forms: (it.letters ? it.letters.map((x) => x[1]) : it.formsEs || [it.es]).map(toks) }));
+// matchForms: forms found inside sentences but never shown alone (años, always after a number: 1.3).
+const FORMS = ITEMS.map((it) => ({ id: it.id, spellOnly: !!it.letters, forms: [...(it.letters ? it.letters.map((x) => x[1]) : it.formsEs || [it.es]), ...(it.matchForms || [])].map(toks) }));
 const isSpelling = (text) => /se escribe|alfabeto/i.test(text);
 /** A letter group's letters (A E I O U) and names (a, e, i, o, u). */
 export const lettersOf = (it) => it.letters.map((x) => x[0]).join(" ");
@@ -44,6 +45,10 @@ function gradedTexts(step) {
     case "speak": return [step.es];
     case "letterpick": return [step.sayEs];
     case "spell": return [step.answerEs];
+    // Unit 1.3
+    case "numpick": case "dictation": case "count": return [step.sayEs];
+    case "numtype": return [step.answerEs];
+    case "invaders": return step.rounds.map((r) => r.sayEs);
     default: return [];
   }
 }
@@ -90,8 +95,20 @@ function letterExercise(it, pool, k) {
   return [{ id: `r-letter-${it.id}-${k}`, type: "letterpick", spell: true, sayEs: name, letters, answer: letters.indexOf(letter) }];
 }
 
+// Numbers (1.3): hear or read the word, tap the digit (with its look-alikes), or write the word for the digit.
+function numberExercises(it, k) {
+  const n = it.num, near = [n + 1, n - 1, n + 10, n - 10, n % 10, 10 + (n % 10), 20 + (n % 10)];
+  const others = shuffle([...new Set(near)].filter((x) => x !== n && x >= 0 && x <= 31 && ITEMS.some((o) => o.num === x && store.get().items[o.id]))).slice(0, 3);
+  const nums = shuffle([n, ...others]);
+  return [
+    { id: `r-num-${it.id}-${k}`, type: "numpick", sayEs: it.es, nums, answer: nums.indexOf(n), en: it.en },
+    { id: `r-numtype-${it.id}-${k}`, type: "numtype", digit: n, answerEs: it.es, en: it.en },
+  ];
+}
+
 function exercisesFor(it, pool, bank, k) {
   if (it.letters) return letterExercise(it, pool, k);
+  if (it.num != null) return numberExercises(it, k);
   const others = pool.filter((o) => o.id !== it.id && !o.letters);
   const allOthers = ITEMS.filter((o) => o.id !== it.id && !o.letters);
   const distract = (n) => pickN(others.length >= n ? others : allOthers, n, []);

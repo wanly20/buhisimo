@@ -14,8 +14,8 @@ export const unitsTextbookTitlesEs = {
 
 // Each map section: colour theme + nodes. kind decides the icon. A section is a whole
 // unit, or (with `unit` and `titleEs`) one part of a long unit.
-// Units 1.1 and 1.2 are fully playable (unit-1-1.js: 11 lessons, unit-1-2.js: 13 lessons;
-// docs/content_plan_1.1-1.6.md §4–5); every node of 1.3–1.6 still says "Coming soon".
+// Units 1.1, 1.2 and 1.3 are fully playable (unit-1-1.js: 11 lessons, unit-1-2.js: 13, unit-1-3.js: 20;
+// docs/content_plan_1.1-1.6.md §4–6); every node of 1.4–1.6 still says "Coming soon".
 export const units = [
   { id: "1.1", theme: "turquoise", subtitleEn: "Countries and where people are from",
     nodes: [
@@ -50,19 +50,31 @@ export const units = [
   // Unit 1.3 has 20 lessons, so the map shows it as two sections (decision 2026-10-20,
   // content/lessons_1.1-1.6.json "parts"; tools/check_vocab.mjs checks the ranges and the
   // titles, and prototype/tools/check_vocab.mjs checks these titles match the manifest).
-  // The CSV section stays 1.3. Node ids are the real lesson numbers (placeholders for now).
+  // The CSV section stays 1.3. Node ids are the real lesson numbers (L1–L20 straight through).
   { id: "1.3a", unit: "1.3", theme: "emerald", titleEs: "¿Cómo te llamas?", subtitleEn: "Names, numbers 0–20 and age",
     nodes: [
+      { id: "1.3-1", kind: "repaso", labelEn: "Review" },
       { id: "1.3-2", kind: "lesson", labelEn: "Lesson 2" },
+      { id: "1.3-3", kind: "practice", labelEn: "Conjugation" },
       { id: "1.3-4", kind: "lesson", labelEn: "Lesson 4" },
+      { id: "1.3-5", kind: "lesson", labelEn: "Lesson 5" },
       { id: "1.3-6", kind: "game", labelEn: "Game" },
+      { id: "1.3-7", kind: "lesson", labelEn: "Lesson 7" },
+      { id: "1.3-8", kind: "lesson", labelEn: "Lesson 8" },
+      { id: "1.3-9", kind: "lesson", labelEn: "Lesson 9" },
+      { id: "1.3-10", kind: "practice", labelEn: "Practice" },
       { id: "1.3-11", kind: "check", labelEn: "Section check" },
     ] },
   { id: "1.3b", unit: "1.3", theme: "emerald", titleEs: "Mi carnet de identidad", subtitleEn: "Numbers 21–31 and the ID card",
     nodes: [
+      { id: "1.3-12", kind: "repaso", labelEn: "Review" },
       { id: "1.3-13", kind: "lesson", labelEn: "Lesson 13" },
-      { id: "1.3-15", kind: "listen", labelEn: "Listen" },
+      { id: "1.3-14", kind: "lesson", labelEn: "Lesson 14" },
+      { id: "1.3-15", kind: "listen", labelEn: "Radio Búho" },
+      { id: "1.3-16", kind: "lesson", labelEn: "Lesson 16" },
+      { id: "1.3-17", kind: "lesson", labelEn: "Lesson 17" },
       { id: "1.3-18", kind: "story", labelEn: "Story" },
+      { id: "1.3-19", kind: "listen", labelEn: "Radio Búho" },
       { id: "1.3-20", kind: "check", labelEn: "Unit check" },
     ] },
   { id: "1.4", theme: "terracotta", subtitleEn: "Days, months and birthdays",

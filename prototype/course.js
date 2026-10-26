@@ -3,10 +3,12 @@
 // one content file (unit-1-x.js) plus one line here.
 import * as U11 from "./unit-1-1.js";
 import * as U12 from "./unit-1-2.js";
+import * as U13 from "./unit-1-3.js";
 
 export const UNITS = [
   { id: "1.1", lessons: U11.LESSONS, items: U11.ITEMS.map((it) => ({ unit: "1.1", ...it })), radio: [] },
   { id: "1.2", lessons: U12.LESSONS, items: U12.ITEMS, radio: U12.RADIO },
+  { id: "1.3", lessons: U13.LESSONS, items: U13.ITEMS, radio: U13.RADIO },
 ];
 
 /** Every lesson in order (1.1-1 … 1.1-11, 1.2-1 …): lessons unlock one after the other. */

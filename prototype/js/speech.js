@@ -36,7 +36,9 @@ export const VOICE_OPTIONS = {
   buho: [{ id: "buho_profesor", label: "Profesor" }, { id: "buho_abuelo", label: "Abuelo" }],
 };
 const FALLBACK_ROLES = { maria: ["maria", "raul"], raul: ["raul", "maria"], max: ["max", "raul", "maria"], matilda: ["matilda", "maria", "raul"],
-  caller: ["caller", "maria", "raul"], buho: ["buho", "maria", "raul"] };
+  caller: ["caller", "maria", "raul"], buho: ["buho", "maria", "raul"],
+  // Unit 1.3: Valentina (co_f_teen) and Samuel (co_m_teen) have no recordings yet: María / Raúl say their lines meanwhile.
+  valentina: ["valentina", "maria", "raul"], samuel: ["samuel", "raul", "maria"] };
 
 // audio/manifest.json is written by lesson_audio.py; audio/manifest-extra.json holds
 // clips copied from the voice-design test (tools/import_design_clips.py); audio/manifest-l2.json
@@ -60,6 +62,8 @@ function voiceFor(role) {
   if (role === "raul") return "raul";
   if (role === "max") return "max";
   if (role === "matilda") return "matilda";
+  if (role === "valentina") return "valentina";
+  if (role === "samuel") return "samuel";
   if (role === "buho") return VOICE_OPTIONS.buho.some((v) => v.id === s.voiceBuho) ? s.voiceBuho : VOICE_OPTIONS.buho[0].id;
   return VOICE_OPTIONS.maria.some((v) => v.id === s.voiceMaria) ? s.voiceMaria : VOICE_OPTIONS.maria[0].id;
 }

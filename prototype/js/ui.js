@@ -52,6 +52,8 @@ export const CHAR_ALT = {
   matilda: "Matilda the koala",
   max: "Max the kangaroo",
   family: "The Restrepo family",
+  valentina: "Valentina Restrepo",
+  samuel: "Samuel Restrepo",
 };
 export function charImg(name, cls = "char") {
   return `<img class="${cls}" src="assets/${name}.webp" alt="${esc(CHAR_ALT[name] || "")}" draggable="false">`;

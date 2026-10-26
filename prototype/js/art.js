@@ -67,3 +67,46 @@ export function face(kind, { label = "" } = {}) {
     <circle cx="50" cy="54" r="38" fill="${f.fill}"/><path d="M20 66 a38 38 0 0 0 60 0 a40 40 0 0 1 -60 0z" fill="#000" opacity="0.06"/>
     ${eyes}${mouth}${extra}</svg>`;
 }
+
+// =================================================================== Unit 1.3: numbers and the ID card
+// Drawn in code like the scenes and faces above: no new image files.
+
+const DIGIT_COLOURS = ["#14a39e", "#d6247a", "#e19c08", "#17a35a", "#d9643a"];
+/** A big number tile (number cards, intro cards, the countdown). Decorative: the step text says the number. */
+export function digitArt(n, { label = "" } = {}) {
+  const c = DIGIT_COLOURS[Math.abs(n) % DIGIT_COLOURS.length];
+  const s = String(n);
+  return `<svg class="art-digit" viewBox="0 0 200 160" ${label ? `role="img" aria-label="${label}"` : 'aria-hidden="true"'}>
+    <rect x="6" y="10" width="188" height="144" rx="28" fill="${c}" opacity="0.16"/>
+    <rect x="16" y="4" width="168" height="140" rx="26" fill="${c}"/>
+    <text x="100" y="${s.length > 1 ? 112 : 116}" text-anchor="middle" font-size="${s.length > 1 ? 104 : 116}" font-weight="700" fill="#fff9f0" font-family="Fredoka, system-ui, sans-serif">${s}</text>
+  </svg>`;
+}
+
+const escA = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+/**
+ * The ID card («el carnet de identidad»), in the colours of the Colombian flag. Each field is
+ * labelled with a question (¿El nombre?), never a bare noun (content plan §6, P7). A field's value
+ * is Spanish text (valueEs), a number (value), or HTML to fill in (slot, used by the fill exercise).
+ *   idCard({ photo: "samuel", fields: [{ qEs: "¿El nombre?", valueEs: "Samuel" }], number: "1 094 233 017" })
+ */
+export function idCard({ photo = "", fields = [], number = "", highlight = -1, cls = "" } = {}) {
+  return `
+  <div class="idcard ${cls}" role="group" aria-label="ID card">
+    <div class="idcard__flag" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="idcard__body">
+      <div class="idcard__photo">${photo ? `<img src="assets/${escA(photo)}.webp" alt="" draggable="false">` : ""}</div>
+      <dl class="idcard__fields">
+        ${fields.map((f, k) => `
+          <div class="idcard__field ${k === highlight ? "is-hl" : ""}" data-field="${k}">
+            <dt lang="es">${escA(f.qEs)}</dt>
+            <dd>${f.slot ?? (f.valueEs != null ? `<span lang="es" class="es">${escA(f.valueEs)}</span>` : f.value != null ? `<span class="idcard__num">${escA(f.value)}</span>` : `<span class="idcard__blank"></span>`)}</dd>
+          </div>`).join("")}
+      </dl>
+    </div>
+    <div class="idcard__foot" aria-hidden="true">
+      <svg viewBox="0 0 60 30" class="idcard__sign"><path d="M3 22 q8 -18 14 -4 t12 -2 q4 -10 10 2 t18 -6" fill="none" stroke="#2c2118" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <span class="idcard__no">${escA(number)}</span>
+    </div>
+  </div>`;
+}

@@ -7,23 +7,24 @@
 // Updates: bump VERSION (and APP_VERSION in js/app.js) on every release. The new worker
 // installs in the background, then the page tells it to take over (SKIP_WAITING) as
 // soon as no lesson is running (js/app.js); old caches are deleted on activate.
-const VERSION = "2026-10-24.audio3";
+const VERSION = "2026-10-26.u13";
 const SHELL = `buhisimo-shell-${VERSION}`;
 const MEDIA = `buhisimo-media-${VERSION}`;
 const RUNTIME = "buhisimo-runtime";
 
 const CODE = [
   "./", "index.html", "manifest.webmanifest",
-  "css/tokens.css", "css/base.css", "css/components.css", "css/app.css", "css/layout.css", "css/unit.css", "css/unit-1-2.css",
+  "css/tokens.css", "css/base.css", "css/components.css", "css/app.css", "css/layout.css", "css/unit.css", "css/unit-1-2.css", "css/unit-1-3.css",
   "js/app.js", "js/fonts.js", "js/icons.js", "js/lesson.js", "js/radio.js", "js/review.js", "js/shell.js",
-  "js/sound.js", "js/speech.js", "js/store.js", "js/ui.js", "js/worldmap.js", "js/worldmap-data.js", "js/art.js", "js/exercises-1-2.js",
-  "lesson-1-1.js", "unit-1-1.js", "unit-1-2.js", "course.js", "path-data.js", "audio/TODO_songs.json",
+  "js/sound.js", "js/speech.js", "js/store.js", "js/ui.js", "js/worldmap.js", "js/worldmap-data.js", "js/art.js", "js/exercises-1-2.js", "js/exercises-1-3.js", "js/numbers.js",
+  "lesson-1-1.js", "unit-1-1.js", "unit-1-2.js", "unit-1-3.js", "course.js", "path-data.js", "audio/TODO_songs.json", "audio/songs/clips.json", "audio/songs/songs.json",
   "audio/manifest.json", "audio/manifest-extra.json", "audio/manifest-l2.json", "audio/manifest-max.json", "audio/manifest-matilda.json", "audio/manifest-callers.json", "radio/episodes.json", "radio/demo-1-1.json",
 ];
 const PICTURES = [
   "assets/map-background.webp", "assets/salento-street.webp", "assets/family.webp",
   "assets/owl-explaining.webp", "assets/owl-celebrating.webp", "assets/owl-encouraging.webp", "assets/owl-thinking.webp",
   "assets/matilda.webp", "assets/matilda-wave.webp", "assets/matilda-surprised.webp", "assets/matilda-celebrate.webp", "assets/matilda-thinking.webp",
+  "assets/valentina.webp", "assets/samuel.webp",
   "assets/max.webp", "assets/max-wave.webp", "assets/max-jump.webp", "assets/max-surprised.webp", "assets/max-celebrate.webp", "assets/max-thinking.webp",
   "assets/noun-mapa.webp", "assets/noun-mundo.webp", "assets/noun-capital.webp", "assets/noun-monumento.webp",
   "assets/flags/au.svg", "assets/flags/co.svg", "assets/flags/es.svg",
@@ -45,6 +46,11 @@ self.addEventListener("install", (event) => {
         for (const byVoice of Object.values(data.clips || {})) for (const p of Object.values(byVoice)) clips.add(p);
       } catch { /* a missing manifest just means fewer clips offline */ }
     }
+    // The songs: the alphabet and number clips that exist (TODO_songs.json) and the whole number songs (songs.json).
+    try {
+      for (const c of (await (await shell.match("audio/TODO_songs.json")).json()).clips || []) if (c.exists) clips.add(c.file);
+      for (const s of Object.values((await (await shell.match("audio/songs/songs.json")).json()).songs || {})) clips.add(s.file);
+    } catch { /* no songs offline: they still play online */ }
     await Promise.all([...clips].map((p) => media.add(p).catch(() => {})));
   })());
 });
