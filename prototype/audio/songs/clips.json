@@ -1,5 +1,5 @@
 {
- "note": "\u00abEl alfabeto\u00bb clips (Juan's decision of 24 Oct 2026). A1\u2013A4 cut from alfabeto_familias, A5 = the first time through alfabeto (ACE-Step 1.5 turbo, Version A style); A0/A7 Buh\u00edsimo (buho_profesor) with the jingle; A6 the spelling-show calls. Made by video_generation/scripts/alphabet_songs.py clips.",
+ "note": "\u00abEl alfabeto\u00bb clips (Juan's decision of 24 Oct 2026). A1\u2013A4 cut from alfabeto_familias, A5 = the first time through alfabeto (ACE-Step 1.5 turbo, Version A style); A0/A7 Buh\u00edsimo (buho_profesor) with the jingle; A6 the spelling-show calls. Made by video_generation/scripts/alphabet_songs.py clips. N1\u2013N6 (Unit 1.3) are cut from the approved number songs by prototype/tools/make_number_songs.py.",
  "clips": {
   "A1": {
    "src": "alfabeto_familias_s1",
@@ -292,6 +292,238 @@
     "exact": 0,
     "n": 5
    }
+  },
+  "N1": {
+   "src": "numeros_1_10_s1",
+   "seconds": 7.61,
+   "lines": [
+    "Uno, dos, tres,",
+    "cuatro, cinco: \u00a1muy bien!"
+   ],
+   "words": [
+    [
+     0.35,
+     3.23
+    ],
+    [
+     3.23,
+     3.87
+    ],
+    [
+     3.87,
+     4.53
+    ],
+    [
+     4.57,
+     5.19
+    ],
+    [
+     5.19,
+     6.19
+    ],
+    [
+     6.19,
+     6.39
+    ],
+    [
+     6.39,
+     7.01
+    ]
+   ]
+  },
+  "N2": {
+   "src": "numeros_1_10_s1",
+   "seconds": 5.27,
+   "lines": [
+    "Seis, siete, ocho,",
+    "nueve, diez: \u00a1fenomenal!"
+   ],
+   "words": [
+    [
+     0.35,
+     0.95
+    ],
+    [
+     0.95,
+     1.67
+    ],
+    [
+     1.67,
+     2.23
+    ],
+    [
+     2.27,
+     2.89
+    ],
+    [
+     2.89,
+     3.27
+    ],
+    [
+     3.27,
+     4.67
+    ]
+   ]
+  },
+  "N3": {
+   "src": "numeros_10_20_s2",
+   "seconds": 6.77,
+   "lines": [
+    "Diez, once, doce,",
+    "trece, catorce, quince: \u00a1muy bien!"
+   ],
+   "words": [
+    [
+     0.35,
+     0.65
+    ],
+    [
+     1.29,
+     2.11
+    ],
+    [
+     2.13,
+     2.69
+    ],
+    [
+     2.83,
+     3.39
+    ],
+    [
+     3.61,
+     4.67
+    ],
+    [
+     4.73,
+     5.29
+    ],
+    [
+     5.29,
+     5.45
+    ],
+    [
+     5.45,
+     6.17
+    ]
+   ]
+  },
+  "N4": {
+   "src": "numeros_10_20_s2",
+   "seconds": 8.63,
+   "lines": [
+    "Diecis\u00e9is, diecisiete,",
+    "dieciocho, diecinueve, veinte: \u00a1fenomenal!"
+   ],
+   "words": [
+    [
+     0.35,
+     1.59
+    ],
+    [
+     1.59,
+     2.79
+    ],
+    [
+     2.97,
+     4.23
+    ],
+    [
+     4.23,
+     5.49
+    ],
+    [
+     5.49,
+     6.05
+    ],
+    [
+     6.77,
+     8.03
+    ]
+   ]
+  },
+  "N5": {
+   "src": "numeros_20_31_s2",
+   "seconds": 10.35,
+   "lines": [
+    "Veinte, veintiuno, veintid\u00f3s,",
+    "veintitr\u00e9s, veinticuatro, veinticinco: \u00a1muy bien!"
+   ],
+   "words": [
+    [
+     0.35,
+     0.95
+    ],
+    [
+     0.95,
+     2.27
+    ],
+    [
+     2.27,
+     4.85
+    ],
+    [
+     4.95,
+     6.21
+    ],
+    [
+     6.21,
+     7.53
+    ],
+    [
+     7.53,
+     9.07
+    ],
+    [
+     9.07,
+     9.25
+    ],
+    [
+     9.25,
+     9.75
+    ]
+   ]
+  },
+  "N6": {
+   "src": "numeros_20_31_s2",
+   "seconds": 9.75,
+   "lines": [
+    "Veintis\u00e9is, veintisiete, veintiocho,",
+    "veintinueve, treinta\u2026 \u00a1treinta y uno!"
+   ],
+   "words": [
+    [
+     0.35,
+     1.43
+    ],
+    [
+     1.43,
+     2.75
+    ],
+    [
+     2.75,
+     4.77
+    ],
+    [
+     5.39,
+     7.07
+    ],
+    [
+     7.07,
+     7.99
+    ],
+    [
+     7.99,
+     8.37
+    ],
+    [
+     8.37,
+     8.73
+    ],
+    [
+     8.73,
+     9.15
+    ]
+   ]
   }
  }
 }
