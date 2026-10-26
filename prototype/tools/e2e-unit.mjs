@@ -904,17 +904,23 @@ if (RUN("V")) {
         p.destroy(); p.el.remove();
         return { now, playing };
       };
-      const soon = songPlayer({ song: "numeros_dos_doce_veintidos", linesEs: ["Uno, dos, tres,"] });
+      // Every 1.3 song is chosen now (Dos, doce, veintidós = v8h s1, 26 Oct 2026): a song with no file (a 2.1 one) shows the placeholder.
+      const soon = songPlayer({ song: "numeros_sesenta_setenta", linesEs: ["Seis, dieciséis, sesenta."] });
       document.body.appendChild(soon.el);
       const rec = await soon.ready;
       const soonText = soon.el.textContent;
       soon.destroy(); soon.el.remove();
-      return { words: await at("numeros_1_10", false, 2, 1), digits: await at("numeros_20_31", true, 3, 2), digits2: await at("numeros_uno_once", true, 0, 3), soon: { rec, soonText } };
+      const dos = songPlayer({ song: "numeros_dos_doce_veintidos", linesEs: ["Uno, dos, tres,"] });
+      document.body.appendChild(dos.el);
+      const dosRec = await dos.ready;
+      dos.destroy(); dos.el.remove();
+      return { words: await at("numeros_1_10", false, 2, 1), digits: await at("numeros_20_31", true, 3, 2), digits2: await at("numeros_uno_once", true, 0, 3), soon: { rec, soonText }, dosRec };
     });
     ok(karaoke.words.playing && karaoke.words.now.join() === "siete,", `«1 to 10» plays and lights up “siete,” at its sung time (${JSON.stringify(karaoke.words)})`);
     ok(karaoke.digits.playing && karaoke.digits.now.join() === "¡31!", `«20 to 31» con números lights up ¡31! for «¡treinta y uno!» (${JSON.stringify(karaoke.digits)})`);
     ok(karaoke.digits2.now.join() === "12.", `«Uno, once · Dos, doce» con números shows doce as 12 (${JSON.stringify(karaoke.digits2)})`);
-    ok(karaoke.soon.rec === false && /Song coming soon/.test(karaoke.soon.soonText), "«Dos, doce, veintidós» (not chosen yet) says “Song coming soon”");
+    ok(karaoke.soon.rec === false && /Song coming soon/.test(karaoke.soon.soonText), "a song with no file yet (2.1 «Sesenta, setenta») says “Song coming soon”");
+    ok(karaoke.dosRec === true, "«Dos, doce, veintidós» (Juan's pick v8h s1) has its recording");
     // The Radio tab: the 1.3 episodes, with the number songs.
     await page.goto(BASE + "index.html#/radio");
     await wait(page, 1500);

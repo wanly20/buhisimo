@@ -1,5 +1,5 @@
 {
- "note": "Unit 1.1 and 1.2 lines from audio/TODO_lines.json (Oct 2026), recorded with Qwen3-TTS (x-vector clone) from the same reference wavs and with the same export filter as manifest.json (lesson_audio.py, record_todo_audio.py, u12_audio.py). Merged with the other manifests by js/speech.js.",
+ "note": "Unit 1.1, 1.2 and 1.3 lines from audio/TODO_lines.json (Oct 2026), recorded with Qwen3-TTS (x-vector clone) from the same reference wavs and with the same export filter as manifest.json (lesson_audio.py, record_todo_audio.py, u12_audio.py, r3_audio.py). Spelt lines (\"-slow\" files) are built from letter names recorded one by one and joined with the same 0.5 s gap (r3_audio.py, Juan 26 Oct 2026). «E, ese, pe, a, eñe, a.» is María Paisa's in every voice (Juan). Merged with the other manifests by js/speech.js.",
  "clips": {
   "¡Cocora es famoso! El destino es Cocora.": {
    "buho_abuelo": "audio/buho_abuelo/cocora-es-famoso-el-destino-es-cocora-a571a2.mp3",
@@ -664,57 +664,57 @@
    "raul": "audio/raul/como-estas-muy-bien-gracias-703182.mp3"
   },
   "¿Cómo se escribe «ella»? — E, ele, ele, a.": {
-   "buho_abuelo": "audio/buho_abuelo/como-se-escribe-ella-e-ele-ele-a-02aec6.mp3",
-   "buho_profesor": "audio/buho_profesor/como-se-escribe-ella-e-ele-ele-a-02aec6.mp3",
-   "maria_bogota": "audio/maria_bogota/como-se-escribe-ella-e-ele-ele-a-02aec6.mp3",
-   "maria_paisa": "audio/maria_paisa/como-se-escribe-ella-e-ele-ele-a-02aec6.mp3",
-   "raul": "audio/raul/como-se-escribe-ella-e-ele-ele-a-02aec6.mp3"
+   "buho_abuelo": "audio/buho_abuelo/como-se-escribe-ella-e-ele-ele-a-02aec6-slow.mp3",
+   "buho_profesor": "audio/buho_profesor/como-se-escribe-ella-e-ele-ele-a-02aec6-slow.mp3",
+   "maria_bogota": "audio/maria_bogota/como-se-escribe-ella-e-ele-ele-a-02aec6-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/como-se-escribe-ella-e-ele-ele-a-02aec6-slow.mp3",
+   "raul": "audio/raul/como-se-escribe-ella-e-ele-ele-a-02aec6-slow.mp3"
   },
   "¿Cómo se escribe «escribir»? — E, ese, ce, erre, i, be, i, erre.": {
-   "maria_bogota": "audio/maria_bogota/como-se-escribe-escribir-e-ese-ce-erre-i-15f17f.mp3",
-   "maria_paisa": "audio/maria_paisa/como-se-escribe-escribir-e-ese-ce-erre-i-15f17f.mp3",
-   "raul": "audio/raul/como-se-escribe-escribir-e-ese-ce-erre-i-15f17f.mp3"
+   "maria_bogota": "audio/maria_bogota/como-se-escribe-escribir-e-ese-ce-erre-i-15f17f-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/como-se-escribe-escribir-e-ese-ce-erre-i-15f17f-slow.mp3",
+   "raul": "audio/raul/como-se-escribe-escribir-e-ese-ce-erre-i-15f17f-slow.mp3"
   },
   "¿Cómo se escribe «hola»? — Hache, o, ele, a.": {
-   "buho_abuelo": "audio/buho_abuelo/como-se-escribe-hola-hache-o-ele-a-5ba714.mp3",
-   "buho_profesor": "audio/buho_profesor/como-se-escribe-hola-hache-o-ele-a-5ba714.mp3",
-   "maria_bogota": "audio/maria_bogota/como-se-escribe-hola-hache-o-ele-a-5ba714.mp3",
-   "maria_paisa": "audio/maria_paisa/como-se-escribe-hola-hache-o-ele-a-5ba714.mp3",
-   "raul": "audio/raul/como-se-escribe-hola-hache-o-ele-a-5ba714.mp3"
+   "buho_abuelo": "audio/buho_abuelo/como-se-escribe-hola-hache-o-ele-a-5ba714-slow.mp3",
+   "buho_profesor": "audio/buho_profesor/como-se-escribe-hola-hache-o-ele-a-5ba714-slow.mp3",
+   "maria_bogota": "audio/maria_bogota/como-se-escribe-hola-hache-o-ele-a-5ba714-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/como-se-escribe-hola-hache-o-ele-a-5ba714-slow.mp3",
+   "raul": "audio/raul/como-se-escribe-hola-hache-o-ele-a-5ba714-slow.mp3"
   },
   "¿Cómo se escribe «llamarse»? — Ele, ele, a, eme, a, erre, ese, e.": {
-   "maria_bogota": "audio/maria_bogota/como-se-escribe-llamarse-ele-ele-a-eme-a-f7ce10.mp3",
-   "maria_paisa": "audio/maria_paisa/como-se-escribe-llamarse-ele-ele-a-eme-a-f7ce10.mp3",
-   "raul": "audio/raul/como-se-escribe-llamarse-ele-ele-a-eme-a-f7ce10.mp3"
+   "maria_bogota": "audio/maria_bogota/como-se-escribe-llamarse-ele-ele-a-eme-a-f7ce10-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/como-se-escribe-llamarse-ele-ele-a-eme-a-f7ce10-slow.mp3",
+   "raul": "audio/raul/como-se-escribe-llamarse-ele-ele-a-eme-a-f7ce10-slow.mp3"
   },
   "¿Cómo se escribe «mal»? — Eme, a, ele.": {
-   "maria_bogota": "audio/maria_bogota/como-se-escribe-mal-eme-a-ele-931803.mp3",
-   "maria_paisa": "audio/maria_paisa/como-se-escribe-mal-eme-a-ele-931803.mp3",
-   "raul": "audio/raul/como-se-escribe-mal-eme-a-ele-931803.mp3"
+   "maria_bogota": "audio/maria_bogota/como-se-escribe-mal-eme-a-ele-931803-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/como-se-escribe-mal-eme-a-ele-931803-slow.mp3",
+   "raul": "audio/raul/como-se-escribe-mal-eme-a-ele-931803-slow.mp3"
   },
   "¿Cómo se escribe «soy»? — Ese, o, ye.": {
-   "buho_abuelo": "audio/buho_abuelo/como-se-escribe-soy-ese-o-ye-b829b8.mp3",
-   "buho_profesor": "audio/buho_profesor/como-se-escribe-soy-ese-o-ye-b829b8.mp3",
-   "maria_bogota": "audio/maria_bogota/como-se-escribe-soy-ese-o-ye-b829b8.mp3",
-   "maria_paisa": "audio/maria_paisa/como-se-escribe-soy-ese-o-ye-b829b8.mp3",
-   "raul": "audio/raul/como-se-escribe-soy-ese-o-ye-b829b8.mp3"
+   "buho_abuelo": "audio/buho_abuelo/como-se-escribe-soy-ese-o-ye-b829b8-slow.mp3",
+   "buho_profesor": "audio/buho_profesor/como-se-escribe-soy-ese-o-ye-b829b8-slow.mp3",
+   "maria_bogota": "audio/maria_bogota/como-se-escribe-soy-ese-o-ye-b829b8-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/como-se-escribe-soy-ese-o-ye-b829b8-slow.mp3",
+   "raul": "audio/raul/como-se-escribe-soy-ese-o-ye-b829b8-slow.mp3"
   },
   "¿Cómo se escribe Cuba? — Ce, u, be, a.": {
-   "buho_abuelo": "audio/buho_abuelo/como-se-escribe-cuba-ce-u-be-a-4835a2.mp3",
-   "buho_profesor": "audio/buho_profesor/como-se-escribe-cuba-ce-u-be-a-4835a2.mp3",
-   "maria_bogota": "audio/maria_bogota/como-se-escribe-cuba-ce-u-be-a-4835a2.mp3",
-   "maria_paisa": "audio/maria_paisa/como-se-escribe-cuba-ce-u-be-a-4835a2.mp3",
-   "raul": "audio/raul/como-se-escribe-cuba-ce-u-be-a-4835a2.mp3"
+   "buho_abuelo": "audio/buho_abuelo/como-se-escribe-cuba-ce-u-be-a-4835a2-slow.mp3",
+   "buho_profesor": "audio/buho_profesor/como-se-escribe-cuba-ce-u-be-a-4835a2-slow.mp3",
+   "maria_bogota": "audio/maria_bogota/como-se-escribe-cuba-ce-u-be-a-4835a2-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/como-se-escribe-cuba-ce-u-be-a-4835a2-slow.mp3",
+   "raul": "audio/raul/como-se-escribe-cuba-ce-u-be-a-4835a2-slow.mp3"
   },
   "¿Cómo se escribe Matilda? — Eme, a, te, i, ele, de, a.": {
-   "maria_bogota": "audio/maria_bogota/como-se-escribe-matilda-eme-a-te-i-ele-d-8a2164.mp3",
-   "maria_paisa": "audio/maria_paisa/como-se-escribe-matilda-eme-a-te-i-ele-d-8a2164.mp3",
-   "raul": "audio/raul/como-se-escribe-matilda-eme-a-te-i-ele-d-8a2164.mp3"
+   "maria_bogota": "audio/maria_bogota/como-se-escribe-matilda-eme-a-te-i-ele-d-8a2164-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/como-se-escribe-matilda-eme-a-te-i-ele-d-8a2164-slow.mp3",
+   "raul": "audio/raul/como-se-escribe-matilda-eme-a-te-i-ele-d-8a2164-slow.mp3"
   },
   "¿Cómo se escribe Max? — Eme, a, equis.": {
-   "maria_bogota": "audio/maria_bogota/como-se-escribe-max-eme-a-equis-30eccd.mp3",
-   "maria_paisa": "audio/maria_paisa/como-se-escribe-max-eme-a-equis-30eccd.mp3",
-   "raul": "audio/raul/como-se-escribe-max-eme-a-equis-30eccd.mp3"
+   "maria_bogota": "audio/maria_bogota/como-se-escribe-max-eme-a-equis-30eccd-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/como-se-escribe-max-eme-a-equis-30eccd-slow.mp3",
+   "raul": "audio/raul/como-se-escribe-max-eme-a-equis-30eccd-slow.mp3"
   },
   "¿Cómo se escribe?": {
    "buho_abuelo": "audio/buho_abuelo/como-se-escribe-0be1df.mp3",
@@ -774,9 +774,9 @@
    "raul": "audio/raul/be-986b1b.mp3"
   },
   "Be, u, hache, i, ese, i, eme, o.": {
-   "maria_bogota": "audio/maria_bogota/be-u-hache-i-ese-i-eme-o-898cb4.mp3",
-   "maria_paisa": "audio/maria_paisa/be-u-hache-i-ese-i-eme-o-898cb4.mp3",
-   "raul": "audio/raul/be-u-hache-i-ese-i-eme-o-898cb4.mp3"
+   "maria_bogota": "audio/maria_bogota/be-u-hache-i-ese-i-eme-o-898cb4-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/be-u-hache-i-ese-i-eme-o-898cb4-slow.mp3",
+   "raul": "audio/raul/be-u-hache-i-ese-i-eme-o-898cb4-slow.mp3"
   },
   "bien": {
    "maria_bogota": "audio/maria_bogota/bien-d4e2f6.mp3",
@@ -868,13 +868,14 @@
    "raul": "audio/raul/e-58e6b3.mp3"
   },
   "E, erre, e, ese.": {
-   "maria_bogota": "audio/maria_bogota/e-erre-e-ese-d3da18.mp3",
-   "maria_paisa": "audio/maria_paisa/e-erre-e-ese-d3da18.mp3",
-   "raul": "audio/raul/e-erre-e-ese-d3da18.mp3"
+   "maria_bogota": "audio/maria_bogota/e-erre-e-ese-d3da18-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/e-erre-e-ese-d3da18-slow.mp3",
+   "raul": "audio/raul/e-erre-e-ese-d3da18-slow.mp3"
   },
   "E, ese, pe, a, eñe, a.": {
-   "maria_bogota": "audio/maria_bogota/e-ese-pe-a-ene-a-1a0ce7.mp3",
-   "maria_paisa": "audio/maria_paisa/e-ese-pe-a-ene-a-1a0ce7.mp3"
+   "maria_paisa": "audio/maria_paisa/e-ese-pe-a-ene-a-1a0ce7-slow.mp3",
+   "maria_bogota": "audio/maria_paisa/e-ese-pe-a-ene-a-1a0ce7-slow.mp3",
+   "raul": "audio/maria_paisa/e-ese-pe-a-ene-a-1a0ce7-slow.mp3"
   },
   "efe": {
    "maria_bogota": "audio/maria_bogota/efe-083f1e.mp3",
@@ -882,14 +883,14 @@
    "raul": "audio/raul/efe-083f1e.mp3"
   },
   "Efe, e, ene, o, eme, e, ene, a, ele.": {
-   "maria_bogota": "audio/maria_bogota/efe-e-ene-o-eme-e-ene-a-ele-536adf.mp3",
-   "maria_paisa": "audio/maria_paisa/efe-e-ene-o-eme-e-ene-a-ele-536adf.mp3",
-   "raul": "audio/raul/efe-e-ene-o-eme-e-ene-a-ele-536adf.mp3"
+   "maria_bogota": "audio/maria_bogota/efe-e-ene-o-eme-e-ene-a-ele-536adf-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/efe-e-ene-o-eme-e-ene-a-ele-536adf-slow.mp3",
+   "raul": "audio/raul/efe-e-ene-o-eme-e-ene-a-ele-536adf-slow.mp3"
   },
   "Efe, ele, eme, ene, eñe, ese, erre.": {
-   "maria_bogota": "audio/maria_bogota/efe-ele-eme-ene-ene-ese-erre-0e721c.mp3",
-   "maria_paisa": "audio/maria_paisa/efe-ele-eme-ene-ene-ese-erre-0e721c.mp3",
-   "raul": "audio/raul/efe-ele-eme-ene-ene-ese-erre-0e721c.mp3"
+   "maria_bogota": "audio/maria_bogota/efe-ele-eme-ene-ene-ese-erre-0e721c-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/efe-ele-eme-ene-ene-ese-erre-0e721c-slow.mp3",
+   "raul": "audio/raul/efe-ele-eme-ene-ene-ese-erre-0e721c-slow.mp3"
   },
   "el alfabeto": {
    "buho_abuelo": "audio/buho_abuelo/el-alfabeto-e8dc87.mp3",
@@ -899,9 +900,9 @@
    "raul": "audio/raul/el-alfabeto-e8dc87.mp3"
   },
   "El alfabeto: a, e, i, o, u.": {
-   "maria_bogota": "audio/maria_bogota/el-alfabeto-a-e-i-o-u-c5b539.mp3",
-   "maria_paisa": "audio/maria_paisa/el-alfabeto-a-e-i-o-u-c5b539.mp3",
-   "raul": "audio/raul/el-alfabeto-a-e-i-o-u-c5b539.mp3"
+   "maria_bogota": "audio/maria_bogota/el-alfabeto-a-e-i-o-u-c5b539-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/el-alfabeto-a-e-i-o-u-c5b539-slow.mp3",
+   "raul": "audio/raul/el-alfabeto-a-e-i-o-u-c5b539-slow.mp3"
   },
   "ele": {
    "maria_bogota": "audio/maria_bogota/ele-9d4799.mp3",
@@ -919,9 +920,9 @@
    "raul": "audio/raul/eme-ebc06d.mp3"
   },
   "Eme, u, ye.": {
-   "maria_bogota": "audio/maria_bogota/eme-u-ye-4708f5.mp3",
-   "maria_paisa": "audio/maria_paisa/eme-u-ye-4708f5.mp3",
-   "raul": "audio/raul/eme-u-ye-4708f5.mp3"
+   "maria_bogota": "audio/maria_bogota/eme-u-ye-4708f5-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/eme-u-ye-4708f5-slow.mp3",
+   "raul": "audio/raul/eme-u-ye-4708f5-slow.mp3"
   },
   "ene": {
    "maria_bogota": "audio/maria_bogota/ene-101b08.mp3",
@@ -961,14 +962,14 @@
    "raul": "audio/raul/ese-eace5b.mp3"
   },
   "Ese, a, ele, e, ene, te, o.": {
-   "maria_bogota": "audio/maria_bogota/ese-a-ele-e-ene-te-o-3984b5.mp3",
-   "maria_paisa": "audio/maria_paisa/ese-a-ele-e-ene-te-o-3984b5.mp3",
-   "raul": "audio/raul/ese-a-ele-e-ene-te-o-3984b5.mp3"
+   "maria_bogota": "audio/maria_bogota/ese-a-ele-e-ene-te-o-3984b5-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/ese-a-ele-e-ene-te-o-3984b5-slow.mp3",
+   "raul": "audio/raul/ese-a-ele-e-ene-te-o-3984b5-slow.mp3"
   },
   "Ese, o, ye.": {
-   "maria_bogota": "audio/maria_bogota/ese-o-ye-be305a.mp3",
-   "maria_paisa": "audio/maria_paisa/ese-o-ye-be305a.mp3",
-   "raul": "audio/raul/ese-o-ye-be305a.mp3"
+   "maria_bogota": "audio/maria_bogota/ese-o-ye-be305a-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/ese-o-ye-be305a-slow.mp3",
+   "raul": "audio/raul/ese-o-ye-be305a-slow.mp3"
   },
   "está": {
    "maria_bogota": "audio/maria_bogota/esta-2d1080.mp3",
@@ -1016,9 +1017,9 @@
    "raul": "audio/raul/hache-ed0169.mp3"
   },
   "hache, i, jota, ka, ele, eme,": {
-   "maria_bogota": "audio/maria_bogota/hache-i-jota-ka-ele-eme-5612ad.mp3",
-   "maria_paisa": "audio/maria_paisa/hache-i-jota-ka-ele-eme-5612ad.mp3",
-   "raul": "audio/raul/hache-i-jota-ka-ele-eme-5612ad.mp3"
+   "maria_bogota": "audio/maria_bogota/hache-i-jota-ka-ele-eme-5612ad-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/hache-i-jota-ka-ele-eme-5612ad-slow.mp3",
+   "raul": "audio/raul/hache-i-jota-ka-ele-eme-5612ad-slow.mp3"
   },
   "i": {
    "maria_bogota": "audio/maria_bogota/i-042dc4.mp3",
@@ -1114,9 +1115,9 @@
    "raul": "audio/raul/pe-1db828.mp3"
   },
   "Pe, e, erre, u.": {
-   "maria_bogota": "audio/maria_bogota/pe-e-erre-u-73c9f3.mp3",
-   "maria_paisa": "audio/maria_paisa/pe-e-erre-u-73c9f3.mp3",
-   "raul": "audio/raul/pe-e-erre-u-73c9f3.mp3"
+   "maria_bogota": "audio/maria_bogota/pe-e-erre-u-73c9f3-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/pe-e-erre-u-73c9f3-slow.mp3",
+   "raul": "audio/raul/pe-e-erre-u-73c9f3-slow.mp3"
   },
   "regular": {
    "maria_bogota": "audio/maria_bogota/regular-5f51ef.mp3",
@@ -1162,6 +1163,748 @@
    "maria_bogota": "audio/maria_bogota/zeta-bd2c4e.mp3",
    "maria_paisa": "audio/maria_paisa/zeta-bd2c4e.mp3",
    "raul": "audio/raul/zeta-bd2c4e.mp3"
+  },
+  "Ce, u, be, a.": {
+   "maria_bogota": "audio/maria_bogota/ce-u-be-a-43e913-slow.mp3",
+   "maria_paisa": "audio/maria_paisa/ce-u-be-a-43e913-slow.mp3",
+   "raul": "audio/raul/ce-u-be-a-43e913-slow.mp3"
+  },
+  "¡Buenas tardes! Me llamo Buhísimo. ¿Y tú?": {
+   "buho_abuelo": "audio/buho_abuelo/buenas-tardes-me-llamo-buhisimo-y-tu-4a07fa.mp3",
+   "buho_profesor": "audio/buho_profesor/buenas-tardes-me-llamo-buhisimo-y-tu-4a07fa.mp3"
+  },
+  "¡Fenomenal! El carnet de identidad de Max.": {
+   "buho_abuelo": "audio/buho_abuelo/fenomenal-el-carnet-de-identidad-de-max-8decf1.mp3",
+   "buho_profesor": "audio/buho_profesor/fenomenal-el-carnet-de-identidad-de-max-8decf1.mp3"
+  },
+  "¡Hola, hola! Me llamo Buhísimo. ¡Uno, dos, tres!": {
+   "buho_abuelo": "audio/buho_abuelo/hola-hola-me-llamo-buhisimo-uno-dos-tres-540ac5.mp3",
+   "buho_profesor": "audio/buho_profesor/hola-hola-me-llamo-buhisimo-uno-dos-tres-540ac5.mp3"
+  },
+  "¡Hola! Me llamo Matilda. Soy de Melbourne. Tengo doce años.": {
+   "maria_bogota": "audio/maria_bogota/hola-me-llamo-matilda-soy-de-melbourne-t-482549.mp3",
+   "maria_paisa": "audio/maria_paisa/hola-me-llamo-matilda-soy-de-melbourne-t-482549.mp3",
+   "raul": "audio/raul/hola-me-llamo-matilda-soy-de-melbourne-t-482549.mp3"
+  },
+  "¡Hola! Tengo el carnet de identidad de Max.": {
+   "buho_abuelo": "audio/buho_abuelo/hola-tengo-el-carnet-de-identidad-de-max-930aca.mp3",
+   "buho_profesor": "audio/buho_profesor/hola-tengo-el-carnet-de-identidad-de-max-930aca.mp3"
+  },
+  "¡Muy bien! ¡Hasta luego!": {
+   "buho_abuelo": "audio/buho_abuelo/muy-bien-hasta-luego-b2d1d1.mp3",
+   "buho_profesor": "audio/buho_profesor/muy-bien-hasta-luego-b2d1d1.mp3"
+  },
+  "¡Muy bien! Uno, dos, tres… ¡hasta luego!": {
+   "buho_abuelo": "audio/buho_abuelo/muy-bien-uno-dos-tres-hasta-luego-8529f2.mp3",
+   "buho_profesor": "audio/buho_profesor/muy-bien-uno-dos-tres-hasta-luego-8529f2.mp3",
+   "maria_bogota": "audio/maria_bogota/muy-bien-uno-dos-tres-hasta-luego-8529f2.mp3",
+   "maria_paisa": "audio/maria_paisa/muy-bien-uno-dos-tres-hasta-luego-8529f2.mp3",
+   "raul": "audio/raul/muy-bien-uno-dos-tres-hasta-luego-8529f2.mp3"
+  },
+  "¿Cómo se llama él? — Se llama Max. Tiene trece años.": {
+   "maria_bogota": "audio/maria_bogota/como-se-llama-el-se-llama-max-tiene-trec-5910d6.mp3",
+   "maria_paisa": "audio/maria_paisa/como-se-llama-el-se-llama-max-tiene-trec-5910d6.mp3",
+   "raul": "audio/raul/como-se-llama-el-se-llama-max-tiene-trec-5910d6.mp3"
+  },
+  "¿Cómo se llama él? — Se llama Samuel.": {
+   "maria_bogota": "audio/maria_bogota/como-se-llama-el-se-llama-samuel-836507.mp3",
+   "maria_paisa": "audio/maria_paisa/como-se-llama-el-se-llama-samuel-836507.mp3",
+   "raul": "audio/raul/como-se-llama-el-se-llama-samuel-836507.mp3"
+  },
+  "¿Cómo se llama?": {
+   "maria_bogota": "audio/maria_bogota/como-se-llama-b67ffd.mp3",
+   "maria_paisa": "audio/maria_paisa/como-se-llama-b67ffd.mp3",
+   "raul": "audio/raul/como-se-llama-b67ffd.mp3"
+  },
+  "¿Cómo te llamas?": {
+   "buho_abuelo": "audio/buho_abuelo/como-te-llamas-f9d4d5.mp3",
+   "buho_profesor": "audio/buho_profesor/como-te-llamas-f9d4d5.mp3",
+   "maria_bogota": "audio/maria_bogota/como-te-llamas-f9d4d5.mp3",
+   "maria_paisa": "audio/maria_paisa/como-te-llamas-f9d4d5.mp3",
+   "raul": "audio/raul/como-te-llamas-f9d4d5.mp3"
+  },
+  "¿Cómo te llamas? — Me llamo Max.": {
+   "maria_bogota": "audio/maria_bogota/como-te-llamas-me-llamo-max-9b456f.mp3",
+   "maria_paisa": "audio/maria_paisa/como-te-llamas-me-llamo-max-9b456f.mp3",
+   "raul": "audio/raul/como-te-llamas-me-llamo-max-9b456f.mp3"
+  },
+  "¿Cómo te llamas? — Me llamo Valentina.": {
+   "maria_bogota": "audio/maria_bogota/como-te-llamas-me-llamo-valentina-2bac14.mp3",
+   "maria_paisa": "audio/maria_paisa/como-te-llamas-me-llamo-valentina-2bac14.mp3",
+   "raul": "audio/raul/como-te-llamas-me-llamo-valentina-2bac14.mp3"
+  },
+  "¿Cuántos años tienes, Samuel?": {
+   "buho_abuelo": "audio/buho_abuelo/cuantos-anos-tienes-samuel-ee9a1f.mp3",
+   "buho_profesor": "audio/buho_profesor/cuantos-anos-tienes-samuel-ee9a1f.mp3"
+  },
+  "¿Cuántos años tienes, Samuel? — Trece.": {
+   "maria_bogota": "audio/maria_bogota/cuantos-anos-tienes-samuel-trece-4aaa9e.mp3",
+   "maria_paisa": "audio/maria_paisa/cuantos-anos-tienes-samuel-trece-4aaa9e.mp3",
+   "raul": "audio/raul/cuantos-anos-tienes-samuel-trece-4aaa9e.mp3"
+  },
+  "¿Cuántos años tienes, Valentina?": {
+   "maria_bogota": "audio/maria_bogota/cuantos-anos-tienes-valentina-f3a4ba.mp3",
+   "maria_paisa": "audio/maria_paisa/cuantos-anos-tienes-valentina-f3a4ba.mp3",
+   "raul": "audio/raul/cuantos-anos-tienes-valentina-f3a4ba.mp3"
+  },
+  "¿Cuántos años tienes, Valentina? — Doce.": {
+   "maria_bogota": "audio/maria_bogota/cuantos-anos-tienes-valentina-doce-ea279e.mp3",
+   "maria_paisa": "audio/maria_paisa/cuantos-anos-tienes-valentina-doce-ea279e.mp3",
+   "raul": "audio/raul/cuantos-anos-tienes-valentina-doce-ea279e.mp3"
+  },
+  "¿Cuántos años tienes?": {
+   "buho_abuelo": "audio/buho_abuelo/cuantos-anos-tienes-ca8c6a.mp3",
+   "buho_profesor": "audio/buho_profesor/cuantos-anos-tienes-ca8c6a.mp3",
+   "maria_bogota": "audio/maria_bogota/cuantos-anos-tienes-ca8c6a.mp3",
+   "maria_paisa": "audio/maria_paisa/cuantos-anos-tienes-ca8c6a.mp3",
+   "raul": "audio/raul/cuantos-anos-tienes-ca8c6a.mp3"
+  },
+  "¿Cuántos años tienes? — Doce.": {
+   "maria_bogota": "audio/maria_bogota/cuantos-anos-tienes-doce-50c147.mp3",
+   "maria_paisa": "audio/maria_paisa/cuantos-anos-tienes-doce-50c147.mp3",
+   "raul": "audio/raul/cuantos-anos-tienes-doce-50c147.mp3"
+  },
+  "¿Cuántos años tienes? — Trece.": {
+   "maria_bogota": "audio/maria_bogota/cuantos-anos-tienes-trece-8b2de4.mp3",
+   "maria_paisa": "audio/maria_paisa/cuantos-anos-tienes-trece-8b2de4.mp3",
+   "raul": "audio/raul/cuantos-anos-tienes-trece-8b2de4.mp3"
+  },
+  "¿El nombre? Samuel.": {
+   "maria_bogota": "audio/maria_bogota/el-nombre-samuel-183497.mp3",
+   "maria_paisa": "audio/maria_paisa/el-nombre-samuel-183497.mp3",
+   "raul": "audio/raul/el-nombre-samuel-183497.mp3"
+  },
+  "¿La edad? Doce.": {
+   "maria_bogota": "audio/maria_bogota/la-edad-doce-62285e.mp3",
+   "maria_paisa": "audio/maria_paisa/la-edad-doce-62285e.mp3",
+   "raul": "audio/raul/la-edad-doce-62285e.mp3"
+  },
+  "¿Seis? No, siete.": {
+   "maria_bogota": "audio/maria_bogota/seis-no-siete-707259.mp3",
+   "maria_paisa": "audio/maria_paisa/seis-no-siete-707259.mp3",
+   "raul": "audio/raul/seis-no-siete-707259.mp3"
+  },
+  "¿Siete? — No, seis.": {
+   "maria_bogota": "audio/maria_bogota/siete-no-seis-7a4a5c.mp3",
+   "maria_paisa": "audio/maria_paisa/siete-no-seis-7a4a5c.mp3",
+   "raul": "audio/raul/siete-no-seis-7a4a5c.mp3"
+  },
+  "¿Te llamas Samuel? — Sí, me llamo Samuel.": {
+   "maria_bogota": "audio/maria_bogota/te-llamas-samuel-si-me-llamo-samuel-a44430.mp3",
+   "maria_paisa": "audio/maria_paisa/te-llamas-samuel-si-me-llamo-samuel-a44430.mp3",
+   "raul": "audio/raul/te-llamas-samuel-si-me-llamo-samuel-a44430.mp3"
+  },
+  "¿Te llamas Valentina? — Sí. ¿Y tú?": {
+   "maria_bogota": "audio/maria_bogota/te-llamas-valentina-si-y-tu-250359.mp3",
+   "maria_paisa": "audio/maria_paisa/te-llamas-valentina-si-y-tu-250359.mp3",
+   "raul": "audio/raul/te-llamas-valentina-si-y-tu-250359.mp3"
+  },
+  "¿Tienes doce años? — Sí, tengo doce años.": {
+   "maria_bogota": "audio/maria_bogota/tienes-doce-anos-si-tengo-doce-anos-ecd7d0.mp3",
+   "maria_paisa": "audio/maria_paisa/tienes-doce-anos-si-tengo-doce-anos-ecd7d0.mp3",
+   "raul": "audio/raul/tienes-doce-anos-si-tengo-doce-anos-ecd7d0.mp3"
+  },
+  "¿Tienes el mapa, Max?": {
+   "maria_bogota": "audio/maria_bogota/tienes-el-mapa-max-c76077.mp3",
+   "maria_paisa": "audio/maria_paisa/tienes-el-mapa-max-c76077.mp3",
+   "raul": "audio/raul/tienes-el-mapa-max-c76077.mp3"
+  },
+  "¿Tienes mi carnet de identidad?": {
+   "maria_bogota": "audio/maria_bogota/tienes-mi-carnet-de-identidad-0cc3bf.mp3",
+   "maria_paisa": "audio/maria_paisa/tienes-mi-carnet-de-identidad-0cc3bf.mp3",
+   "raul": "audio/raul/tienes-mi-carnet-de-identidad-0cc3bf.mp3"
+  },
+  "¿Veinticuatro? No, veinticinco.": {
+   "maria_bogota": "audio/maria_bogota/veinticuatro-no-veinticinco-c1d975.mp3",
+   "maria_paisa": "audio/maria_paisa/veinticuatro-no-veinticinco-c1d975.mp3",
+   "raul": "audio/raul/veinticuatro-no-veinticinco-c1d975.mp3"
+  },
+  "¿Veintiséis? No, veintisiete.": {
+   "maria_bogota": "audio/maria_bogota/veintiseis-no-veintisiete-ff0447.mp3",
+   "maria_paisa": "audio/maria_paisa/veintiseis-no-veintisiete-ff0447.mp3",
+   "raul": "audio/raul/veintiseis-no-veintisiete-ff0447.mp3"
+  },
+  "¿Y tú? ¿Cuántos años tienes?": {
+   "buho_abuelo": "audio/buho_abuelo/y-tu-cuantos-anos-tienes-535e15.mp3",
+   "buho_profesor": "audio/buho_profesor/y-tu-cuantos-anos-tienes-535e15.mp3"
+  },
+  "Buenas tardes, Matilda.": {
+   "maria_bogota": "audio/maria_bogota/buenas-tardes-matilda-6e6866.mp3",
+   "maria_paisa": "audio/maria_paisa/buenas-tardes-matilda-6e6866.mp3",
+   "raul": "audio/raul/buenas-tardes-matilda-6e6866.mp3"
+  },
+  "Buenas tardes, Matilda. ¿Cómo estás?": {
+   "maria_bogota": "audio/maria_bogota/buenas-tardes-matilda-como-estas-03eb72.mp3",
+   "maria_paisa": "audio/maria_paisa/buenas-tardes-matilda-como-estas-03eb72.mp3",
+   "raul": "audio/raul/buenas-tardes-matilda-como-estas-03eb72.mp3"
+  },
+  "Buenas tardes, Matilda. ¿Cómo estás? — Regular.": {
+   "buho_abuelo": "audio/buho_abuelo/buenas-tardes-matilda-como-estas-regular-f48b12.mp3",
+   "buho_profesor": "audio/buho_profesor/buenas-tardes-matilda-como-estas-regular-f48b12.mp3",
+   "maria_bogota": "audio/maria_bogota/buenas-tardes-matilda-como-estas-regular-f48b12.mp3",
+   "maria_paisa": "audio/maria_paisa/buenas-tardes-matilda-como-estas-regular-f48b12.mp3",
+   "raul": "audio/raul/buenas-tardes-matilda-como-estas-regular-f48b12.mp3"
+  },
+  "Buenos días, Samuel.": {
+   "maria_bogota": "audio/maria_bogota/buenos-dias-samuel-258f00.mp3",
+   "maria_paisa": "audio/maria_paisa/buenos-dias-samuel-258f00.mp3",
+   "raul": "audio/raul/buenos-dias-samuel-258f00.mp3"
+  },
+  "catorce": {
+   "maria_bogota": "audio/maria_bogota/catorce-94087d.mp3",
+   "maria_paisa": "audio/maria_paisa/catorce-94087d.mp3",
+   "raul": "audio/raul/catorce-94087d.mp3"
+  },
+  "cero": {
+   "maria_bogota": "audio/maria_bogota/cero-74cbf1.mp3",
+   "maria_paisa": "audio/maria_paisa/cero-74cbf1.mp3",
+   "raul": "audio/raul/cero-74cbf1.mp3"
+  },
+  "cinco": {
+   "maria_bogota": "audio/maria_bogota/cinco-a097b3.mp3",
+   "maria_paisa": "audio/maria_paisa/cinco-a097b3.mp3",
+   "raul": "audio/raul/cinco-a097b3.mp3"
+  },
+  "Cinco, cuatro, tres, dos, uno… ¡cero!": {
+   "maria_bogota": "audio/maria_bogota/cinco-cuatro-tres-dos-uno-cero-e2c29e.mp3",
+   "maria_paisa": "audio/maria_paisa/cinco-cuatro-tres-dos-uno-cero-e2c29e.mp3",
+   "raul": "audio/raul/cinco-cuatro-tres-dos-uno-cero-e2c29e.mp3"
+  },
+  "Cinco, diez, quince, veinte.": {
+   "maria_bogota": "audio/maria_bogota/cinco-diez-quince-veinte-052137.mp3",
+   "maria_paisa": "audio/maria_paisa/cinco-diez-quince-veinte-052137.mp3",
+   "raul": "audio/raul/cinco-diez-quince-veinte-052137.mp3"
+  },
+  "Cinco, seis, siete. ¡Muy bien!": {
+   "maria_bogota": "audio/maria_bogota/cinco-seis-siete-muy-bien-8a72ea.mp3",
+   "maria_paisa": "audio/maria_paisa/cinco-seis-siete-muy-bien-8a72ea.mp3",
+   "raul": "audio/raul/cinco-seis-siete-muy-bien-8a72ea.mp3"
+  },
+  "cuatro": {
+   "maria_bogota": "audio/maria_bogota/cuatro-a37e3b.mp3",
+   "maria_paisa": "audio/maria_paisa/cuatro-a37e3b.mp3",
+   "raul": "audio/raul/cuatro-a37e3b.mp3"
+  },
+  "cuatro, cinco: ¡muy bien!": {
+   "maria_bogota": "audio/maria_bogota/cuatro-cinco-muy-bien-d110e3.mp3",
+   "maria_paisa": "audio/maria_paisa/cuatro-cinco-muy-bien-d110e3.mp3",
+   "raul": "audio/raul/cuatro-cinco-muy-bien-d110e3.mp3"
+  },
+  "diecinueve": {
+   "maria_bogota": "audio/maria_bogota/diecinueve-05ceed.mp3",
+   "maria_paisa": "audio/maria_paisa/diecinueve-05ceed.mp3",
+   "raul": "audio/raul/diecinueve-05ceed.mp3"
+  },
+  "dieciocho": {
+   "maria_bogota": "audio/maria_bogota/dieciocho-03eaff.mp3",
+   "maria_paisa": "audio/maria_paisa/dieciocho-03eaff.mp3",
+   "raul": "audio/raul/dieciocho-03eaff.mp3"
+  },
+  "dieciséis": {
+   "maria_bogota": "audio/maria_bogota/dieciseis-a7be45.mp3",
+   "maria_paisa": "audio/maria_paisa/dieciseis-a7be45.mp3",
+   "raul": "audio/raul/dieciseis-a7be45.mp3"
+  },
+  "Dieciséis, diecisiete, dieciocho, diecinueve, veinte.": {
+   "buho_abuelo": "audio/buho_abuelo/dieciseis-diecisiete-dieciocho-diecinuev-56265a.mp3",
+   "buho_profesor": "audio/buho_profesor/dieciseis-diecisiete-dieciocho-diecinuev-56265a.mp3",
+   "maria_bogota": "audio/maria_bogota/dieciseis-diecisiete-dieciocho-diecinuev-56265a.mp3",
+   "maria_paisa": "audio/maria_paisa/dieciseis-diecisiete-dieciocho-diecinuev-56265a.mp3",
+   "raul": "audio/raul/dieciseis-diecisiete-dieciocho-diecinuev-56265a.mp3"
+  },
+  "diecisiete": {
+   "maria_bogota": "audio/maria_bogota/diecisiete-614a44.mp3",
+   "maria_paisa": "audio/maria_paisa/diecisiete-614a44.mp3",
+   "raul": "audio/raul/diecisiete-614a44.mp3"
+  },
+  "diez": {
+   "maria_bogota": "audio/maria_bogota/diez-8c95de.mp3",
+   "maria_paisa": "audio/maria_paisa/diez-8c95de.mp3",
+   "raul": "audio/raul/diez-8c95de.mp3"
+  },
+  "Diez, nueve, ocho, siete, seis, cinco, cuatro, tres, dos, uno… ¡cero! ¡Max!": {
+   "maria_bogota": "audio/maria_bogota/diez-nueve-ocho-siete-seis-cinco-cuatro--b98d29.mp3",
+   "maria_paisa": "audio/maria_paisa/diez-nueve-ocho-siete-seis-cinco-cuatro--b98d29.mp3",
+   "raul": "audio/raul/diez-nueve-ocho-siete-seis-cinco-cuatro--b98d29.mp3"
+  },
+  "Diez, ocho, seis, cuatro, dos, cero.": {
+   "maria_bogota": "audio/maria_bogota/diez-ocho-seis-cuatro-dos-cero-c4bd0c.mp3",
+   "maria_paisa": "audio/maria_paisa/diez-ocho-seis-cuatro-dos-cero-c4bd0c.mp3",
+   "raul": "audio/raul/diez-ocho-seis-cuatro-dos-cero-c4bd0c.mp3"
+  },
+  "Diez, once, doce… ¡trece!": {
+   "maria_bogota": "audio/maria_bogota/diez-once-doce-trece-4ec1b9.mp3",
+   "maria_paisa": "audio/maria_paisa/diez-once-doce-trece-4ec1b9.mp3",
+   "raul": "audio/raul/diez-once-doce-trece-4ec1b9.mp3"
+  },
+  "Diez, veinte, treinta.": {
+   "maria_bogota": "audio/maria_bogota/diez-veinte-treinta-d8dbbd.mp3",
+   "maria_paisa": "audio/maria_paisa/diez-veinte-treinta-d8dbbd.mp3",
+   "raul": "audio/raul/diez-veinte-treinta-d8dbbd.mp3"
+  },
+  "doce": {
+   "maria_bogota": "audio/maria_bogota/doce-c24b8e.mp3",
+   "maria_paisa": "audio/maria_paisa/doce-c24b8e.mp3",
+   "raul": "audio/raul/doce-c24b8e.mp3"
+  },
+  "doce años": {
+   "maria_bogota": "audio/maria_bogota/doce-anos-cf1932.mp3",
+   "maria_paisa": "audio/maria_paisa/doce-anos-cf1932.mp3",
+   "raul": "audio/raul/doce-anos-cf1932.mp3"
+  },
+  "dos": {
+   "maria_bogota": "audio/maria_bogota/dos-e67f16.mp3",
+   "maria_paisa": "audio/maria_paisa/dos-e67f16.mp3",
+   "raul": "audio/raul/dos-e67f16.mp3"
+  },
+  "Dos, cuatro, seis, ocho, diez.": {
+   "maria_bogota": "audio/maria_bogota/dos-cuatro-seis-ocho-diez-cfb22c.mp3",
+   "maria_paisa": "audio/maria_paisa/dos-cuatro-seis-ocho-diez-cfb22c.mp3",
+   "raul": "audio/raul/dos-cuatro-seis-ocho-diez-cfb22c.mp3"
+  },
+  "el amigo": {
+   "maria_bogota": "audio/maria_bogota/el-amigo-80476a.mp3",
+   "maria_paisa": "audio/maria_paisa/el-amigo-80476a.mp3",
+   "raul": "audio/raul/el-amigo-80476a.mp3"
+  },
+  "el apellido": {
+   "maria_bogota": "audio/maria_bogota/el-apellido-ad6a17.mp3",
+   "maria_paisa": "audio/maria_paisa/el-apellido-ad6a17.mp3",
+   "raul": "audio/raul/el-apellido-ad6a17.mp3"
+  },
+  "El apellido de Samuel es Restrepo.": {
+   "maria_bogota": "audio/maria_bogota/el-apellido-de-samuel-es-restrepo-534ba3.mp3",
+   "maria_paisa": "audio/maria_paisa/el-apellido-de-samuel-es-restrepo-534ba3.mp3",
+   "raul": "audio/raul/el-apellido-de-samuel-es-restrepo-534ba3.mp3"
+  },
+  "el carnet de identidad": {
+   "maria_bogota": "audio/maria_bogota/el-carnet-de-identidad-b89742.mp3",
+   "maria_paisa": "audio/maria_paisa/el-carnet-de-identidad-b89742.mp3",
+   "raul": "audio/raul/el-carnet-de-identidad-b89742.mp3"
+  },
+  "El carnet de identidad de Samuel.": {
+   "maria_bogota": "audio/maria_bogota/el-carnet-de-identidad-de-samuel-21b36b.mp3",
+   "maria_paisa": "audio/maria_paisa/el-carnet-de-identidad-de-samuel-21b36b.mp3",
+   "raul": "audio/raul/el-carnet-de-identidad-de-samuel-21b36b.mp3"
+  },
+  "el lugar de nacimiento": {
+   "maria_bogota": "audio/maria_bogota/el-lugar-de-nacimiento-42ca3b.mp3",
+   "maria_paisa": "audio/maria_paisa/el-lugar-de-nacimiento-42ca3b.mp3",
+   "raul": "audio/raul/el-lugar-de-nacimiento-42ca3b.mp3"
+  },
+  "El lugar de nacimiento de Samuel es Salento.": {
+   "maria_bogota": "audio/maria_bogota/el-lugar-de-nacimiento-de-samuel-es-sale-51a139.mp3",
+   "maria_paisa": "audio/maria_paisa/el-lugar-de-nacimiento-de-samuel-es-sale-51a139.mp3",
+   "raul": "audio/raul/el-lugar-de-nacimiento-de-samuel-es-sale-51a139.mp3"
+  },
+  "el nombre": {
+   "maria_bogota": "audio/maria_bogota/el-nombre-5c175c.mp3",
+   "maria_paisa": "audio/maria_paisa/el-nombre-5c175c.mp3",
+   "raul": "audio/raul/el-nombre-5c175c.mp3"
+  },
+  "El nombre: Max. ¿De dónde eres?": {
+   "buho_abuelo": "audio/buho_abuelo/el-nombre-max-de-donde-eres-3704c7.mp3",
+   "buho_profesor": "audio/buho_profesor/el-nombre-max-de-donde-eres-3704c7.mp3"
+  },
+  "Ella se llama Matilda.": {
+   "maria_bogota": "audio/maria_bogota/ella-se-llama-matilda-2ccc30.mp3",
+   "maria_paisa": "audio/maria_paisa/ella-se-llama-matilda-2ccc30.mp3",
+   "raul": "audio/raul/ella-se-llama-matilda-2ccc30.mp3"
+  },
+  "Ella se llama Valentina.": {
+   "maria_bogota": "audio/maria_bogota/ella-se-llama-valentina-b7ec00.mp3",
+   "maria_paisa": "audio/maria_paisa/ella-se-llama-valentina-b7ec00.mp3",
+   "raul": "audio/raul/ella-se-llama-valentina-b7ec00.mp3"
+  },
+  "Ella se llama Valentina. Es de Colombia.": {
+   "maria_bogota": "audio/maria_bogota/ella-se-llama-valentina-es-de-colombia-9841c1.mp3",
+   "maria_paisa": "audio/maria_paisa/ella-se-llama-valentina-es-de-colombia-9841c1.mp3",
+   "raul": "audio/raul/ella-se-llama-valentina-es-de-colombia-9841c1.mp3"
+  },
+  "eres · te llamas": {
+   "maria_bogota": "audio/maria_bogota/eres-te-llamas-5665bb.mp3",
+   "maria_paisa": "audio/maria_paisa/eres-te-llamas-5665bb.mp3",
+   "raul": "audio/raul/eres-te-llamas-5665bb.mp3"
+  },
+  "es · se llama": {
+   "maria_bogota": "audio/maria_bogota/es-se-llama-3c8b69.mp3",
+   "maria_paisa": "audio/maria_paisa/es-se-llama-3c8b69.mp3",
+   "raul": "audio/raul/es-se-llama-3c8b69.mp3"
+  },
+  "la amiga": {
+   "maria_bogota": "audio/maria_bogota/la-amiga-ff0ae8.mp3",
+   "maria_paisa": "audio/maria_paisa/la-amiga-ff0ae8.mp3",
+   "raul": "audio/raul/la-amiga-ff0ae8.mp3"
+  },
+  "la edad": {
+   "maria_bogota": "audio/maria_bogota/la-edad-0016ac.mp3",
+   "maria_paisa": "audio/maria_paisa/la-edad-0016ac.mp3",
+   "raul": "audio/raul/la-edad-0016ac.mp3"
+  },
+  "Max tiene trece años. Es de Melbourne.": {
+   "maria_bogota": "audio/maria_bogota/max-tiene-trece-anos-es-de-melbourne-cd31d1.mp3",
+   "maria_paisa": "audio/maria_paisa/max-tiene-trece-anos-es-de-melbourne-cd31d1.mp3",
+   "raul": "audio/raul/max-tiene-trece-anos-es-de-melbourne-cd31d1.mp3"
+  },
+  "me llamo": {
+   "maria_bogota": "audio/maria_bogota/me-llamo-594023.mp3",
+   "maria_paisa": "audio/maria_paisa/me-llamo-594023.mp3",
+   "raul": "audio/raul/me-llamo-594023.mp3"
+  },
+  "Me llamo Matilda. Soy de Australia. Doce.": {
+   "maria_bogota": "audio/maria_bogota/me-llamo-matilda-soy-de-australia-doce-34c899.mp3",
+   "maria_paisa": "audio/maria_paisa/me-llamo-matilda-soy-de-australia-doce-34c899.mp3",
+   "raul": "audio/raul/me-llamo-matilda-soy-de-australia-doce-34c899.mp3"
+  },
+  "Me llamo Matilda. Soy de Melbourne.": {
+   "maria_bogota": "audio/maria_bogota/me-llamo-matilda-soy-de-melbourne-a2f004.mp3",
+   "maria_paisa": "audio/maria_paisa/me-llamo-matilda-soy-de-melbourne-a2f004.mp3",
+   "raul": "audio/raul/me-llamo-matilda-soy-de-melbourne-a2f004.mp3"
+  },
+  "Me llamo Matilda. Tengo doce años.": {
+   "maria_bogota": "audio/maria_bogota/me-llamo-matilda-tengo-doce-anos-aad4c2.mp3",
+   "maria_paisa": "audio/maria_paisa/me-llamo-matilda-tengo-doce-anos-aad4c2.mp3",
+   "raul": "audio/raul/me-llamo-matilda-tengo-doce-anos-aad4c2.mp3"
+  },
+  "Me llamo Max. Soy de Australia.": {
+   "maria_bogota": "audio/maria_bogota/me-llamo-max-soy-de-australia-9f974e.mp3",
+   "maria_paisa": "audio/maria_paisa/me-llamo-max-soy-de-australia-9f974e.mp3",
+   "raul": "audio/raul/me-llamo-max-soy-de-australia-9f974e.mp3"
+  },
+  "Me llamo Max. Tengo trece años.": {
+   "maria_bogota": "audio/maria_bogota/me-llamo-max-tengo-trece-anos-fd0fc3.mp3",
+   "maria_paisa": "audio/maria_paisa/me-llamo-max-tengo-trece-anos-fd0fc3.mp3",
+   "raul": "audio/raul/me-llamo-max-tengo-trece-anos-fd0fc3.mp3"
+  },
+  "Me llamo Max. Tengo trece años. Soy de Melbourne.": {
+   "maria_bogota": "audio/maria_bogota/me-llamo-max-tengo-trece-anos-soy-de-mel-1cd7a7.mp3",
+   "maria_paisa": "audio/maria_paisa/me-llamo-max-tengo-trece-anos-soy-de-mel-1cd7a7.mp3",
+   "raul": "audio/raul/me-llamo-max-tengo-trece-anos-soy-de-mel-1cd7a7.mp3"
+  },
+  "Me llamo Samuel. Tengo trece años.": {
+   "maria_bogota": "audio/maria_bogota/me-llamo-samuel-tengo-trece-anos-f3c4b1.mp3",
+   "maria_paisa": "audio/maria_paisa/me-llamo-samuel-tengo-trece-anos-f3c4b1.mp3",
+   "raul": "audio/raul/me-llamo-samuel-tengo-trece-anos-f3c4b1.mp3"
+  },
+  "Me llamo, te llamas, se llama.": {
+   "buho_abuelo": "audio/buho_abuelo/me-llamo-te-llamas-se-llama-5043d1.mp3",
+   "buho_profesor": "audio/buho_profesor/me-llamo-te-llamas-se-llama-5043d1.mp3",
+   "maria_bogota": "audio/maria_bogota/me-llamo-te-llamas-se-llama-5043d1.mp3",
+   "maria_paisa": "audio/maria_paisa/me-llamo-te-llamas-se-llama-5043d1.mp3",
+   "raul": "audio/raul/me-llamo-te-llamas-se-llama-5043d1.mp3"
+  },
+  "mi": {
+   "maria_bogota": "audio/maria_bogota/mi-9c51ad.mp3",
+   "maria_paisa": "audio/maria_paisa/mi-9c51ad.mp3",
+   "raul": "audio/raul/mi-9c51ad.mp3"
+  },
+  "Mi amiga se llama Valentina.": {
+   "maria_bogota": "audio/maria_bogota/mi-amiga-se-llama-valentina-77f418.mp3",
+   "maria_paisa": "audio/maria_paisa/mi-amiga-se-llama-valentina-77f418.mp3",
+   "raul": "audio/raul/mi-amiga-se-llama-valentina-77f418.mp3"
+  },
+  "Mi amigo se llama Max.": {
+   "maria_bogota": "audio/maria_bogota/mi-amigo-se-llama-max-b7a159.mp3",
+   "maria_paisa": "audio/maria_paisa/mi-amigo-se-llama-max-b7a159.mp3",
+   "raul": "audio/raul/mi-amigo-se-llama-max-b7a159.mp3"
+  },
+  "mi apellido": {
+   "maria_bogota": "audio/maria_bogota/mi-apellido-51fd34.mp3",
+   "maria_paisa": "audio/maria_paisa/mi-apellido-51fd34.mp3",
+   "raul": "audio/raul/mi-apellido-51fd34.mp3"
+  },
+  "Mi apellido es Restrepo.": {
+   "maria_bogota": "audio/maria_bogota/mi-apellido-es-restrepo-2443eb.mp3",
+   "maria_paisa": "audio/maria_paisa/mi-apellido-es-restrepo-2443eb.mp3",
+   "raul": "audio/raul/mi-apellido-es-restrepo-2443eb.mp3"
+  },
+  "mi carnet de identidad": {
+   "maria_bogota": "audio/maria_bogota/mi-carnet-de-identidad-bd488b.mp3",
+   "maria_paisa": "audio/maria_paisa/mi-carnet-de-identidad-bd488b.mp3",
+   "raul": "audio/raul/mi-carnet-de-identidad-bd488b.mp3"
+  },
+  "Mi lugar de nacimiento es Melbourne. Tengo trece años.": {
+   "maria_bogota": "audio/maria_bogota/mi-lugar-de-nacimiento-es-melbourne-teng-759a5d.mp3",
+   "maria_paisa": "audio/maria_paisa/mi-lugar-de-nacimiento-es-melbourne-teng-759a5d.mp3",
+   "raul": "audio/raul/mi-lugar-de-nacimiento-es-melbourne-teng-759a5d.mp3"
+  },
+  "mi nombre": {
+   "maria_bogota": "audio/maria_bogota/mi-nombre-3ed4ff.mp3",
+   "maria_paisa": "audio/maria_paisa/mi-nombre-3ed4ff.mp3",
+   "raul": "audio/raul/mi-nombre-3ed4ff.mp3"
+  },
+  "Mi nombre es Samuel.": {
+   "maria_bogota": "audio/maria_bogota/mi-nombre-es-samuel-a66154.mp3",
+   "maria_paisa": "audio/maria_paisa/mi-nombre-es-samuel-a66154.mp3",
+   "raul": "audio/raul/mi-nombre-es-samuel-a66154.mp3"
+  },
+  "nueve": {
+   "maria_bogota": "audio/maria_bogota/nueve-0a1307.mp3",
+   "maria_paisa": "audio/maria_paisa/nueve-0a1307.mp3",
+   "raul": "audio/raul/nueve-0a1307.mp3"
+  },
+  "ocho": {
+   "maria_bogota": "audio/maria_bogota/ocho-311047.mp3",
+   "maria_paisa": "audio/maria_paisa/ocho-311047.mp3",
+   "raul": "audio/raul/ocho-311047.mp3"
+  },
+  "once": {
+   "maria_bogota": "audio/maria_bogota/once-186383.mp3",
+   "maria_paisa": "audio/maria_paisa/once-186383.mp3",
+   "raul": "audio/raul/once-186383.mp3"
+  },
+  "Once, doce, trece, catorce, quince.": {
+   "buho_abuelo": "audio/buho_abuelo/once-doce-trece-catorce-quince-3d6b1e.mp3",
+   "buho_profesor": "audio/buho_profesor/once-doce-trece-catorce-quince-3d6b1e.mp3",
+   "maria_bogota": "audio/maria_bogota/once-doce-trece-catorce-quince-3d6b1e.mp3",
+   "maria_paisa": "audio/maria_paisa/once-doce-trece-catorce-quince-3d6b1e.mp3",
+   "raul": "audio/raul/once-doce-trece-catorce-quince-3d6b1e.mp3"
+  },
+  "quince": {
+   "maria_bogota": "audio/maria_bogota/quince-3841f1.mp3",
+   "maria_paisa": "audio/maria_paisa/quince-3841f1.mp3",
+   "raul": "audio/raul/quince-3841f1.mp3"
+  },
+  "Quince, dieciséis, diecisiete.": {
+   "maria_bogota": "audio/maria_bogota/quince-dieciseis-diecisiete-283caa.mp3",
+   "maria_paisa": "audio/maria_paisa/quince-dieciseis-diecisiete-283caa.mp3",
+   "raul": "audio/raul/quince-dieciseis-diecisiete-283caa.mp3"
+  },
+  "Samuel es el amigo de Matilda.": {
+   "maria_bogota": "audio/maria_bogota/samuel-es-el-amigo-de-matilda-c68e2c.mp3",
+   "maria_paisa": "audio/maria_paisa/samuel-es-el-amigo-de-matilda-c68e2c.mp3",
+   "raul": "audio/raul/samuel-es-el-amigo-de-matilda-c68e2c.mp3"
+  },
+  "se llama": {
+   "maria_bogota": "audio/maria_bogota/se-llama-15871a.mp3",
+   "maria_paisa": "audio/maria_paisa/se-llama-15871a.mp3",
+   "raul": "audio/raul/se-llama-15871a.mp3"
+  },
+  "Se llama Buhísimo. Es de Salento.": {
+   "maria_bogota": "audio/maria_bogota/se-llama-buhisimo-es-de-salento-1a5a92.mp3",
+   "maria_paisa": "audio/maria_paisa/se-llama-buhisimo-es-de-salento-1a5a92.mp3",
+   "raul": "audio/raul/se-llama-buhisimo-es-de-salento-1a5a92.mp3"
+  },
+  "Se llama Valentina. Tiene doce años. Es de Salento.": {
+   "maria_bogota": "audio/maria_bogota/se-llama-valentina-tiene-doce-anos-es-de-9d4916.mp3",
+   "maria_paisa": "audio/maria_paisa/se-llama-valentina-tiene-doce-anos-es-de-9d4916.mp3",
+   "raul": "audio/raul/se-llama-valentina-tiene-doce-anos-es-de-9d4916.mp3"
+  },
+  "seis": {
+   "maria_bogota": "audio/maria_bogota/seis-ba1579.mp3",
+   "maria_paisa": "audio/maria_paisa/seis-ba1579.mp3",
+   "raul": "audio/raul/seis-ba1579.mp3"
+  },
+  "Seis, siete, ocho, nueve, diez: ¡fenomenal!": {
+   "maria_bogota": "audio/maria_bogota/seis-siete-ocho-nueve-diez-fenomenal-841f14.mp3",
+   "maria_paisa": "audio/maria_paisa/seis-siete-ocho-nueve-diez-fenomenal-841f14.mp3",
+   "raul": "audio/raul/seis-siete-ocho-nueve-diez-fenomenal-841f14.mp3"
+  },
+  "Seis, siete, ocho, nueve, diez.": {
+   "buho_abuelo": "audio/buho_abuelo/seis-siete-ocho-nueve-diez-fa26b1.mp3",
+   "buho_profesor": "audio/buho_profesor/seis-siete-ocho-nueve-diez-fa26b1.mp3",
+   "maria_bogota": "audio/maria_bogota/seis-siete-ocho-nueve-diez-fa26b1.mp3",
+   "maria_paisa": "audio/maria_paisa/seis-siete-ocho-nueve-diez-fa26b1.mp3",
+   "raul": "audio/raul/seis-siete-ocho-nueve-diez-fa26b1.mp3"
+  },
+  "Seis, siete. Seis, siete, ocho.": {
+   "maria_bogota": "audio/maria_bogota/seis-siete-seis-siete-ocho-62e53c.mp3",
+   "maria_paisa": "audio/maria_paisa/seis-siete-seis-siete-ocho-62e53c.mp3",
+   "raul": "audio/raul/seis-siete-seis-siete-ocho-62e53c.mp3"
+  },
+  "siete": {
+   "maria_bogota": "audio/maria_bogota/siete-c0bdfc.mp3",
+   "maria_paisa": "audio/maria_paisa/siete-c0bdfc.mp3",
+   "raul": "audio/raul/siete-c0bdfc.mp3"
+  },
+  "soy · me llamo": {
+   "maria_bogota": "audio/maria_bogota/soy-me-llamo-c8a1fe.mp3",
+   "maria_paisa": "audio/maria_paisa/soy-me-llamo-c8a1fe.mp3",
+   "raul": "audio/raul/soy-me-llamo-c8a1fe.mp3"
+  },
+  "te llamas": {
+   "maria_bogota": "audio/maria_bogota/te-llamas-617779.mp3",
+   "maria_paisa": "audio/maria_paisa/te-llamas-617779.mp3",
+   "raul": "audio/raul/te-llamas-617779.mp3"
+  },
+  "Te llamas Samuel. Eres de Colombia.": {
+   "maria_bogota": "audio/maria_bogota/te-llamas-samuel-eres-de-colombia-a0f449.mp3",
+   "maria_paisa": "audio/maria_paisa/te-llamas-samuel-eres-de-colombia-a0f449.mp3",
+   "raul": "audio/raul/te-llamas-samuel-eres-de-colombia-a0f449.mp3"
+  },
+  "tengo": {
+   "maria_bogota": "audio/maria_bogota/tengo-fd3d44.mp3",
+   "maria_paisa": "audio/maria_paisa/tengo-fd3d44.mp3",
+   "raul": "audio/raul/tengo-fd3d44.mp3"
+  },
+  "Tengo el mapa.": {
+   "maria_bogota": "audio/maria_bogota/tengo-el-mapa-40e27c.mp3",
+   "maria_paisa": "audio/maria_paisa/tengo-el-mapa-40e27c.mp3",
+   "raul": "audio/raul/tengo-el-mapa-40e27c.mp3"
+  },
+  "Tengo, tienes, tiene.": {
+   "maria_bogota": "audio/maria_bogota/tengo-tienes-tiene-bf2df2.mp3",
+   "maria_paisa": "audio/maria_paisa/tengo-tienes-tiene-bf2df2.mp3",
+   "raul": "audio/raul/tengo-tienes-tiene-bf2df2.mp3"
+  },
+  "tiene": {
+   "maria_bogota": "audio/maria_bogota/tiene-5979ff.mp3",
+   "maria_paisa": "audio/maria_paisa/tiene-5979ff.mp3",
+   "raul": "audio/raul/tiene-5979ff.mp3"
+  },
+  "tienes": {
+   "maria_bogota": "audio/maria_bogota/tienes-114555.mp3",
+   "maria_paisa": "audio/maria_paisa/tienes-114555.mp3",
+   "raul": "audio/raul/tienes-114555.mp3"
+  },
+  "trece": {
+   "maria_bogota": "audio/maria_bogota/trece-0f72d7.mp3",
+   "maria_paisa": "audio/maria_paisa/trece-0f72d7.mp3",
+   "raul": "audio/raul/trece-0f72d7.mp3"
+  },
+  "treinta": {
+   "maria_bogota": "audio/maria_bogota/treinta-0f02d3.mp3",
+   "maria_paisa": "audio/maria_paisa/treinta-0f02d3.mp3",
+   "raul": "audio/raul/treinta-0f02d3.mp3"
+  },
+  "treinta y uno": {
+   "maria_bogota": "audio/maria_bogota/treinta-y-uno-78df53.mp3",
+   "maria_paisa": "audio/maria_paisa/treinta-y-uno-78df53.mp3",
+   "raul": "audio/raul/treinta-y-uno-78df53.mp3"
+  },
+  "Treinta, treinta y uno,": {
+   "maria_bogota": "audio/maria_bogota/treinta-treinta-y-uno-35848d.mp3",
+   "maria_paisa": "audio/maria_paisa/treinta-treinta-y-uno-35848d.mp3",
+   "raul": "audio/raul/treinta-treinta-y-uno-35848d.mp3"
+  },
+  "tres": {
+   "maria_bogota": "audio/maria_bogota/tres-0c9598.mp3",
+   "maria_paisa": "audio/maria_paisa/tres-0c9598.mp3",
+   "raul": "audio/raul/tres-0c9598.mp3"
+  },
+  "Tres, dos, uno… ¡cero!": {
+   "maria_bogota": "audio/maria_bogota/tres-dos-uno-cero-b7e33a.mp3",
+   "maria_paisa": "audio/maria_paisa/tres-dos-uno-cero-b7e33a.mp3",
+   "raul": "audio/raul/tres-dos-uno-cero-b7e33a.mp3"
+  },
+  "Tres, dos, uno… ¡Max!": {
+   "maria_bogota": "audio/maria_bogota/tres-dos-uno-max-f4497f.mp3",
+   "maria_paisa": "audio/maria_paisa/tres-dos-uno-max-f4497f.mp3",
+   "raul": "audio/raul/tres-dos-uno-max-f4497f.mp3"
+  },
+  "uno": {
+   "maria_bogota": "audio/maria_bogota/uno-81b6f5.mp3",
+   "maria_paisa": "audio/maria_paisa/uno-81b6f5.mp3",
+   "raul": "audio/raul/uno-81b6f5.mp3"
+  },
+  "Uno, dos, tres, cuatro, cinco.": {
+   "maria_bogota": "audio/maria_bogota/uno-dos-tres-cuatro-cinco-7d92d3.mp3",
+   "maria_paisa": "audio/maria_paisa/uno-dos-tres-cuatro-cinco-7d92d3.mp3",
+   "raul": "audio/raul/uno-dos-tres-cuatro-cinco-7d92d3.mp3"
+  },
+  "Uno, once. Dos, doce.": {
+   "maria_bogota": "audio/maria_bogota/uno-once-dos-doce-5f5b3b.mp3",
+   "maria_paisa": "audio/maria_paisa/uno-once-dos-doce-5f5b3b.mp3",
+   "raul": "audio/raul/uno-once-dos-doce-5f5b3b.mp3"
+  },
+  "Uno, tres, cinco, siete, nueve.": {
+   "maria_bogota": "audio/maria_bogota/uno-tres-cinco-siete-nueve-a49fe2.mp3",
+   "maria_paisa": "audio/maria_paisa/uno-tres-cinco-siete-nueve-a49fe2.mp3",
+   "raul": "audio/raul/uno-tres-cinco-siete-nueve-a49fe2.mp3"
+  },
+  "Valentina es la amiga de Matilda.": {
+   "maria_bogota": "audio/maria_bogota/valentina-es-la-amiga-de-matilda-3a311c.mp3",
+   "maria_paisa": "audio/maria_paisa/valentina-es-la-amiga-de-matilda-3a311c.mp3",
+   "raul": "audio/raul/valentina-es-la-amiga-de-matilda-3a311c.mp3"
+  },
+  "Valentina tiene doce años.": {
+   "maria_bogota": "audio/maria_bogota/valentina-tiene-doce-anos-fbd6fa.mp3",
+   "maria_paisa": "audio/maria_paisa/valentina-tiene-doce-anos-fbd6fa.mp3",
+   "raul": "audio/raul/valentina-tiene-doce-anos-fbd6fa.mp3"
+  },
+  "Valentina tiene doce años. Es de Salento.": {
+   "maria_bogota": "audio/maria_bogota/valentina-tiene-doce-anos-es-de-salento-b49ce2.mp3",
+   "maria_paisa": "audio/maria_paisa/valentina-tiene-doce-anos-es-de-salento-b49ce2.mp3",
+   "raul": "audio/raul/valentina-tiene-doce-anos-es-de-salento-b49ce2.mp3"
+  },
+  "veinte": {
+   "maria_bogota": "audio/maria_bogota/veinte-3b1b17.mp3",
+   "maria_paisa": "audio/maria_paisa/veinte-3b1b17.mp3",
+   "raul": "audio/raul/veinte-3b1b17.mp3"
+  },
+  "Veinte, diecinueve, dieciocho, diecisiete, dieciséis.": {
+   "maria_bogota": "audio/maria_bogota/veinte-diecinueve-dieciocho-diecisiete-d-75a9cf.mp3",
+   "maria_paisa": "audio/maria_paisa/veinte-diecinueve-dieciocho-diecisiete-d-75a9cf.mp3",
+   "raul": "audio/raul/veinte-diecinueve-dieciocho-diecisiete-d-75a9cf.mp3"
+  },
+  "Veinte, veintiuno, veintidós…": {
+   "maria_bogota": "audio/maria_bogota/veinte-veintiuno-veintidos-ea5e4a.mp3",
+   "maria_paisa": "audio/maria_paisa/veinte-veintiuno-veintidos-ea5e4a.mp3",
+   "raul": "audio/raul/veinte-veintiuno-veintidos-ea5e4a.mp3"
+  },
+  "veinticinco": {
+   "maria_bogota": "audio/maria_bogota/veinticinco-3c9d50.mp3",
+   "maria_paisa": "audio/maria_paisa/veinticinco-3c9d50.mp3",
+   "raul": "audio/raul/veinticinco-3c9d50.mp3"
+  },
+  "veinticuatro": {
+   "maria_bogota": "audio/maria_bogota/veinticuatro-ab6774.mp3",
+   "maria_paisa": "audio/maria_paisa/veinticuatro-ab6774.mp3",
+   "raul": "audio/raul/veinticuatro-ab6774.mp3"
+  },
+  "veintidós": {
+   "maria_bogota": "audio/maria_bogota/veintidos-1a4184.mp3",
+   "maria_paisa": "audio/maria_paisa/veintidos-1a4184.mp3",
+   "raul": "audio/raul/veintidos-1a4184.mp3"
+  },
+  "veintinueve": {
+   "maria_bogota": "audio/maria_bogota/veintinueve-4a3f5b.mp3",
+   "maria_paisa": "audio/maria_paisa/veintinueve-4a3f5b.mp3",
+   "raul": "audio/raul/veintinueve-4a3f5b.mp3"
+  },
+  "Veintinueve, treinta, treinta y uno.": {
+   "buho_abuelo": "audio/buho_abuelo/veintinueve-treinta-treinta-y-uno-c3b668.mp3",
+   "buho_profesor": "audio/buho_profesor/veintinueve-treinta-treinta-y-uno-c3b668.mp3",
+   "maria_bogota": "audio/maria_bogota/veintinueve-treinta-treinta-y-uno-c3b668.mp3",
+   "maria_paisa": "audio/maria_paisa/veintinueve-treinta-treinta-y-uno-c3b668.mp3",
+   "raul": "audio/raul/veintinueve-treinta-treinta-y-uno-c3b668.mp3"
+  },
+  "veintiocho": {
+   "maria_bogota": "audio/maria_bogota/veintiocho-650b98.mp3",
+   "maria_paisa": "audio/maria_paisa/veintiocho-650b98.mp3",
+   "raul": "audio/raul/veintiocho-650b98.mp3"
+  },
+  "veintiséis": {
+   "maria_bogota": "audio/maria_bogota/veintiseis-a11580.mp3",
+   "maria_paisa": "audio/maria_paisa/veintiseis-a11580.mp3",
+   "raul": "audio/raul/veintiseis-a11580.mp3"
+  },
+  "Veintiséis, veintisiete, veintiocho, veintinueve, treinta.": {
+   "maria_bogota": "audio/maria_bogota/veintiseis-veintisiete-veintiocho-veinti-0ce07a.mp3",
+   "maria_paisa": "audio/maria_paisa/veintiseis-veintisiete-veintiocho-veinti-0ce07a.mp3",
+   "raul": "audio/raul/veintiseis-veintisiete-veintiocho-veinti-0ce07a.mp3"
+  },
+  "veintisiete": {
+   "maria_bogota": "audio/maria_bogota/veintisiete-ab0f74.mp3",
+   "maria_paisa": "audio/maria_paisa/veintisiete-ab0f74.mp3",
+   "raul": "audio/raul/veintisiete-ab0f74.mp3"
+  },
+  "veintitrés": {
+   "maria_bogota": "audio/maria_bogota/veintitres-2397db.mp3",
+   "maria_paisa": "audio/maria_paisa/veintitres-2397db.mp3",
+   "raul": "audio/raul/veintitres-2397db.mp3"
+  },
+  "veintiuno": {
+   "maria_bogota": "audio/maria_bogota/veintiuno-509f38.mp3",
+   "maria_paisa": "audio/maria_paisa/veintiuno-509f38.mp3",
+   "raul": "audio/raul/veintiuno-509f38.mp3"
+  },
+  "Veintiuno, veintidós, veintitrés, veinticuatro, veinticinco.": {
+   "buho_abuelo": "audio/buho_abuelo/veintiuno-veintidos-veintitres-veinticua-cb9ed9.mp3",
+   "buho_profesor": "audio/buho_profesor/veintiuno-veintidos-veintitres-veinticua-cb9ed9.mp3",
+   "maria_bogota": "audio/maria_bogota/veintiuno-veintidos-veintitres-veinticua-cb9ed9.mp3",
+   "maria_paisa": "audio/maria_paisa/veintiuno-veintidos-veintitres-veinticua-cb9ed9.mp3",
+   "raul": "audio/raul/veintiuno-veintidos-veintitres-veinticua-cb9ed9.mp3"
   }
  }
 }

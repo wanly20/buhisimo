@@ -117,7 +117,14 @@ function playClip(url, slow) {
       player.onerror = () => finish(false);
       const p = player.play();
       if (p?.catch) p.catch(() => finish(false));
-      setTimeout(() => { if (token === playToken) finish(true); }, 12000);
+      // Safety net in case "ended" never fires: the clip's own length (slow spelt lines last up to
+      // ~12 s, ~16 s at the slow speed) plus a margin; 20 s until the length is known.
+      let guard = setTimeout(() => { if (token === playToken) finish(true); }, 20000);
+      player.onloadedmetadata = () => {
+        if (token !== playToken || !isFinite(player.duration)) return;
+        clearTimeout(guard);
+        guard = setTimeout(() => { if (token === playToken) finish(true); }, (player.duration / player.playbackRate) * 1000 + 3000);
+      };
     } catch {
       finish(false);
     }
@@ -247,15 +254,39 @@ export function fold(s) {
     .replace(/[¡!¿?.,;:"“”'‘’…—–]/g, " ").replace(/\s+/g, " ").trim();
 }
 
-/** Lenient speech match: every expected word appears, in order. */
+/** Lenient speech match: every expected word appears, in order.
+ *  Numbers must all be there, in order, whether the recogniser wrote them
+ *  as words or digits ("cinco, cuatro… ¡cero!" may come back as "543210"). */
 export function speechMatches(expected, heardList) {
-  const want = fold(expected).split(" ");
+  const want = splitNumbers(fold(expected));
   return heardList.some((h) => {
-    const got = fold(h).split(" ");
+    const got = splitNumbers(fold(h));
+    if (got.digits !== want.digits) return false;
     let j = 0;
-    for (const w of got) if (w === want[j] || (want[j] && similar(w, want[j]))) j++;
-    return j >= want.length;
+    for (const w of got.words) if (w === want.words[j] || (want.words[j] && similar(w, want.words[j]))) j++;
+    return j >= want.words.length;
   });
+}
+
+const UNITS = ["cero", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve",
+  "diez", "once", "doce", "trece", "catorce", "quince", "dieciseis", "diecisiete", "dieciocho", "diecinueve",
+  "veinte", "veintiuno", "veintidos", "veintitres", "veinticuatro", "veinticinco", "veintiseis", "veintisiete", "veintiocho", "veintinueve"];
+const TENS = { treinta: 30, cuarenta: 40, cincuenta: 50, sesenta: 60, setenta: 70, ochenta: 80, noventa: 90 };
+const NUMBER = { ...Object.fromEntries(UNITS.map((w, n) => [w, n])), un: 1, una: 1, veintiun: 21, ...TENS, cien: 100 };
+
+/** Folded text → its non-number words, plus every number in it as one digit string. */
+function splitNumbers(folded) {
+  const t = folded.split(" ").filter(Boolean), words = [];
+  let digits = "";
+  for (let i = 0; i < t.length; i++) {
+    if (/^\d+$/.test(t[i])) { digits += t[i]; continue; }
+    if (!(t[i] in NUMBER)) { words.push(t[i]); continue; }
+    let n = NUMBER[t[i]];
+    // treinta y cinco
+    if (t[i] in TENS && t[i + 1] === "y" && NUMBER[t[i + 2]] >= 1 && NUMBER[t[i + 2]] <= 9) { n += NUMBER[t[i + 2]]; i += 2; }
+    digits += n;
+  }
+  return { words, digits };
 }
 
 function similar(a, b) {

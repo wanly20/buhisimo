@@ -53,7 +53,7 @@
    "max": "audio/max/hola-buhisimo-hola-matilda-59cfc6.mp3"
   },
   "¿Cómo se escribe Max? — ¡Eme, a, equis! ¡Fenomenal!": {
-   "max": "audio/max/como-se-escribe-max-eme-a-equis-fenomena-d53c0f.mp3"
+   "max": "audio/max/como-se-escribe-max-eme-a-equis-fenomena-d53c0f-slow.mp3"
   },
   "Mal… muy mal.": {
    "max": "audio/max/mal-muy-mal-7c1014.mp3"
@@ -80,13 +80,64 @@
    "max": "audio/max/fantastico-gracias-d71f96.mp3"
   },
   "¿Cómo se escribe Max? — Eme, a, equis.": {
-   "max": "audio/max/como-se-escribe-max-eme-a-equis-30eccd.mp3"
+   "max": "audio/max/como-se-escribe-max-eme-a-equis-30eccd-slow.mp3"
   },
   "¿Max es de Chile?": {
    "max": "audio/max/max-es-de-chile-de9ef4.mp3"
   },
   "¿Max es de Chile? — No, es de Australia.": {
    "max": "audio/max/max-es-de-chile-no-es-de-australia-7187b1.mp3"
+  },
+  "¡Gracias, Buhísimo!": {
+   "max": "audio/max/gracias-buhisimo-a36368.mp3"
+  },
+  "¡Trece!": {
+   "max": "audio/max/trece-a92c4b.mp3"
+  },
+  "¿Cómo se llama él? — Se llama Samuel.": {
+   "max": "audio/max/como-se-llama-el-se-llama-samuel-836507.mp3"
+  },
+  "¿Cómo se llama?": {
+   "max": "audio/max/como-se-llama-b67ffd.mp3"
+  },
+  "¿El carnet de identidad? … ¡Fatal!": {
+   "max": "audio/max/el-carnet-de-identidad-fatal-0aa67c.mp3"
+  },
+  "¿Seis? No, siete.": {
+   "max": "audio/max/seis-no-siete-707259.mp3"
+  },
+  "¿Siete? — No, seis.": {
+   "max": "audio/max/siete-no-seis-7a4a5c.mp3"
+  },
+  "¿Tienes mi carnet de identidad?": {
+   "max": "audio/max/tienes-mi-carnet-de-identidad-0cc3bf.mp3"
+  },
+  "¿Veinticuatro? No, veinticinco.": {
+   "max": "audio/max/veinticuatro-no-veinticinco-c1d975.mp3"
+  },
+  "¿Veintiséis? No, veintisiete.": {
+   "max": "audio/max/veintiseis-no-veintisiete-ff0447.mp3"
+  },
+  "Cinco, cuatro, tres, dos, uno… ¡cero!": {
+   "max": "audio/max/cinco-cuatro-tres-dos-uno-cero-e2c29e.mp3"
+  },
+  "Diez, nueve, ocho, siete, seis, cinco, cuatro, tres, dos, uno… ¡cero! ¡Max!": {
+   "max": "audio/max/diez-nueve-ocho-siete-seis-cinco-cuatro--b98d29.mp3"
+  },
+  "Me llamo Max. Tengo trece años. Soy de Melbourne.": {
+   "max": "audio/max/me-llamo-max-tengo-trece-anos-soy-de-mel-1cd7a7.mp3"
+  },
+  "Mi lugar de nacimiento es Melbourne. Tengo trece años.": {
+   "max": "audio/max/mi-lugar-de-nacimiento-es-melbourne-teng-759a5d.mp3"
+  },
+  "Tengo el mapa.": {
+   "max": "audio/max/tengo-el-mapa-40e27c.mp3"
+  },
+  "Tres, dos, uno… ¡cero!": {
+   "max": "audio/max/tres-dos-uno-cero-b7e33a.mp3"
+  },
+  "Tres, dos, uno… ¡Max!": {
+   "max": "audio/max/tres-dos-uno-max-f4497f.mp3"
   }
  }
 }
