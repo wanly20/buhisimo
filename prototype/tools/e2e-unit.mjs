@@ -1,4 +1,4 @@
-// End-to-end test for Units 1.1 and 1.2 of the prototype (headless Chromium only,
+// End-to-end test for Units 1.1, 1.2 and 1.3 of the prototype (headless Chromium only,
 // software rendering, never the GPU, never a visible window).
 //
 // Setup (outside the repo):  mkdir -p $PW && cd $PW && npm i playwright-core@1.48.2
@@ -9,7 +9,8 @@
 // (study map with names, questions without, 44px targets for small islands at 390×844), every 1.1 lesson played start to finish (keyboard on the Chromebook size, with
 // wrong answers and the retry), "fits 1366×768 without scrolling" for every step, Review
 // (spaced repetition + My knowledge), the story, Radio Búho karaoke highlighting, the
-// phone tab bar, the progress file, offline mode and the service worker.
+// phone tab bar, the progress file, offline mode and the service worker. Section U is Unit 1.2;
+// section V is Unit 1.3 (numbers, number songs and their karaoke, Number Invaders, the ID card).
 import { createRequire } from "node:module";
 import { mkdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -105,7 +106,58 @@ async function pickByKey(page, selector, test, { useKeys = true } = {}) {
 async function answer(page, s, { wrong = false, keys = true } = {}) {
   const t = s.type;
   const enter = async () => { if (keys) await page.keyboard.press("Enter"); else await page.click('.lesson-foot [data-act="main"]'); };
-  if (["intro", "table", "storyintro", "storyline", "mapstudy", "letters", "clip", "transcript"].includes(t)) { await enter(); return "next"; }
+  if (["intro", "table", "storyintro", "storyline", "mapstudy", "letters", "clip", "transcript", "numcard", "pattern", "song", "songset"].includes(t)) { await enter(); return "next"; }
+  // ---- Unit 1.3
+  if (t === "numpick") {
+    await pickByKey(page, ".lesson-body .ex-numpick .option", wrong ? `(b) => +b.dataset.oi !== ${s.answer}` : `(b) => +b.dataset.oi === ${s.answer}`, { useKeys: keys });
+    await wait(page, 150); await enter(); return "graded";
+  }
+  if (t === "dictation") {
+    for (const [k, n] of s.answer.entries()) {
+      const sel = `.lesson-body .ex-dictation .dict-input[data-k="${k}"]`;
+      const v = String(wrong && k === 0 ? (n + 1) % 32 : n);
+      if (keys) { await page.focus(sel); await page.keyboard.type(v); if (v.length < 2 && k < s.answer.length - 1) await page.keyboard.press("Space"); }
+      else await page.fill(sel, v);
+    }
+    await wait(page, 150); await enter(); return "graded";
+  }
+  if (t === "count") {
+    for (const n of s.seq) {
+      const idx = await page.evaluate((n) => [...document.querySelectorAll(".lesson-body .ex-count .count-tile")].findIndex((b) => +b.dataset.n === n), n);
+      if (keys && idx < 9) await page.keyboard.press(String(idx + 1));
+      else await page.locator(".lesson-body .ex-count .count-tile").nth(idx).click();
+      await wait(page, 260);
+    }
+    await wait(page, 1200); return "graded";
+  }
+  if (t === "invaders") {
+    for (let g = 0; g < 40; g++) {
+      const a = await page.evaluate(() => document.querySelector(".lesson-body .ex-invaders")?.dataset.answer);
+      if (a == null) break;
+      const lane = await page.evaluate((a) => [...document.querySelectorAll(".lesson-body .inv-lane")].findIndex((l) => l.querySelector(`.inv-ship[data-n="${a}"]`)), a);
+      if (keys) await page.keyboard.press(String(lane + 1));
+      else await page.locator(`.lesson-body .inv-ship[data-n="${a}"]`).click();
+      await wait(page, 650);
+    }
+    await wait(page, 700); return "graded";
+  }
+  if (t === "idcard" && s.mode === "read") {
+    await pickByKey(page, ".lesson-body .ex-idcard .option", wrong ? `(b) => +b.dataset.oi !== ${s.answer}` : `(b) => +b.dataset.oi === ${s.answer}`, { useKeys: keys });
+    await wait(page, 150); await enter(); return "graded";
+  }
+  if (t === "idcard") {
+    let first = true;
+    for (const [c, card] of s.cards.entries()) for (const [k, f] of card.fields.entries()) {
+      const bad = wrong && first;
+      first = false;
+      if (f.kind === "chips") {
+        const o = bad ? f.optionsEs.findIndex((x) => x !== f.valueEs) : f.optionsEs.indexOf(f.valueEs);
+        await page.click(`.lesson-body .id-chip[data-c="${c}"][data-f="${k}"][data-o="${o}"]`);
+      } else await page.fill(`.lesson-body .id-input[data-c="${c}"][data-f="${k}"]`, bad ? "no sé" : String(f.kind === "digits" ? f.value : f.valueEs));
+      await wait(page, 100);
+    }
+    await wait(page, 150); await enter(); return "graded";
+  }
   if (t === "letterpick") {
     await pickByKey(page, ".lesson-body .ex-letterpick .option", wrong ? `(b) => +b.dataset.oi !== ${s.answer}` : `(b) => +b.dataset.oi === ${s.answer}`, { useKeys: keys });
     await wait(page, 150); await enter(); return "graded";
@@ -147,7 +199,7 @@ async function answer(page, s, { wrong = false, keys = true } = {}) {
     }
     await enter(); return "graded";
   }
-  if (t === "type" || t === "passport" || t === "spell") {
+  if (t === "type" || t === "passport" || t === "spell" || t === "numtype") {
     const text = wrong ? "no sé" : s.answerEs;
     await page.fill(".lesson-body .type-input", text);
     await wait(page, 100); await enter(); return "graded";
@@ -180,6 +232,19 @@ async function answer(page, s, { wrong = false, keys = true } = {}) {
   throw new Error(`unknown step type ${t}`);
 }
 
+/** Screenshot name suffix for the Unit 1.3 variants of a step type (one picture of each). */
+function variant13(s) {
+  if (s.type === "intro") return s.digit != null ? "-digit" : s.idcard ? "-card" : "";
+  if (s.type === "song") return `${s.numerals ? "-digits" : "-words"}${["numeros_dos_doce_veintidos"].includes(s.song) ? "-soon" : s.linesEs.length > 4 ? "-long" : ""}`;
+  if (s.type === "count") return s.seq[1] < s.seq[0] ? "-down" : "-up";
+  if (s.type === "numcard") return s.study ? "-study" : s.nums.length > 2 ? "" : "-pair";
+  if (s.type === "dictation") return s.answer.length > 6 ? "-long" : "";
+  if (s.type === "idcard") return s.mode === "read" ? "-read" : s.cards.length > 1 ? "-radio3" : s.episode ? "-radio" : s.cards[0].fields.some((f) => f.kind === "text") ? "-typed" : "-chips";
+  if (s.type === "choose" && s.optionsArt) return "-people";
+  if (s.type === "storyline") return `-${s.line}`;
+  return "";
+}
+
 /** Play the lesson that is on screen to the end. Returns stats. */
 async function playLesson(page, tag, { keys = true, wrongOnce = true, checkFit = false, shotTypes = new Set(), shotPrefix = "" } = {}) {
   const seen = {};
@@ -192,14 +257,15 @@ async function playLesson(page, tag, { keys = true, wrongOnce = true, checkFit =
     const s = st.step;
     seen[s.type] = (seen[s.type] || 0) + 1;
     await collectBadges(page, tag, s);
-    // 1.1 lines are recorded: listening must be real. 1.2 isn't recorded yet: read-and-choose is expected.
-    if (s.type === "listen" && !tag.includes("1.2")) { if (/\bex-listen\b/.test(st.cls)) listenSteps.audio++; else listenSteps.readOnly.push(`${tag} ${s.id}`); }
-    if (s.type === "listen" && tag.includes("1.2")) listenSteps.read12++;
+    // 1.1 lines are recorded: listening must be real. 1.2 and 1.3 aren't recorded yet: read-and-choose is expected.
+    const later = /1\.[23]/.test(tag);
+    if (s.type === "listen" && !later) { if (/\bex-listen\b/.test(st.cls)) listenSteps.audio++; else listenSteps.readOnly.push(`${tag} ${s.id}`); }
+    if (s.type === "listen" && later) listenSteps.read12++;
     if (checkFit) { const o = await overflow(page); if (o > 1) fitIssues.push(`${s.id} (${s.type}) +${o}px`); }
-    const shotName = `${shotPrefix}${s.type}${s.lines ? "-order" : ""}${s.time ? "-scene" : ""}${s.face ? "-face" : ""}${s.optionsFace ? "-faces" : ""}${s.type === "radio" ? `-${s.mode}` : ""}`;
+    const shotName = `${shotPrefix}${s.type}${s.lines ? "-order" : ""}${s.time ? "-scene" : ""}${s.face ? "-face" : ""}${s.optionsFace ? "-faces" : ""}${s.type === "radio" ? `-${s.mode}` : ""}${variant13(s)}`;
     if (shotTypes.has(s.type) && !shots.has(`${OUT}/${shotName}.png`)) await shot(page, shotName);
     if (s.retry && s.id === wrongId) retried = true;
-    const canWrong = ["pick", "choose", "gap", "maptap", "tiles", "type", "listen", "letterpick", "spell", "radio"].includes(s.type) && !s.retry;
+    const canWrong = ["pick", "choose", "gap", "maptap", "tiles", "type", "listen", "letterpick", "spell", "radio", "numpick", "numtype", "dictation", "idcard"].includes(s.type) && !s.retry;
     const doWrong = !wrongDone && canWrong;
     const res = await answer(page, s, { wrong: doWrong, keys });
     if (res === "graded") {
@@ -212,7 +278,8 @@ async function playLesson(page, tag, { keys = true, wrongOnce = true, checkFit =
       }
       if (doWrong) { ok(sh === "wrong", `${tag}: a wrong answer shows the kind "not yet" sheet (${s.type})`); wrongDone = true; wrongId = s.id; }
       else if (sh !== "correct") errors.push(`${tag}: step ${s.id} (${s.type}) expected correct, got ${sh}`);
-      if (shotTypes.has(`${s.type}:feedback`) && !shots.has(`${OUT}/${shotPrefix}${s.type}-feedback.png`)) await shot(page, `${shotPrefix}${s.type}-feedback`);
+      const fb = `${shotPrefix}${s.type}${variant13(s)}-feedback${doWrong ? "-wrong" : ""}`;
+      if (shotTypes.has(`${s.type}:feedback`) && !shots.has(`${OUT}/${fb}.png`)) await shot(page, fb);
       if (keys) await page.keyboard.press("Enter"); else await page.click('.feedback [data-act="continue"]');
     }
   }
@@ -729,6 +796,159 @@ if (RUN("U")) {
   }
 }
 
+// ===================================================================== V. Unit 1.3 «Mi carnet de identidad»
+const U13 = Array.from({ length: 20 }, (_, i) => `1.3-${i + 1}`);
+const NEW13 = new Set(["numcard", "numpick", "numtype", "dictation", "count", "pattern", "invaders", "song", "songset", "idcard", "intro", "choose", "storyintro", "storyline", "transcript", "clip", "tiles",
+  "numpick:feedback", "numtype:feedback", "dictation:feedback", "count:feedback", "invaders:feedback", "idcard:feedback", "choose:feedback"]);
+const all12Done = () => { const c = all11Done(); for (let i = 1; i <= 13; i++) c[`1.2-${i}`] = { xp: 10, accuracy: 100, at: Date.now(), plays: 1 }; return c; };
+log("V. Unit 1.3: locked after 1.2, every lesson in order (keyboard, 1366×768), the songs' karaoke, every lesson by touch (390×844), the Radio tab");
+if (RUN("V")) {
+  // V1. Chromebook, keyboard: 1.3 opens only after the 1.2 check. (V13=d or V13=m runs one half only.)
+  if (process.env.V13 !== "m") {
+    const { ctx, page } = await newPage({ width: 1366, height: 768 });
+    await page.goto(BASE + "index.html");
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+    await wait(page, 1300);
+    ok(await page.locator('.node[data-unit="1.3a"]').count() === 11 && await page.locator('.node[data-unit="1.3b"]').count() === 9, "the 1.3 path: 11 nodes in part A, 9 in part B");
+    ok(await page.locator('.node[data-unit^="1.3"].is-locked').count() === 20, "fresh start: all of 1.3 is locked");
+    await page.evaluate((c) => localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ completed: c })), all11Done());
+    await page.goto(BASE + "index.html#/lesson/1.3-1");
+    await page.reload();
+    await wait(page, 1300);
+    ok(await page.locator(".screen.lesson").count() === 0, "#/lesson/1.3-1 is refused while 1.2 isn't done");
+    await page.evaluate((c) => localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ completed: c })), all12Done());
+    await page.goto(BASE + "index.html#/");
+    await page.reload();
+    await wait(page, 1300);
+    ok(await page.locator('.node[data-node="1.3-1"].is-current').count() === 1 && await page.locator('.node[data-unit^="1.3"].is-locked').count() === 19, "after the 1.2 check, 1.3 L1 is current and the rest of 1.3 is locked");
+    await page.evaluate(() => document.querySelector('.node[data-node="1.3-1"]').scrollIntoView({ block: "center" }));
+    await wait(page, 400);
+    await shot(page, "v-d-path-1.3a");
+    for (const [i, id] of U13.entries()) {
+      await page.goto(BASE + "index.html#/");
+      await wait(page, 900);
+      const node = page.locator(`.node[data-node="${id}"]`);
+      ok(await node.evaluate((n) => n.classList.contains("is-current")), `${id} is the current node`);
+      await node.focus();
+      await page.keyboard.press("Enter");
+      await wait(page, 450);
+      if (id === "1.3-12") await shot(page, "v-d-popover-1.3-12");
+      await page.keyboard.press("Enter");
+      await wait(page, 1300);
+      const r = await playLesson(page, id, { keys: true, wrongOnce: true, checkFit: true, shotTypes: NEW13, shotPrefix: "v-d-" });
+      ok(r.complete, `${id} played to the end with the keyboard (${Object.entries(r.seen).map(([k, v]) => `${k}×${v}`).join(", ")})`);
+      ok(r.retried, `${id}: the missed question came back later`);
+      ok(r.fitIssues.length === 0, `${id}: every step fits 1366×768 without scrolling${r.fitIssues.length ? ": " + r.fitIssues.join("; ") : ""}`);
+      await wait(page, 700);
+      const title = await page.locator(".complete-title").innerText().catch(() => "");
+      if (id === "1.3-11") ok(/part A complete/i.test(title), `the 1.3a check closes part A (“${title}”)`);
+      if (id === "1.3-20") ok(/Unit 1\.3 complete/.test(title), `the 1.3 check closes the unit (“${title}”)`);
+      if (["1.3-11", "1.3-18", "1.3-20"].includes(id)) await shot(page, `v-d-complete-${id}`);
+      await page.keyboard.press("Enter");
+      await wait(page, 1200);
+      ok(await page.locator(`.node[data-node="${id}"].is-done`).count() === 1, `${id} shows as done`);
+    }
+    await page.evaluate(() => document.querySelector('.node[data-node="1.3-15"]').scrollIntoView({ block: "center" }));
+    await wait(page, 300);
+    await shot(page, "v-d-path-1.3b-done");
+    const prog = await page.evaluate(() => JSON.parse(localStorage.getItem("buhisimo.prototype.v1")));
+    ok(["me-llamo", "num-0", "num-7", "num-31", "anos", "el-carnet", "el-amigo"].every((k) => prog.items[k]), "Review has met the 1.3 words and numbers");
+    // Review: number items come back as number picks / digit → word.
+    await page.evaluate(() => { const s = JSON.parse(localStorage.getItem("buhisimo.prototype.v1")); for (const id of ["num-6", "num-7", "num-26", "num-27"]) s.items[id] = { ...s.items[id], due: Date.now() - 864e5, box: 0, wrong: 2 }; localStorage.setItem("buhisimo.prototype.v1", JSON.stringify(s)); });
+    await page.goto(BASE + "index.html#/review");
+    await page.reload();
+    await wait(page, 1200);
+    ok(await page.locator(".kb-lesson").filter({ hasText: "Veintiséis… treinta y uno" }).count() === 1, "My knowledge lists the 1.3 lessons");
+    ok(!(await page.locator(".view-review").innerText()).match(/(^|\n)años(\n|$)/), "My knowledge never shows años on its own");
+    await shot(page, "v-d-knowledge");
+    await page.click("[data-start-review]");
+    await wait(page, 1300);
+    const rr = await playLesson(page, "review-1.3", { keys: true, wrongOnce: false, checkFit: true, shotTypes: new Set(["numpick", "numtype"]), shotPrefix: "v-d-review-" });
+    ok(rr.complete && ((rr.seen.numpick || 0) + (rr.seen.numtype || 0)) > 0, `a review session with the due numbers asks them as numbers (${Object.entries(rr.seen).map(([k, v]) => `${k}×${v}`).join(", ")})`);
+    // The songs: real audio, words lit on the aligned timing, letras and con números; the placeholder says "Song coming soon".
+    await page.goto(BASE + "index.html#/");
+    await wait(page, 800);
+    const karaoke = await page.evaluate(async () => {
+      const { songPlayer } = await import("./js/exercises-1-3.js");
+      const songs = (await (await fetch("audio/songs/songs.json")).json()).songs;
+      const at = async (song, numerals, line, word) => {
+        const p = songPlayer({ song, linesEs: [], numerals });
+        document.body.appendChild(p.el);
+        await p.ready;
+        p.play();
+        await new Promise((r) => setTimeout(r, 500));
+        const w = songs[song].words.find((x) => x[0] === line && x[1] === word);
+        // Seek just inside the word (the song keeps playing, so look at once).
+        p.audio.currentTime = w[2] + 0.03;
+        await new Promise((r) => setTimeout(r, 120));
+        const now = [...p.el.querySelectorAll(".clip-w.is-now")].map((x) => x.textContent);
+        const playing = !p.audio.paused && p.audio.currentTime > 0;
+        p.destroy(); p.el.remove();
+        return { now, playing };
+      };
+      const soon = songPlayer({ song: "numeros_dos_doce_veintidos", linesEs: ["Uno, dos, tres,"] });
+      document.body.appendChild(soon.el);
+      const rec = await soon.ready;
+      const soonText = soon.el.textContent;
+      soon.destroy(); soon.el.remove();
+      return { words: await at("numeros_1_10", false, 2, 1), digits: await at("numeros_20_31", true, 3, 2), digits2: await at("numeros_uno_once", true, 0, 3), soon: { rec, soonText } };
+    });
+    ok(karaoke.words.playing && karaoke.words.now.join() === "siete,", `«1 to 10» plays and lights up “siete,” at its sung time (${JSON.stringify(karaoke.words)})`);
+    ok(karaoke.digits.playing && karaoke.digits.now.join() === "¡31!", `«20 to 31» con números lights up ¡31! for «¡treinta y uno!» (${JSON.stringify(karaoke.digits)})`);
+    ok(karaoke.digits2.now.join() === "12.", `«Uno, once · Dos, doce» con números shows doce as 12 (${JSON.stringify(karaoke.digits2)})`);
+    ok(karaoke.soon.rec === false && /Song coming soon/.test(karaoke.soon.soonText), "«Dos, doce, veintidós» (not chosen yet) says “Song coming soon”");
+    // The Radio tab: the 1.3 episodes, with the number songs.
+    await page.goto(BASE + "index.html#/radio");
+    await wait(page, 1500);
+    ok(await page.locator(".radio-ep-chip:not([disabled])").count() === 5, "Radio tab: the demo, two 1.2 and two 1.3 episodes");
+    await page.click('.radio-ep-chip[data-ep="3"]');
+    await wait(page, 600);
+    ok(await page.locator(".radio-ep .radio-songs [data-song]").count() === 6, "the numbers episode lists the six songs");
+    await page.click('.radio-ep [data-song="4"]');
+    await wait(page, 2500);
+    ok(await page.locator(".radio-ep .radio-song .clip-w.is-now, .radio-ep .radio-song .clip-w.is-done").count() > 0, "a song plays in the Radio tab with its words lighting up");
+    await shot(page, "v-d-radio-tab-songs");
+    await page.click('.radio-ep-chip[data-ep="4"]');
+    await wait(page, 600);
+    ok(await page.locator(".radio-ep .k-line").count() === 6, "the ID-card episode: 6 lines to read");
+    await page.goto(BASE + "index.html#/profile");
+    await wait(page, 900);
+    ok((await page.locator(".me-card").filter({ hasText: "Unit 1.3" }).innerText()).includes("20 of 20"), "Me: Unit 1.3, 20 of 20 lessons done");
+    await shot(page, "v-d-me");
+    await ctx.close();
+  }
+  // V2. Phone, touch: every 1.3 lesson.
+  if (process.env.V13 !== "d") {
+    const { ctx, page } = await newPage({ width: 390, height: 844 }, { touch: true });
+    await page.goto(BASE + "index.html");
+    await page.evaluate(() => { localStorage.clear(); localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ unlockAll: true })); });
+    await page.reload();
+    await wait(page, 1000);
+    await page.evaluate(() => document.querySelector('.node[data-node="1.3-1"]').scrollIntoView({ block: "center" }));
+    await wait(page, 300);
+    await shot(page, "v-m-path-1.3a");
+    for (const id of U13) {
+      await page.goto(BASE + `index.html#/lesson/${id}`);
+      await wait(page, 1300);
+      const r = await playLesson(page, `phone ${id}`, { keys: false, wrongOnce: true, shotTypes: NEW13, shotPrefix: "v-m-" });
+      ok(r.complete, `phone: ${id} played by touch (${Object.keys(r.seen).join(", ")})`);
+      const hs = await page.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth);
+      ok(hs <= 0, `phone: ${id} has no horizontal scrolling`);
+      await page.click("[data-done]");
+      await wait(page, 900);
+    }
+    await page.goto(BASE + "index.html#/radio");
+    await wait(page, 1500);
+    await page.click('.radio-ep-chip[data-ep="3"]');
+    await wait(page, 500);
+    await page.click('.radio-ep [data-song="0"]');
+    await wait(page, 2500);
+    await shot(page, "v-m-radio-tab-songs");
+    await ctx.close();
+  }
+}
+
 // ===================================================================== K. capital letters in typed answers
 log("K. Capital letters: names and sentences need them; languages, days and months don't");
 if (RUN("K")) for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width: 390, height: 844, tag: "m" }]) {
@@ -782,4 +1002,4 @@ if (RUN("E")) {
 await browser.close();
 log(`\nScreenshots: ${shots.size} in ${OUT}`);
 if (errors.length) { log(`\n✗ ${errors.length} problem(s):\n  ` + errors.join("\n  ")); process.exit(1); }
-log("\n✓ PASS: Units 1.1 and 1.2 end to end");
+log("\n✓ PASS: Units 1.1, 1.2 and 1.3 end to end");

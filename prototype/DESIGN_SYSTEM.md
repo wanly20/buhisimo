@@ -195,7 +195,26 @@ All 13 lessons of Unit 1.2 «¿Qué tal?» (`unit-1-2.js`, `docs/build_plan_1.2.
 | Transcript | `.ex-transcript`, `.tr-line` | Listen again with the words: tap a line, EN toggle. |
 | Radio tab episodes | `.radio-eps`, `.radio-ep-chip` | The 1.1 demo plus each lesson episode, padlocked until its lesson is open. |
 
-## 12. Files
+## 12. Unit 1.3 level (26 October 2026)
+
+All 20 lessons of Unit 1.3 «Mi carnet de identidad» (`unit-1-3.js`, `docs/build_plan_1.3.md`), shown on the path as two map sections (1.3a L1–L11, 1.3b L12–L20), on the same runner; 1.3 L1 opens after the 1.2 check. New pieces, in `css/unit-1-3.css` (`js/exercises-1-3.js`, `js/art.js`, `js/numbers.js`):
+
+| Piece | Class | Notes |
+|---|---|---|
+| Digits | `.art-digit` (`digitArt`) | A big number tile in the Salento palette: intro cards for 11–15, digit → word, the countdown. |
+| Number card | `.num-grid`, `.num-card` | Numbers with their names; tap to hear; notes point out look-alikes (*seis / siete*). `study` = a "Look first" card (0–10 before the game). |
+| Number pick | `.ex-numpick`, `.num-option` | Hear (or read) a number or a sentence with one, tap the digit; keys 1–4. |
+| Digit → word | `.ex-numtype` | See 16, type *dieciséis* (accent fix-up). |
+| Number dictation | `.ex-dictation`, `.dict-box` | Hear (or read) a line of numbers, write each as digits; Space or comma moves to the next box. |
+| Count / countdown | `.ex-count`, `.count-tile` | Tap the number words in order; the big digit counts with you; a countdown ends on *¡cero!* and Max jumps. |
+| Pattern card | `.pattern-row` | *diez + seis → dieciséis* with the digits (a picture: no *y* before 1.5). |
+| Number Invaders | `.ex-invaders`, `.inv-ship` | Four digits drift down; tap the one you hear or read. "Calm mode" (on at the start) stops the falling. Keys 1–4. |
+| Song karaoke | `.song-box`, `.song-line` | A whole number song: the recorded song plays and each word lights up on its aligned timing; con números shows digits (`.song-num`). No file yet: "Song coming soon" and the beat. |
+| Radio Búho's song set | `.songset`, `.songset-item` | The six number songs; tap one to play it (also in the Radio tab). |
+| ID card («carnet») | `.idcard` (`idCard`), `.ex-idcard`, `.id-chip`, `.id-input` | Drawn in code: photo, the Colombian stripe, fields labelled with questions (*¿El nombre?*), never bare labels. Read a card, fill one (tap, write digits, type), or fill three from Radio Búho calls. |
+| Valentina, Samuel | `assets/valentina.webp`, `assets/samuel.webp` | Cut from the Restrepo family picture (`tools/crop_family_kids.py`): no new art. |
+
+## 13. Files
 ```
 prototype/
   index.html                 app shell (phone, tablet and desktop) · manifest.webmanifest · sw.js (offline)
@@ -203,6 +222,7 @@ prototype/
   lesson-1-1.js              lesson 1 content (the original prototype lesson)
   unit-1-1.js                lessons 2–11, the story, Unit 1.1 items (all Spanish)
   unit-1-2.js                Unit 1.2: 13 lessons, the story, Radio Búho episodes, items and letter groups
+  unit-1-3.js                Unit 1.3: 20 lessons (1.3a, 1.3b), the story, Radio Búho episodes, the number songs, items
   course.js                  the playable units in path order (lessons, items, radio episodes)
   path-data.js               units 1.1–1.6 (textbook titles)
   css/tokens.css             design tokens  ← start here
@@ -210,10 +230,13 @@ prototype/
   css/layout.css             tablet + Chromebook/desktop layouts, keyboard hints
   css/unit.css               Unit 1.1 exercise types, views, tab bar
   css/unit-1-2.css           Unit 1.2 exercise types and pictures
+  css/unit-1-3.css           Unit 1.3 exercise types, songs and the ID card
   js/app.js                  router, path, views, lesson complete, settings, service worker
   js/lesson.js               lesson runner + exercise types + accent fix-up
   js/exercises-1-2.js        letters, letterpick, spell, clip, radio, transcript
-  js/art.js                  SVG time-of-day scenes and feeling faces
+  js/exercises-1-3.js        numcard, numpick, numtype, dictation, count, pattern, invaders, song, songset, idcard
+  js/numbers.js              numbers 0–31 and the «con números» view of a sung line (no DOM)
+  js/art.js                  SVG time-of-day scenes, feeling faces, digits and the ID card
   js/review.js               spaced repetition, Review sessions, My knowledge
   js/radio.js                Radio Búho player (align_lyrics.py JSON format)
   js/worldmap.js · worldmap-data.js   maps
@@ -223,7 +246,9 @@ prototype/
   audio/                     recorded clips, manifest.json (lesson_audio.py), manifest-extra.json, manifest-l2.json, manifest-max.json (Max's voice), TODO_lines.json
   radio/                     episodes.json + episode JSON/MP3
   tools/check_vocab.mjs      vocabulary validator (unit and lesson level; --todo writes audio/TODO_lines.json)
-  tools/e2e-unit.mjs         headless Chromium test of all of Unit 1.1 (plus e2e.mjs, e2e-keyboard.mjs for lesson 1)
+  tools/e2e-unit.mjs         headless Chromium test of Units 1.1–1.3 (plus e2e.mjs, e2e-keyboard.mjs for lesson 1)
+  tools/make_number_songs.py the approved number songs and clips N1–N6 into audio/songs/ (CPU, ffmpeg)
+  tools/crop_family_kids.py  Valentina and Samuel cut from assets/family.webp (Pillow)
   tools/contrast.py          contrast table from tokens.css
   tools/process_art.py       art cut-out pipeline (rembg; all character, pose and noun art) · process_art_l2.py (PWA icons)
   tools/make_worldmap.mjs · make_radio_demo.py · import_design_clips.py
