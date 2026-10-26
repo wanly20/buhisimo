@@ -32,7 +32,7 @@ SONGS: dict[str, str | None] = {
     "numeros_1_10": "numeros_1_10_s1",            # Del uno al diez (Version A)        1.3 L5 / L6
     "numeros_10_20": "numeros_10_20_s2",          # Del diez al veinte                 1.3 L9 / L10
     "numeros_uno_once": "numeros_uno_once_s5",    # Uno, once · Dos, doce              1.3 L10 / L10
-    "numeros_dos_doce_veintidos": None,           # Dos, doce, veintidós: Juan chooses 1.3 L13 / L14 (e.g. "numeros_dos_doce_veintidos_v8h_s1")
+    "numeros_dos_doce_veintidos": "numeros_dos_doce_veintidos_v8h_s1",  # Dos, doce, veintidós (Juan, 26 Oct) 1.3 L13 / L14
     "numeros_20_31": "numeros_20_31_s2",          # Del veinte al treinta y uno        1.3 L14 / L15
     "numeros_uno_diez_once": "numeros_uno_diez_once_s1",  # Uno, diez, once… treinta y uno 1.3 L15 / L15
 }
