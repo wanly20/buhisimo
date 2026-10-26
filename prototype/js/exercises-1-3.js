@@ -95,7 +95,7 @@ export function dictation(step, api) {
       ${step.character ? `<div class="speaker-row dict-who">${charImg(step.character)}<div class="bubble">${cue(step.sayEs)}</div></div>` : `<div class="dict-stage">${cue(step.sayEs)}</div>`}
       ${step.contextEn ? `<p class="context">${rich(step.contextEn)}</p>` : ""}
       <div class="dict-boxes ${n > 6 ? "dict-boxes--many" : ""}" role="group" aria-label="Your numbers">
-        ${step.answer.map((_, k) => `<label class="dict-box"><span class="dict-box__k">${k + 1}</span><input class="type-input dict-input" data-k="${k}" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" aria-label="Number ${k + 1}"><span class="dict-box__ans" hidden></span></label>`).join("")}
+        ${step.answer.map((_, k) => `<label class="dict-box"><input class="type-input dict-input" data-k="${k}" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" aria-label="Number ${k + 1}"><span class="dict-box__ans" hidden></span></label>`).join("")}
       </div>
     </div>`);
   wireCue(node, api, step.sayEs, step.character);
