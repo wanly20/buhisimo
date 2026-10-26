@@ -92,31 +92,94 @@
 @media (min-width: 700px) { .pattern-cell .es { font-size: var(--fs-lg); } .pattern-cell--out .es { font-size: var(--fs-xl); } }
 
 /* =================================================================== Number Invaders */
-.ex-invaders { gap: var(--sp-3); }
-.inv-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-3); }
-.inv-calm { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 var(--sp-3); border-radius: var(--r-pill); border: 2px solid var(--sand-200); background: var(--white); color: var(--ink); font: inherit; font-weight: 700; font-size: var(--fs-sm); cursor: pointer; flex: none; }
-.inv-calm[aria-pressed="true"] { border-color: var(--emerald-500); background: var(--emerald-50); color: var(--emerald-700); }
-.inv-cue { min-height: 64px; display: grid; place-items: center; }
+/* The game fills the lesson body: the sky takes whatever height is left, so it fits any screen. */
+.ex-invaders { gap: var(--sp-3); height: 100%; min-height: 0; }
+.inv-head { gap: var(--sp-1, 4px); }
+.inv-head__row { align-self: stretch; display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+.inv-slow { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 var(--sp-3); border-radius: var(--r-pill); border: 2px solid var(--sand-200); background: var(--white); color: var(--ink); font: inherit; font-weight: 700; font-size: var(--fs-sm); cursor: pointer; flex: none; }
+.inv-slow[aria-pressed="true"] { border-color: var(--emerald-500); background: var(--emerald-50); color: var(--emerald-700); }
+.inv-cue { min-height: 56px; display: grid; place-items: center; flex: none; }
 .inv-win { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-weight: 700; font-size: var(--fs-xl); color: var(--emerald-700); }
-.inv-sky { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--sp-2); height: clamp(220px, 40vh, 330px); padding: var(--sp-2);
-  border-radius: var(--r-xl); overflow: hidden; background: linear-gradient(#1d3557, #2c5d8a 70%, #3f7cae); }
-.inv-sky::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle, rgb(255 255 255 / 0.7) 1px, transparent 1.5px); background-size: 46px 38px; opacity: 0.5; pointer-events: none; }
-.inv-lane { position: relative; display: flex; justify-content: center; }
-.inv-ground { position: absolute; left: 0; right: 0; bottom: 0; height: 26px; background: var(--emerald-500); box-shadow: 0 -6px 0 var(--emerald-400); }
-.inv-ship { --e: 4px; position: relative; z-index: 1; width: min(100%, 104px); height: 76px; border-radius: 22px; color: var(--ink);
-  animation: inv-fall var(--fall, 9000ms) linear forwards; animation-play-state: paused; }
-.ex-invaders.is-arcade .inv-ship { animation-play-state: running; }
-.inv-ship > .face { position: relative; height: 100%; display: grid; place-items: center; border-radius: 22px; font-family: var(--font-display); font-weight: 700; font-size: 2.2rem; --face: var(--mustard-50); --face-border: var(--mustard-400); }
-.inv-ship .key { position: absolute; left: 6px; top: 4px; font-size: 11px; color: var(--ink-soft); display: none; }
-@media (pointer: fine), (pointer: none) { .inv-ship .key { display: block; } }
-.inv-ship.is-hit { animation: inv-hit 420ms var(--ease-out) forwards; }
-.inv-ship.is-answer > .face { --face: var(--emerald-50); --face-border: var(--emerald-400); }
-.ex-invaders.is-landed .inv-sky { box-shadow: inset 0 0 0 4px var(--terracotta-400); }
-@keyframes inv-fall { from { transform: translateY(0); } to { transform: translateY(calc(clamp(220px, 40vh, 330px) - 76px - 46px)); } }
-@keyframes inv-hit { to { transform: scale(1.5); opacity: 0; } }
-.inv-score { text-align: center; font-weight: 700; color: var(--ink-soft); }
-@media (prefers-reduced-motion: reduce) { .inv-ship { animation: none !important; } }
-@media (min-width: 700px) and (max-height: 820px) { .inv-sky { height: clamp(200px, 34vh, 300px); } }
+
+.inv-sky { --pad: 6px; --ground: 12px; --gun-h: 30px; --x: 0px; --y: 0px; --lane: 1;
+  position: relative; flex: 1 1 0; min-height: 190px; max-height: 470px; border-radius: var(--r-xl); overflow: hidden; user-select: none; -webkit-user-select: none;
+  background: linear-gradient(#0f1733, #1d2b5a 65%, #2b3f7a); }
+.inv-sky::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.55;
+  background-image: radial-gradient(circle, rgb(255 255 255 / 0.8) 1px, transparent 1.5px), radial-gradient(circle, rgb(255 255 255 / 0.5) 1px, transparent 1.5px);
+  background-size: 53px 41px, 37px 59px; background-position: 0 0, 19px 23px; }
+.inv-sky.is-landed { box-shadow: inset 0 0 0 4px var(--terracotta-400); }
+
+/* score: top of the screen, as in the arcade */
+.inv-score { position: absolute; left: 0; right: 0; top: 6px; z-index: 2; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: var(--fs-md); color: #e8eeff; pointer-events: none; }
+.inv-score__n { color: #ffe066; }
+
+/* four columns; the aliens march down from the top to the cannon's line */
+.inv-field { position: absolute; left: var(--pad); right: var(--pad); top: 34px; bottom: calc(var(--ground) + var(--gun-h) + 4px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.inv-lane { position: relative; cursor: crosshair; }
+.inv-lane.is-aim::after { content: ""; position: absolute; left: 50%; top: 0; bottom: -4px; width: 2px; margin-left: -1px; pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.22) 0 6px, transparent 6px 14px); }
+.inv-ship { position: absolute; z-index: 1; top: 0; left: 50%; width: min(92%, 92px); padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: crosshair;
+  transform: translate(calc(-50% + var(--x)), var(--y)); -webkit-tap-highlight-color: transparent; }
+.inv-ship:focus-visible { outline: none; }
+.inv-ship:focus-visible .inv-plate { outline: 3px solid #ffe066; outline-offset: 3px; }
+.inv-ship__body { display: grid; justify-items: center; gap: 4px; animation: inv-in 420ms var(--ease-out) both; }
+.inv-ship__body.shake { animation: shake 0.42s var(--ease-out); }
+.inv-alien, .inv-boom { width: clamp(38px, 58%, 50px); height: auto; aspect-ratio: 11 / 8; display: block; }
+.inv-alien { fill: var(--alien); filter: drop-shadow(0 0 4px color-mix(in srgb, var(--alien) 55%, transparent)); }
+.inv-alien__b, .inv-sky.is-step .inv-alien__a { display: none; }
+.inv-sky.is-step .inv-alien__b { display: inline; }
+.inv-boom { display: none; aspect-ratio: 13 / 9; fill: #ffd23f; }
+.inv-plate { min-width: 100%; height: 46px; display: grid; place-items: center; border-radius: 12px; background: var(--white); border: 3px solid var(--alien);
+  font-family: var(--font-display); font-weight: 700; font-size: 2rem; line-height: 1; color: var(--ink); }
+.inv-lane:nth-child(1) { --alien: #7ee081; }
+.inv-lane:nth-child(2) { --alien: #ff8ac0; }
+.inv-lane:nth-child(3) { --alien: #5fd4ea; }
+.inv-lane:nth-child(4) { --alien: #ffc94d; }
+/* a wrong hit: out for this round */
+.inv-ship[aria-disabled="true"] { cursor: not-allowed; }
+.inv-ship[aria-disabled="true"] .inv-alien { fill: #7d86a8; filter: none; }
+.inv-ship[aria-disabled="true"] .inv-plate { background: #c9cee0; border-color: #7d86a8; color: #4b5270; }
+/* a hit: the alien bursts */
+.inv-ship.is-hit .inv-alien { display: none; }
+.inv-ship.is-hit .inv-boom { display: block; animation: inv-boom 520ms var(--ease-out) both; }
+.inv-ship.is-hit .inv-plate { background: var(--emerald-50); border-color: var(--emerald-500); color: var(--emerald-700); animation: inv-fade 520ms 120ms var(--ease-out) both; }
+.inv-sky.is-cleared .inv-ship:not(.is-hit) { animation: inv-fade 300ms var(--ease-out) both; }
+/* a landing: the right one shows in green */
+.inv-ship.is-answer .inv-plate { background: var(--emerald-50); border-color: var(--emerald-400); color: var(--emerald-700); }
+
+/* the cannon and its bolt */
+.inv-cannon { position: absolute; z-index: 2; bottom: var(--ground); width: 48px; height: var(--gun-h); fill: #8ef0a8; filter: drop-shadow(0 0 5px rgb(142 240 168 / 0.6));
+  left: calc(var(--pad) + (100% - 2 * var(--pad)) * (var(--lane) + 0.5) / 4); transform: translateX(-50%); transition: left 150ms var(--ease-out); pointer-events: none; }
+.inv-bolt { position: absolute; z-index: 1; width: 5px; height: 20px; margin-left: -2.5px; border-radius: 2px; background: #fffbe0; box-shadow: 0 0 6px 2px #ffe066; pointer-events: none; }
+.inv-ground { position: absolute; left: 0; right: 0; bottom: 0; height: var(--ground); background: var(--emerald-500); box-shadow: 0 -4px 0 var(--emerald-400); }
+.inv-sky.is-won .inv-lane.is-aim::after { display: none; }
+
+@keyframes inv-in { from { opacity: 0; transform: translateY(-40px); } }
+@keyframes inv-boom { from { transform: scale(0.5); opacity: 1; } 60% { opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
+@keyframes inv-fade { to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .inv-ship__body, .inv-ship__body.shake, .inv-ship.is-hit .inv-boom { animation: none; } /* the burst shows, still */
+  .inv-cannon { transition: none; }
+}
+@media (min-width: 700px) {
+  .inv-sky { --pad: 12px; --gun-h: 34px; }
+  .inv-cannon { width: 54px; }
+  .inv-plate { height: 52px; font-size: 2.3rem; }
+  .inv-ship { width: min(86%, 110px); }
+}
+/* short screens (a zoomed-in browser, a small laptop): a smaller header */
+@media (max-height: 560px) {
+  .ex-invaders { gap: var(--sp-2); }
+  .inv-head { flex-direction: row; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+  .inv-head__row { display: contents; }
+  .inv-head .badge { display: none; }
+  .inv-head .h-title { order: -1; font-size: var(--fs-lg); }
+  .inv-slow { min-height: 36px; }
+  .inv-cue { min-height: 44px; }
+  .inv-plate { height: 40px; font-size: 1.7rem; }
+  .inv-sky { min-height: 170px; --gun-h: 26px; }
+  .inv-cannon { width: 44px; }
+}
 
 /* =================================================================== songs (karaoke) */
 .song-title { margin: -8px 0 0; }

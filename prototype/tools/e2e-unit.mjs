@@ -134,10 +134,16 @@ async function answer(page, s, { wrong = false, keys = true } = {}) {
     for (let g = 0; g < 40; g++) {
       const a = await page.evaluate(() => document.querySelector(".lesson-body .ex-invaders")?.dataset.answer);
       if (a == null) break;
+      const round = await page.evaluate(() => document.querySelector(".lesson-body .ex-invaders")?.dataset.round);
       const lane = await page.evaluate((a) => [...document.querySelectorAll(".lesson-body .inv-lane")].findIndex((l) => l.querySelector(`.inv-ship[data-n="${a}"]`)), a);
-      if (keys) await page.keyboard.press(String(lane + 1));
-      else await page.locator(`.lesson-body .inv-ship[data-n="${a}"]`).click();
-      await wait(page, 650);
+      if (keys) { // Left/Right move the cannon, Space fires
+        const at = +(await page.getAttribute(".lesson-body .inv-cannon", "data-lane"));
+        for (let k = at; k !== lane; k += lane > at ? 1 : -1) await page.keyboard.press(lane > at ? "ArrowRight" : "ArrowLeft");
+        await page.keyboard.press("Space");
+      } else await page.locator(`.lesson-body .inv-ship[data-n="${a}"]`).click({ force: true }); // the invaders never stop marching: no "stable" wait
+      // Wait for the hit to clear the wave (the next round, or the end).
+      await page.waitForFunction((r) => { const n = document.querySelector(".lesson-body .ex-invaders"); return !n || n.dataset.answer == null || n.dataset.round !== r; }, round, { timeout: 5000 }).catch(() => {});
+      await wait(page, 150);
     }
     await wait(page, 700); return "graded";
   }
@@ -819,8 +825,8 @@ const NEW13 = new Set(["numcard", "numpick", "numtype", "dictation", "count", "p
 const all12Done = () => { const c = all11Done(); for (let i = 1; i <= 13; i++) c[`1.2-${i}`] = { xp: 10, accuracy: 100, at: Date.now(), plays: 1 }; return c; };
 log("V. Unit 1.3: locked after 1.2, every lesson in order (keyboard, 1366×768), the songs' karaoke, every lesson by touch (390×844), the Radio tab");
 if (RUN("V")) {
-  // V1. Chromebook, keyboard: 1.3 opens only after the 1.2 check. (V13=d or V13=m runs one half only.)
-  if (process.env.V13 !== "m") {
+  // V1. Chromebook, keyboard: 1.3 opens only after the 1.2 check. (V13=d or V13=m runs one half only; V13=inv only V3.)
+  if (!["m", "inv"].includes(process.env.V13)) {
     const { ctx, page } = await newPage({ width: 1366, height: 768 });
     await page.goto(BASE + "index.html");
     await page.evaluate(() => localStorage.clear());
@@ -942,7 +948,7 @@ if (RUN("V")) {
     await ctx.close();
   }
   // V2. Phone, touch: every 1.3 lesson.
-  if (process.env.V13 !== "d") {
+  if (!["d", "inv"].includes(process.env.V13)) {
     const { ctx, page } = await newPage({ width: 390, height: 844 }, { touch: true });
     await page.goto(BASE + "index.html");
     await page.evaluate(() => { localStorage.clear(); localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ unlockAll: true })); });
@@ -968,6 +974,62 @@ if (RUN("V")) {
     await page.click('.radio-ep [data-song="0"]');
     await wait(page, 2500);
     await shot(page, "v-m-radio-tab-songs");
+    await ctx.close();
+  }
+  // V3. Number Invaders up close (375×667, touch): the aliens march, no stray small numbers, a wrong
+  // hit puts that alien out, a landing is a miss that comes back at the end, "Slower" halves the speed.
+  if (process.env.V13 !== "d") {
+    const { ctx, page } = await newPage({ width: 375, height: 667 }, { touch: true });
+    await page.goto(BASE + "index.html");
+    await page.evaluate(() => { localStorage.clear(); localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ unlockAll: true })); });
+    await page.reload();
+    await wait(page, 1000);
+    await page.goto(BASE + "index.html#/lesson/1.3-6");
+    await wait(page, 1300);
+    await page.click('.lesson-foot [data-act="main"]'); // past the study card
+    await wait(page, 1200);
+    const inv = (fn, arg) => page.evaluate(fn, arg);
+    const y = () => inv(() => parseFloat(getComputedStyle(document.querySelector(".lesson-body .inv-sky")).getPropertyValue("--y")) || 0);
+    ok(await page.locator(".lesson-body .inv-ship").count() === 4, "Number Invaders: four invaders in the sky");
+    ok(await page.locator(".lesson-body .inv-cannon").count() === 1, "Number Invaders: a cannon at the bottom");
+    ok(await page.locator('.lesson-body .inv-slow[aria-pressed="false"]').count() === 1, "Number Invaders: arcade speed from the start (Slower is off)");
+    const stray = await inv(() => [...document.querySelectorAll(".lesson-body .ex-invaders *")].filter((e) => [...e.childNodes].some((n) => n.nodeType === 3 && /\d/.test(n.textContent)))
+      .filter((e) => !e.closest(".inv-plate, .inv-score")).map((e) => `«${e.textContent.trim()}» (${e.className})`));
+    ok(stray.length === 0, `Number Invaders: no numbers but the invaders' digits and the score${stray.length ? ": " + stray.join(", ") : ""}`);
+    ok(await inv(() => [...document.querySelectorAll(".lesson-body .inv-ship")].every((b) => b.getAttribute("aria-label") === b.dataset.n && b.textContent.trim() === b.dataset.n)), "Number Invaders: each invader shows and is labelled by its digit only");
+    const y0 = await y(); await wait(page, 1000); const y1 = await y();
+    ok(y1 > y0 + 2, `Number Invaders: the invaders march down (${y0.toFixed(1)} → ${y1.toFixed(1)} px in 1 s)`);
+    const a = await inv(() => document.querySelector(".lesson-body .ex-invaders").dataset.answer);
+    const bad = await inv((a) => [...document.querySelectorAll(".lesson-body .inv-ship")].find((b) => b.dataset.n !== a).dataset.n, a);
+    await page.locator(`.lesson-body .inv-ship[data-n="${bad}"]`).click({ force: true });
+    await wait(page, 260);
+    await shot(page, "v-m-invaders-shot");
+    await wait(page, 600);
+    ok(await page.locator(`.lesson-body .inv-ship[data-n="${bad}"][aria-disabled="true"]`).count() === 1, "Number Invaders: a wrong hit puts that invader out for the round");
+    const landed = await page.waitForFunction(() => document.querySelector(".lesson-body .inv-sky.is-landed"), null, { timeout: 30000 }).then(() => true).catch(() => false);
+    ok(landed, "Number Invaders: left alone, the invaders land");
+    await shot(page, "v-m-invaders-landed");
+    await page.waitForFunction(() => !document.querySelector(".lesson-body .inv-sky.is-landed"), null, { timeout: 4000 }).catch(() => {});
+    await wait(page, 500);
+    const f0 = await y(); await wait(page, 1000); const f1 = await y();
+    await page.click(".lesson-body .inv-slow");
+    const s0 = await y(); await wait(page, 1000); const s1 = await y();
+    const ratio = (s1 - s0) / Math.max(0.1, f1 - f0);
+    ok(ratio > 0.3 && ratio < 0.7, `Number Invaders: Slower halves the speed (${(f1 - f0).toFixed(1)} → ${(s1 - s0).toFixed(1)} px/s)`);
+    let rounds = 0;
+    for (let g = 0; g < 12; g++) {
+      const st = await inv(() => { const n = document.querySelector(".lesson-body .ex-invaders"); return n && n.dataset.answer != null ? [n.dataset.answer, n.dataset.round] : null; });
+      if (!st) break;
+      await page.locator(`.lesson-body .inv-ship[data-n="${st[0]}"]`).click({ force: true });
+      if (g === 0) { await wait(page, 330); await shot(page, "v-m-invaders-boom"); }
+      await page.waitForFunction((r) => { const n = document.querySelector(".lesson-body .ex-invaders"); return !n || n.dataset.answer == null || n.dataset.round !== r; }, st[1], { timeout: 5000 }).catch(() => {});
+      rounds++;
+    }
+    ok(rounds === 5, `Number Invaders: the landed round came back once at the end (5 more rounds after the landing, got ${rounds})`);
+    await wait(page, 900);
+    const tip = await page.locator(".feedback.is-open .feedback__tip").innerText().catch(() => "");
+    ok(/^4 of 5 on the first try; 2 misses on the way/.test(tip), `Number Invaders: the result counts first tries and misses (“${tip}”)`);
+    await shot(page, "v-m-invaders-end");
     await ctx.close();
   }
 }

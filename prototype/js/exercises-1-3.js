@@ -227,94 +227,230 @@ export function pattern(step, api) {
 }
 
 // ------------------------------------------------------------ Number Invaders (game)
-// Four digits drift down. Hear (or read) a number and tap its digit before it lands. Calm mode (on
-// at the start) stops the falling: the same game without the clock. Keys 1–4 tap the lanes.
+// Space Invaders with numbers. Four aliens march down, each carrying a digit; hear (or read) a number
+// and shoot the alien that carries it before they land. Tap an alien (or its column) to slide the
+// cannon under it and fire; on a keyboard, Left/Right move the cannon and Space or Enter fires.
+// "Slower" halves the speed (on from the start under reduced motion, which also drops the wobble and
+// the shaking). A wrong hit bounces off and that alien is out for the round; a landing is a miss and
+// the round comes back once at the end.
+const pixels = (rows) => rows.map((r, y) => [...r].map((c, x) => (c === "X" ? `M${x} ${y}h1v1h-1z` : "")).join("")).join("");
+const ALIEN = [ // two frames of the classic "crab": legs down, legs up
+  pixels(["..X.....X..", "...X...X...", "..XXXXXXX..", ".XX.XXX.XX.", "XXXXXXXXXXX", "X.XXXXXXX.X", "X.X.....X.X", "...XX.XX..."]),
+  pixels(["..X.....X..", "X..X...X..X", "X.XXXXXXX.X", "XXX.XXX.XXX", "XXXXXXXXXXX", ".XXXXXXXXX.", "..X.....X..", ".X.......X."]),
+];
+const BOOM = pixels(["....X...X....", ".X...X.X...X.", "..X.......X..", "...X.....X...", "XX.........XX", "...X.....X...", "..X.......X..", ".X...X.X...X.", "....X...X...."]);
+const CANNON = pixels(["......X......", ".....XXX.....", ".....XXX.....", ".XXXXXXXXXXX.", "XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "XXXXXXXXXXXXX"]);
+const LANES = 4;
+
 export function invaders(step, api) {
   const rounds = step.rounds.map((r, i) => ({ ...r, i }));
-  let queue = [...rounds], cur = null, score = 0, misses = 0, firstTry = 0, missedThis = false, busy = false, done = 0;
+  let queue = [...rounds], cur = null, score = 0, misses = 0, firstTry = 0, missedThis = false, busy = true, over = false;
   const total = rounds.length;
-  let calm = true;
+  const still = reducedMotion();
+  let slow = still, lane = 1, prog = 0, clock = 0, last = 0, raf = 0, travel = 0;
+  const fallMs = step.fallMs || 11000; // the whole way down; "Slower" doubles it
+  const timers = new Set();
+  const later = (fn, ms) => { const t = setTimeout(() => { timers.delete(t); fn(); }, ms); timers.add(t); };
   const node = el(`
-    <div class="ex ex-invaders">
-      <div class="inv-top">
-        ${head(esc(step.titleEn || "Number Invaders"), `<span class="badge">${icon("gamepad-2", 16, 2.75)} Game</span>`)}
-        <button class="inv-calm" aria-pressed="true">${icon("turtle", 18, 2.5)}<span>Calm mode</span></button>
+    <div class="ex ex-invaders${still ? " is-still" : ""}">
+      <div class="ex-head inv-head">
+        <div class="inv-head__row">
+          <span class="badge">${icon("gamepad-2", 16, 2.75)} Game</span>
+          <button class="inv-slow" aria-pressed="${slow}">${icon("turtle", 18, 2.5)}<span>Slower</span></button>
+        </div>
+        <h1 class="h-title">${esc(step.titleEn || "Number Invaders")}</h1>
       </div>
       <div class="inv-cue" aria-live="polite"></div>
-      <div class="inv-sky" role="group" aria-label="The invaders">
-        ${[0, 1, 2, 3].map((l) => `<div class="inv-lane" data-lane="${l}"></div>`).join("")}
+      <div class="inv-sky" style="--lane: ${lane}">
+        <div class="inv-score"><span class="inv-score__n">0</span> of ${total} · <span class="inv-score__left">${total}</span> to go</div>
+        <div class="inv-field" role="group" aria-label="The invaders">
+          ${Array.from({ length: LANES }, (_, l) => `<div class="inv-lane" data-lane="${l}"></div>`).join("")}
+        </div>
+        <svg class="inv-cannon" data-lane="${lane}" viewBox="0 0 13 8" aria-hidden="true" shape-rendering="crispEdges"><path d="${CANNON}"/></svg>
         <div class="inv-ground" aria-hidden="true"></div>
       </div>
-      <div class="inv-score"><span class="inv-score__n">0</span> of ${total} · <span class="inv-score__left">${total}</span> to go</div>
     </div>`);
-  const cueEl = $(".inv-cue", node), lanes = $$(".inv-lane", node);
-  const calmBtn = $(".inv-calm", node);
-  calmBtn.addEventListener("click", () => {
-    calm = !calm;
-    calmBtn.setAttribute("aria-pressed", String(calm));
-    node.classList.toggle("is-arcade", !calm);
+  const cueEl = $(".inv-cue", node), sky = $(".inv-sky", node), field = $(".inv-field", node), cannon = $(".inv-cannon", node);
+  const lanes = $$(".inv-lane", node), slowBtn = $(".inv-slow", node);
+  const shipIn = (l) => lanes[l]?.querySelector(".inv-ship");
+  const measure = () => { const s = shipIn(0) || shipIn(1); travel = Math.max(0, field.clientHeight - (s ? s.offsetHeight : 0)); };
+  const ro = new ResizeObserver(measure);
+  ro.observe(field);
+
+  slowBtn.addEventListener("click", () => {
+    slow = !slow;
+    slowBtn.setAttribute("aria-pressed", String(slow));
     sfx.tap();
   });
+
+  // ---- the march: one clock moves every alien together (down, and a little side to side)
+  function frame(now) {
+    raf = 0;
+    if (over || !node.isConnected) return;
+    const dt = Math.min(100, now - (last || now));
+    last = now;
+    if (!busy && cur) { prog += dt / (fallMs * (slow ? 2 : 1)); clock += dt; }
+    sky.style.setProperty("--y", `${(Math.min(1, prog) * travel).toFixed(1)}px`);
+    if (!still) {
+      sky.style.setProperty("--x", `${(Math.sin(clock / 650) * 6).toFixed(1)}px`);
+      sky.classList.toggle("is-step", Math.floor(clock / 500) % 2 === 1);
+    }
+    if (prog >= 1 && !busy) landed();
+    raf = requestAnimationFrame(frame);
+  }
+  const run = () => { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } };
+
   function next() {
     if (!queue.length) return end();
     cur = queue.shift();
-    missedThis = false; busy = false;
-    node.dataset.answer = cur.n; // test hook (e2e): the digit of the round on screen
+    missedThis = false; prog = 0;
+    node.dataset.answer = cur.n; // test hooks (e2e): the digit of the round on screen, and which round it is
+    node.dataset.round = (+node.dataset.round || 0) + 1;
     const choices = shuffle(cur.choices);
     cueEl.innerHTML = cue(cur.sayEs, { read: "Shoot:" });
+    const hadFocus = field.contains(document.activeElement);
     lanes.forEach((ln, l) => {
       const n = choices[l];
-      ln.innerHTML = n == null ? "" : `<button class="press inv-ship" data-n="${n}" aria-label="${n}"><span class="face"><span class="key" aria-hidden="true">${l + 1}</span>${n}</span></button>`;
-      const ship = ln.firstElementChild;
-      if (ship) {
-        ship.style.setProperty("--fall", `${step.fallMs || 9000}ms`);
-        ship.addEventListener("animationend", (e) => { if (e.animationName === "inv-fall" && !calm && !busy) landed(); });
-      }
+      ln.innerHTML = n == null ? "" : `
+        <button class="inv-ship" data-n="${n}" aria-label="${n}">
+          <span class="inv-ship__body">
+            <svg class="inv-alien" viewBox="0 0 11 8" aria-hidden="true" shape-rendering="crispEdges"><path class="inv-alien__a" d="${ALIEN[0]}"/><path class="inv-alien__b" d="${ALIEN[1]}"/></svg>
+            <svg class="inv-boom" viewBox="0 0 13 9" aria-hidden="true" shape-rendering="crispEdges"><path d="${BOOM}"/></svg>
+            <span class="inv-plate">${n}</span>
+          </span>
+        </button>`;
     });
-    if (hasAudio(cur.sayEs)) setTimeout(() => api.speak(cur.sayEs), 250);
+    sky.classList.remove("is-landed", "is-cleared");
+    sky.style.setProperty("--y", "0px");
+    measure();
+    if (hadFocus || document.activeElement === document.body) shipIn(lane)?.focus({ preventScroll: true });
+    if (hasAudio(cur.sayEs)) later(() => api.speak(cur.sayEs), 250);
+    busy = false;
+    run();
   }
+
   function landed() {
     busy = true; misses++; missedThis = true;
     sfx.wrong();
-    node.classList.add("is-landed");
-    $(`.inv-ship[data-n="${cur.n}"]`, node)?.classList.add("is-answer");
+    sky.classList.add("is-landed");
+    lanes.forEach((ln) => ln.querySelector(".inv-ship")?.classList.toggle("is-answer", +ln.querySelector(".inv-ship").dataset.n === cur.n));
     if (!cur.again) queue.push({ ...cur, again: true });
-    setTimeout(() => { node.classList.remove("is-landed"); next(); }, 1100);
+    later(next, 1300);
   }
-  function tap(b) {
-    if (busy || !b) return;
-    if (+b.dataset.n === cur.n) {
-      busy = true; score++; done++;
-      if (!missedThis && !cur.again) firstTry++;
-      sfx.pair();
-      b.classList.add("is-hit");
-      $(".inv-score__n", node).textContent = score;
-      $(".inv-score__left", node).textContent = Math.max(0, queue.length);
-      setTimeout(next, reducedMotion() ? 150 : 450);
-    } else {
-      misses++; missedThis = true;
-      sfx.wrong();
-      restartAnim(b, "shake");
-      b.disabled = true;
-    }
+
+  // ---- aim and fire
+  function aim(l) {
+    l = Math.max(0, Math.min(LANES - 1, l));
+    if (l === lane) return false;
+    lane = l;
+    sky.style.setProperty("--lane", lane);
+    cannon.dataset.lane = lane;
+    lanes.forEach((ln, k) => ln.classList.toggle("is-aim", k === lane));
+    return true;
   }
+  function fire(l) {
+    if (busy || over || !cur) return;
+    const moved = aim(l);
+    const ship = shipIn(lane);
+    if (ship?.getAttribute("aria-disabled") === "true") return; // already out this round
+    const go = () => { if (shipIn(lane) === ship) shoot(ship); }; // the cannon moved on: this shot is off
+    if (moved && !still) later(go, 150); else go();
+  }
+  function shoot(ship) {
+    if (busy || over) return;
+    sfx.select();
+    const right = ship && +ship.dataset.n === cur.n;
+    if (right) busy = true; // the march stops: nothing lands while the bolt flies
+    else if (ship) { ship.setAttribute("aria-disabled", "true"); misses++; missedThis = true; }
+    const skyBox = sky.getBoundingClientRect(), gun = cannon.getBoundingClientRect();
+    const top = ship ? ship.getBoundingClientRect().bottom - 6 : skyBox.top;
+    const dist = Math.max(0, gun.top - top);
+    const bolt = document.createElement("div");
+    bolt.className = "inv-bolt";
+    bolt.setAttribute("aria-hidden", "true");
+    bolt.style.left = `${gun.left + gun.width / 2 - skyBox.left}px`;
+    bolt.style.top = `${gun.top - skyBox.top - 16}px`;
+    sky.appendChild(bolt);
+    const ms = still ? 1 : Math.max(110, dist / 1.4);
+    const anim = bolt.animate([{ transform: "translateY(0)" }, { transform: `translateY(${-dist}px)` }], { duration: ms, easing: "linear", fill: "forwards" });
+    anim.onfinish = () => {
+      if (over) { bolt.remove(); return; }
+      if (right) { bolt.remove(); hit(ship); }
+      else if (ship) {
+        sfx.wrong();
+        if (!still) restartAnim($(".inv-ship__body", ship), "shake");
+        bolt.animate([{ transform: `translateY(${-dist}px)`, opacity: 1 }, { transform: `translateY(${-dist + 40}px)`, opacity: 0 }], { duration: still ? 1 : 260, fill: "forwards" }).onfinish = () => bolt.remove();
+      } else bolt.remove(); // an empty column: the bolt flies off the top
+    };
+  }
+  function hit(ship) {
+    score++;
+    if (!missedThis && !cur.again) firstTry++;
+    sfx.pair();
+    ship.classList.add("is-hit");
+    sky.classList.add("is-cleared");
+    $(".inv-score__n", node).textContent = score;
+    $(".inv-score__left", node).textContent = Math.max(0, queue.length);
+    if (!still) restartAnim($(".inv-score", node), "pop");
+    later(next, still ? 250 : 650);
+  }
+
   function end() {
+    over = true; busy = true;
     delete node.dataset.answer;
+    cancelAnimationFrame(raf); raf = 0;
+    document.removeEventListener("keydown", onKeys, true);
     cueEl.innerHTML = `<span class="inv-win">${icon("trophy", 22, 2.5)} All the invaders!</span>`;
     lanes.forEach((ln) => (ln.innerHTML = ""));
-    setTimeout(() => api.complete({
+    sky.classList.add("is-won");
+    later(() => api.complete({
       ok: true, hinted: misses > 0, title: es(pick(api.lesson.praiseEs)),
       body: `<span class="feedback__tip">${firstTry} of ${total} on the first try${misses ? `; ${misses} miss${misses > 1 ? "es" : ""} on the way` : ". Perfect!"}</span>`,
     }), 400);
   }
-  node.addEventListener("click", (e) => { const b = e.target.closest(".inv-ship"); if (b && !b.disabled) tap(b); });
+
+  // Tap or click an alien, or anywhere in its column.
+  sky.addEventListener("click", (e) => {
+    const ln = e.target.closest(".inv-lane");
+    if (ln) fire(+ln.dataset.lane);
+  });
+  // Focusing an alien (Tab) aims the cannon at it.
+  field.addEventListener("focusin", (e) => { const ln = e.target.closest(".inv-lane"); if (ln) aim(+ln.dataset.lane); });
+  node.addEventListener("click", (e) => { const b = e.target.closest("[data-cue]"); if (b && cur) api.speak(cur.sayEs, b.dataset.cue === "slow"); });
+
+  // Keyboard: Left/Right move the cannon, Space/Enter fire. (Capture phase: before the lesson's own keys.)
+  function onKeys(e) {
+    if (over || !node.isConnected || document.querySelector(".modal") || e.ctrlKey || e.metaKey || e.altKey) return;
+    const t = e.target instanceof Element ? e.target : null;
+    if (t?.matches("input, textarea, select")) return;
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      e.preventDefault();
+      aim(lane + (e.key === "ArrowLeft" ? -1 : 1));
+      if (field.contains(document.activeElement)) shipIn(lane)?.focus({ preventScroll: true });
+    } else if (e.key === " " || e.key === "Enter") {
+      // A focused button outside the field (Slower, Play, Skip…) does its own thing.
+      if (t?.matches("button, a[href]") && !field.contains(t)) return;
+      e.preventDefault(); e.stopPropagation();
+      if (!e.repeat) fire(lane);
+    }
+  }
+  document.addEventListener("keydown", onKeys, true);
+
+  const stop = () => {
+    over = true;
+    cancelAnimationFrame(raf); raf = 0;
+    timers.forEach(clearTimeout); timers.clear();
+    ro.disconnect();
+    document.removeEventListener("keydown", onKeys, true);
+  };
+  lanes[lane].classList.add("is-aim");
   return {
     el: node,
     footer: { label: "Check", enabled: false },
     aside: ["skip"],
-    onSkip() { api.next(); },
-    mount() { setTimeout(next, 300); },
-    onKey(n) { const b = lanes[n - 1]?.querySelector(".inv-ship"); if (b && !b.disabled) tap(b); },
+    onSkip() { stop(); api.next(); },
+    mount() { later(next, 300); },
+    destroy: stop,
   };
 }
 

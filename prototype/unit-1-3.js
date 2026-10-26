@@ -317,15 +317,15 @@ const L6 = {
   steps: [
     { id: "g-study", type: "numcard", study: true, titleEn: "Look first: 0 to 10", nums: N(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
       noteEn: "Tap a number to hear it. In the game, you only get the word!" },
-    { id: "g-wave-odd", type: "invaders", titleEn: "Number Invaders: wave 1", rounds: [
+    { id: "g-wave-odd", type: "invaders", titleEn: "Number Invaders: the first wave", fallMs: 12000, rounds: [
       { sayEs: "uno", n: 1, choices: [1, 7, 4, 10] }, { sayEs: "tres", n: 3, choices: [3, 2, 6, 8] }, { sayEs: "cinco", n: 5, choices: [5, 4, 9, 0] },
       { sayEs: "siete", n: 7, choices: [7, 6, 1, 3] }, { sayEs: "nueve", n: 9, choices: [9, 10, 5, 2] }] },
     SONG("song-1-10-digits", "numeros_1_10", true),
-    { id: "g-wave-down", type: "invaders", titleEn: "Number Invaders: wave 2 (the countdown)", rounds: [
+    { id: "g-wave-down", type: "invaders", titleEn: "Number Invaders: the countdown wave", fallMs: 10500, rounds: [
       { sayEs: "diez", n: 10, choices: [10, 2, 6, 9] }, { sayEs: "ocho", n: 8, choices: [8, 3, 0, 4] }, { sayEs: "seis", n: 6, choices: [6, 7, 1, 5] },
       { sayEs: "cuatro", n: 4, choices: [4, 5, 8, 9] }, { sayEs: "dos", n: 2, choices: [2, 10, 3, 7] }, { sayEs: "cero", n: 0, choices: [0, 10, 6, 1] }] },
     { id: "g-dict-down", type: "dictation", sayEs: "Diez, ocho, seis, cuatro, dos, cero.", en: "Ten, eight, six, four, two, zero.", answer: [10, 8, 6, 4, 2, 0] },
-    { id: "g-wave-lookalike", type: "invaders", titleEn: "Number Invaders: wave 3 (seis or siete?)", lookalike: "seis/siete", rounds: [
+    { id: "g-wave-lookalike", type: "invaders", titleEn: "Number Invaders: seis or siete?", lookalike: "seis/siete", fallMs: 9500, rounds: [
       { sayEs: "seis", n: 6, choices: [6, 7, 3, 9] }, { sayEs: "siete", n: 7, choices: [7, 6, 1, 4] },
       { sayEs: "seis", n: 6, choices: [6, 7, 10, 2] }, { sayEs: "siete", n: 7, choices: [7, 6, 0, 8] }] },
     { id: "g-dict-odd", type: "dictation", sayEs: "Uno, tres, cinco, siete, nueve.", en: "One, three, five, seven, nine.", answer: [1, 3, 5, 7, 9] },
