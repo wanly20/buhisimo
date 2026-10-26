@@ -249,6 +249,7 @@ function variant13(s) {
 async function playLesson(page, tag, { keys = true, wrongOnce = true, checkFit = false, shotTypes = new Set(), shotPrefix = "" } = {}) {
   const seen = {};
   let wrongDone = !wrongOnce, guard = 0, retried = false, wrongId = null, fitIssues = [];
+  const underBar = [];
   while (guard++ < 80) {
     await wait(page, 450);
     const st = await step(page);
@@ -278,13 +279,28 @@ async function playLesson(page, tag, { keys = true, wrongOnce = true, checkFit =
       }
       if (doWrong) { ok(sh === "wrong", `${tag}: a wrong answer shows the kind "not yet" sheet (${s.type})`); wrongDone = true; wrongId = s.id; }
       else if (sh !== "correct") errors.push(`${tag}: step ${s.id} (${s.type}) expected correct, got ${sh}`);
+      // Nothing may show under or behind the open feedback bar: no text of the step (or a leaving
+      // step, a flying tile, a toast) inside the bar's area or below it.
+      if (checkFit) {
+        const under = await page.evaluate(() => {
+          const bar = document.querySelector(".feedback.is-open");
+          if (!bar) return [];
+          const top = bar.getBoundingClientRect().top + 1;
+          return [...document.querySelectorAll("#app *")].filter((e) => {
+            if (e.closest(".feedback, .lesson-foot") || ![...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) return false;
+            const r = e.getBoundingClientRect(), cs = getComputedStyle(e);
+            return r.width > 0 && r.height > 0 && r.bottom > top && r.top < innerHeight + 40 && cs.visibility !== "hidden" && +cs.opacity > 0.05;
+          }).map((e) => `«${e.textContent.trim().slice(0, 30)}» (${e.className || e.tagName})`);
+        });
+        if (under.length) underBar.push(`${s.id}: ${under.join(", ")}`);
+      }
       const fb = `${shotPrefix}${s.type}${variant13(s)}-feedback${doWrong ? "-wrong" : ""}`;
       if (shotTypes.has(`${s.type}:feedback`) && !shots.has(`${OUT}/${fb}.png`)) await shot(page, fb);
       if (keys) await page.keyboard.press("Enter"); else await page.click('.feedback [data-act="continue"]');
     }
   }
   const complete = (await step(page)).complete;
-  return { seen, complete, retried: wrongOnce ? retried : true, fitIssues };
+  return { seen, complete, retried: wrongOnce ? retried : true, fitIssues, underBar };
 }
 
 const LESSON_IDS = Array.from({ length: 11 }, (_, i) => `1.1-${i + 1}`);
@@ -840,6 +856,7 @@ if (RUN("V")) {
       ok(r.complete, `${id} played to the end with the keyboard (${Object.entries(r.seen).map(([k, v]) => `${k}×${v}`).join(", ")})`);
       ok(r.retried, `${id}: the missed question came back later`);
       ok(r.fitIssues.length === 0, `${id}: every step fits 1366×768 without scrolling${r.fitIssues.length ? ": " + r.fitIssues.join("; ") : ""}`);
+      ok(r.underBar.length === 0, `${id}: nothing shows under or behind the feedback bar${r.underBar.length ? ": " + r.underBar.join("; ") : ""}`);
       await wait(page, 700);
       const title = await page.locator(".complete-title").innerText().catch(() => "");
       if (id === "1.3-11") ok(/part A complete/i.test(title), `the 1.3a check closes part A (“${title}”)`);
