@@ -89,7 +89,7 @@ const L2 = {
       noteEn: "[[ella]] = she · [[él]] = he" },
     { id: "pick-donde-es", type: "pick", character: "max", promptEs: "¿De dónde es Matilda?",
       options: ["Where is Matilda from?", "Where are you from?", "Matilda is from Melbourne.", "Where is Max from?"], answer: 0 },
-    { id: "who-el", type: "choose", titleEn: "Who is it?", promptEs: "Él es de Salento.", promptEn: "He's from Salento.",
+    { id: "who-el", type: "choose", titleEn: "Who is it?", promptEs: "Él es de Salento.",
       optionsArt: [{ art: "owl-explaining", labelEn: "Buhísimo" }, { art: "matilda", labelEn: "Matilda" }], answer: 0,
       answerEs: "Él es de Salento.", answerEn: "He's from Salento. Buhísimo is from Salento!" },
     { id: "intro-pais", type: "intro", character: "owl-explaining", flag: "co", contextEn: "Buhísimo is proud of his country:",
