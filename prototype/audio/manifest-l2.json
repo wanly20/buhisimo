@@ -1653,7 +1653,9 @@
   "Samuel es el amigo de Matilda.": {
    "maria_bogota": "audio/maria_bogota/samuel-es-el-amigo-de-matilda-c68e2c.mp3",
    "maria_paisa": "audio/maria_paisa/samuel-es-el-amigo-de-matilda-c68e2c.mp3",
-   "raul": "audio/raul/samuel-es-el-amigo-de-matilda-c68e2c.mp3"
+   "raul": "audio/raul/samuel-es-el-amigo-de-matilda-c68e2c.mp3",
+   "buho_profesor": "audio/buho_profesor/samuel-es-el-amigo-de-matilda-c68e2c-r6.mp3",
+   "buho_abuelo": "audio/buho_abuelo/samuel-es-el-amigo-de-matilda-c68e2c-r6.mp3"
   },
   "se llama": {
    "maria_bogota": "audio/maria_bogota/se-llama-15871a.mp3",
@@ -1893,10 +1895,20 @@
   "Buenos días, Matilda. ¿Cómo estás?": {
    "buho_profesor": "audio/buho_profesor/buenos-dias-matilda-como-estas-3b5949-r5.mp3",
    "buho_abuelo": "audio/buho_abuelo/buenos-dias-matilda-como-estas-3b5949-r5.mp3"
+  },
+  "Se llama Max. Tiene trece años.": {
+   "buho_profesor": "audio/buho_profesor/se-llama-max-tiene-trece-anos-12aa64-r6.mp3",
+   "buho_abuelo": "audio/buho_abuelo/se-llama-max-tiene-trece-anos-12aa64-r6.mp3"
+  },
+  "Ella es de Australia.": {
+   "buho_profesor": "audio/buho_profesor/ella-es-de-australia-2204c5-r6.mp3",
+   "buho_abuelo": "audio/buho_abuelo/ella-es-de-australia-2204c5-r6.mp3"
   }
  },
  "speakers": {
   "¡Hasta luego, Buhísimo! — ¡Adiós, Max!": "buho",
-  "Buenos días, Matilda. ¿Cómo estás?": "buho"
+  "Buenos días, Matilda. ¿Cómo estás?": "buho",
+  "Se llama Max. Tiene trece años.": "buho",
+  "Ella es de Australia.": "buho"
  }
 }

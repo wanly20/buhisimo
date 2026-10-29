@@ -587,13 +587,14 @@
 .map-callout + .map-dot { width: 10px; height: 10px; margin: -5px 0 0 -5px; box-shadow: 0 0 0 2px var(--white); animation: none; }
 
 /* =================================================================== «Who is it?» with speech bubbles
-   choose steps with layout "bubbles-a|b|c" (js/lesson.js chooseWho): the characters stand side by
-   side as big tappable cards, each with a speech bubble above. */
+   choose steps with layout "bubbles" (js/lesson.js chooseWho): a speaker says the line with the deciding
+   word marked; the characters stand side by side as big buttons, each with a bubble that shows what
+   tells them apart once answered (él / ella, el amigo / la amiga, a name). */
 .ex-who .who-cast { display: grid; grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr)); gap: var(--sp-3); align-items: end; }
 .who-col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .who-bubble {
   position: relative;
-  min-height: 52px; padding: 6px 10px;
+  min-height: 48px; padding: 6px 10px;
   display: flex; align-items: center; justify-content: center; text-align: center;
   border: 2px solid var(--sand-200); border-radius: var(--r-lg);
   background: var(--white); color: var(--ink);
@@ -604,49 +605,83 @@
   border: 10px solid transparent; border-top: 12px solid var(--tail); border-bottom: 0;
 }
 .who-bubble::after { bottom: -8px; border-top-color: var(--tail-in); }
-.who-bubble .es { font-size: var(--fs-md); font-weight: 700; line-height: 1.2; }
+.who-bubble .es { font-size: var(--fs-lg); font-weight: 700; line-height: 1.15; overflow-wrap: anywhere; }
 .who-dots { font-family: var(--font-display); font-size: 1.75rem; line-height: 1; color: var(--sand-300); letter-spacing: 0.05em; }
 .who-bubble.is-empty { border-style: dashed; border-color: var(--sand-300); --tail: var(--sand-300); }
-.who-bubble.is-placed { border-color: var(--turquoise-400); background: var(--turquoise-50); color: var(--turquoise-700); --tail: var(--turquoise-400); --tail-in: var(--turquoise-50); }
 .who-bubble.is-right { border-color: var(--emerald-400); background: var(--emerald-50); color: var(--emerald-700); --tail: var(--emerald-400); --tail-in: var(--emerald-50); }
-.who-bubble.is-wrong { border-color: var(--terracotta-400); background: var(--terracotta-50); color: var(--terracotta-700); --tail: var(--terracotta-400); --tail-in: var(--terracotta-50); }
 .who-bubble.is-muted { opacity: 0.6; }
-.who-q { font-family: var(--font-display); font-weight: var(--display-weight-bold); font-size: 1.75rem; line-height: 1; }
-/* A: the reply bubble only appears after the answer (its space is kept, so nothing jumps) */
-.ex-who--a .who-bubble:empty { visibility: hidden; }
 .who-char > .face { flex-direction: column; justify-content: flex-end; gap: 2px; padding: var(--sp-2) var(--sp-2) 6px; }
 .who-img { width: auto; max-width: 100%; height: clamp(96px, 19vh, 170px); object-fit: contain; }
-.who-name { font-family: var(--font-display); font-weight: var(--display-weight); font-size: var(--fs-sm); color: var(--ink-soft); }
+.who-name { font-family: var(--font-display); font-weight: var(--display-weight); font-size: var(--fs-sm); color: var(--ink-soft); white-space: nowrap; }
+.ex-who--names-after:not(.is-answered) .who-name { visibility: hidden; } /* the name decides: shown only after the answer */
 .who-char .key { position: absolute; left: 10px; top: 10px; }
 .who-col.is-out .who-char { opacity: 0.5; filter: grayscale(1); }
-/* the speaker (A) and the prompt (B, C) */
+/* the speaker and the line */
 .ex-who .who-speaker .char { width: clamp(80px, 13vh, 120px); }
 .ex-who .who-speaker .bubble { margin-bottom: 24px; }
 .who-speaker .bubble .es, .who-prompt .bubble .es { font-size: var(--fs-xl); }
 .who-prompt .bubble { justify-content: center; }
-/* C: the word that decides */
 .who-focus { padding: 0 0.18em; border-radius: 8px; background: var(--mustard-300); color: inherit; box-shadow: 0 3px 0 var(--mustard-500); }
 .who-focus.is-right { background: var(--emerald-100); box-shadow: 0 3px 0 var(--emerald-400); }
 .who-focus.is-wrong { background: var(--terracotta-100); box-shadow: 0 3px 0 var(--terracotta-400); }
-.ex-who--c .who-bubble.is-right .es, .ex-who--c .who-bubble.is-wrong .es, .ex-who--c .who-bubble.is-muted .es { font-size: var(--fs-lg); }
+/* the reason, under the correct answer in the feedback */
+.feedback__why { display: block; margin-top: 4px; font-size: var(--fs-sm); line-height: 1.35; }
+@media (min-width: 700px) and (min-height: 821px) { .lesson .feedback__why { font-size: var(--fs-md); } }
+.feedback__why .es-inline { font-weight: 700; }
+/* four people: 2×2 while choosing, smaller pictures */
+.who-cast--n4 .who-img { height: clamp(64px, 11vh, 120px); }
+.who-cast--n4 .who-bubble { min-height: 40px; padding: 4px 6px; }
+.who-cast--n4 .who-bubble .es { font-size: var(--fs-md); }
+.who-cast--n4 .who-dots { font-size: 1.4rem; }
+.who-cast--n3 .who-bubble .es { font-size: var(--fs-md); }
 /* Phones: the feedback sheet covers half the screen, so once answered the title and the line
-   (repeated in the sheet, with its audio) make way and the characters move up above it. */
+   (repeated in the sheet, with its audio) make way and the characters move up above it;
+   four people go into one row of four. */
+.who-speaker .bubble, .who-prompt .bubble { flex-wrap: wrap; }
+.who-speaker .bubble > .es, .who-prompt .bubble > .es { flex: 1 1 7em; min-width: 0; }
 @media (max-width: 699.98px) {
+  /* four people: a 2×2 grid, each bubble beside its character (tail pointing left) to save height */
+  .ex-who .who-cast--n4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3) var(--sp-3); }
+  .who-cast--n4 .who-col { position: relative; }
+  .who-cast--n4 .who-bubble { position: absolute; z-index: 1; top: 10px; right: 8px; width: calc(52% - 8px); min-height: 38px; padding: 4px; }
+  .who-cast--n4 .who-bubble::before, .who-cast--n4 .who-bubble::after { left: -12px; top: 50%; bottom: auto; margin: -8px 0 0; border: 8px solid transparent; border-right: 12px solid var(--tail); border-left: 0; }
+  .who-cast--n4 .who-bubble::after { left: -8px; border-right-color: var(--tail-in); }
+  .who-cast--n4 .who-bubble .es { font-size: 0.9rem; }
+  .who-cast--n4 .who-char > .face { align-items: flex-start; padding: 8px 8px 6px 10px; }
+  .who-cast--n4 .who-img { height: clamp(64px, 10vh, 130px); max-width: 45%; }
+  .who-cast--n4 .who-char .key { display: none; }
+  .ex-who .who-speaker .char { width: clamp(64px, 11vh, 110px); }
+  .lesson .ex-who { gap: var(--sp-3); }
+  .ex-who .who-speaker .bubble { margin-bottom: 12px; }
+  .ex-who:has(.who-cast--n4) .bubble .es, .ex-who:has(.who-cast--n3) .bubble .es { font-size: var(--fs-lg); }
   .ex-who.is-answered > .ex-head, .ex-who.is-answered > .who-speaker, .ex-who.is-answered > .who-prompt { display: none; }
-  .ex-who.is-answered .who-img { height: clamp(80px, 15vh, 150px); }
+  .ex-who.is-answered .who-img { height: clamp(72px, 13vh, 140px); }
+  .ex-who.is-answered .who-bubble { min-height: 40px; }
   .ex-who.is-answered .who-cast { animation: who-up 320ms var(--ease-out) both; }
+  /* once answered, four people stand in one row (bubbles back on top) so they stay above the feedback sheet */
+  .ex-who.is-answered .who-cast--n4 { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .ex-who.is-answered .who-cast--n4 .who-bubble { position: relative; top: auto; right: auto; width: auto; min-height: 34px; padding: 4px 2px; }
+  .ex-who.is-answered .who-cast--n4 .who-bubble::before, .ex-who.is-answered .who-cast--n4 .who-bubble::after { left: 50%; top: auto; bottom: -12px; margin: 0 0 0 -8px; border: 8px solid transparent; border-top: 12px solid var(--tail); border-bottom: 0; }
+  .ex-who.is-answered .who-cast--n4 .who-bubble::after { bottom: -8px; border-top-color: var(--tail-in); }
+  .ex-who.is-answered .who-cast--n4 .who-bubble .es, .ex-who.is-answered .who-cast--n4 .who-name { font-size: 0.8rem; }
+  .ex-who.is-answered .who-cast--n4 .who-char > .face { align-items: center; padding: 6px 2px 4px; }
+  .ex-who.is-answered .who-cast--n4 .who-img { height: clamp(56px, 10vh, 100px); max-width: 100%; }
+  .ex-who.is-answered .who-cast--n3 .who-img { height: clamp(60px, 11vh, 120px); }
 }
 @keyframes who-up { from { opacity: 0.4; transform: translateY(48px); } }
 @media (min-width: 700px) {
   .ex-who .who-cast { gap: var(--sp-6); max-width: 560px; width: 100%; margin-inline: auto; }
-  .who-bubble { min-height: 60px; }
-  .who-bubble .es { font-size: var(--fs-lg); }
+  .ex-who .who-cast--n3, .ex-who .who-cast--n4 { max-width: 720px; gap: var(--sp-4); }
+  .who-bubble { min-height: 56px; }
   .who-img { height: clamp(110px, 22vh, 210px); }
+  .who-cast--n4 .who-img, .who-cast--n3 .who-img { height: clamp(96px, 18vh, 180px); }
   .who-name { font-size: var(--fs-md); }
+  .feedback__why { order: 6; flex-basis: 100%; margin: 0; }
 }
 @media (min-width: 700px) and (max-height: 820px) {
   .ex-who .who-speaker .char { width: clamp(80px, 14vh, 120px); }
   .ex-who .who-speaker .bubble { margin-bottom: 20px; }
   .who-img { height: clamp(96px, 17vh, 170px); }
-  .who-bubble { min-height: 52px; }
+  .who-cast--n4 .who-img, .who-cast--n3 .who-img { height: clamp(80px, 15vh, 150px); }
+  .who-bubble { min-height: 50px; }
 }

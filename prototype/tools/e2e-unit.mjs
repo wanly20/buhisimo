@@ -11,7 +11,7 @@
 // (spaced repetition + My knowledge), the story, Radio Búho karaoke highlighting, the
 // phone tab bar, the progress file, offline mode and the service worker. Section U is Unit 1.2;
 // section V is Unit 1.3 (numbers, number songs and their karaoke, Number Invaders, the ID card);
-// section W is the «Who is it?» speech-bubble layouts (1.1-2, A/B/C, four sizes, keyboard and touch).
+// section W is the «Who is it?» speech-bubble steps (1.1-2 and 1.3, four sizes, keyboard and touch).
 import { createRequire } from "node:module";
 import { mkdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -1073,25 +1073,32 @@ if (RUN("K")) for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width:
 }
 
 // ===================================================================== W. «Who is it?» with speech bubbles
-// The two 1.1-2 «Who is it?» steps (who-el: Buhísimo, who-ella: Matilda) in each layout (A: Max tells you,
-// B: two bubbles, C: spot the word; ?whoLayout= overrides the step's layout, ?step= opens the lesson at it),
-// at four sizes: keyboard on the wide ones, touch on the phones; right and wrong answers.
-log("W. «Who is it?»: speech-bubble layouts A, B, C (both steps, keyboard and touch, four sizes)");
+// Every choose step with layout "bubbles" (1.1-2 who-el / who-ella; 1.3 who-samuel, c-who-max, amigo-samuel,
+// amiga-valentina, who-australia, c-who-amigo), opened with ?step= at four sizes: keyboard on the wide ones,
+// touch on the phones; a right and a wrong answer each. The speaker's line has its deciding word marked; after
+// the answer every bubble shows what tells the people apart, and the feedback says why under the answer.
+log("W. «Who is it?»: speech-bubble layout (8 steps, keyboard and touch, four sizes)");
 if (RUN("W")) {
-  const WHO = { "who-el": { answer: 0, line: "Él es de Salento.", reply: "¡Soy de Salento!" }, "who-ella": { answer: 1, line: "Ella es de Melbourne.", reply: "Soy de Melbourne." } };
-  const NAMES = ["Buhísimo", "Matilda"], PRON = ["él", "ella"];
+  const WHO = [["who-el", "1.1-2"], ["who-ella", "1.1-2"], ["who-samuel", "1.3-2"], ["c-who-max", "1.3-11"], ["amigo-samuel", "1.3-17"],
+    ["amiga-valentina", "1.3-17"], ["who-australia", "1.3-19"], ["c-who-amigo", "1.3-20"]];
+  const POSED = /^(owl|matilda|max)/;
+  const plain = (t) => (t || "").replace(/\[\[|\]\]/g, "");
   const whoState = (page) => page.evaluate(() => {
     const ex = document.querySelector(".lesson-body .ex-who:not(.step-leave)");
     if (!ex) return null;
     const body = document.querySelector(".lesson-body");
+    const cast = ex.querySelector(".who-cast");
     return {
-      v: ex.dataset.who, step: window.__buho.step().id,
+      step: window.__buho.step(),
       labels: [...ex.querySelectorAll(".who-char")].map((b) => b.getAttribute("aria-label")),
       pressed: [...ex.querySelectorAll(".who-char")].map((b) => b.getAttribute("aria-pressed")),
-      bubbles: [...ex.querySelectorAll(".who-bubble")].map((b) => ({ cls: b.className, text: b.textContent.trim(), shown: getComputedStyle(b).visibility !== "hidden" })),
+      bubbles: [...ex.querySelectorAll(".who-bubble")].map((b) => ({ cls: b.className, text: b.textContent.trim() })),
+      names: [...ex.querySelectorAll(".who-name")].map((n) => getComputedStyle(n).visibility),
       imgs: [...ex.querySelectorAll(".who-img")].map((i) => i.getAttribute("src").replace(/^assets\/|\.webp$/g, "")),
+      cols: getComputedStyle(cast).gridTemplateColumns.split(" ").length,
       over: body.scrollHeight - body.clientHeight, sideways: document.scrollingElement.scrollWidth - innerWidth,
       speaker: !!ex.querySelector(".who-speaker"), focus: ex.querySelector(".who-focus")?.textContent || "",
+      why: document.querySelector(".feedback.is-open .feedback__why")?.textContent.trim() || "",
     };
   });
   const underBar = (page) => page.evaluate(() => {
@@ -1104,67 +1111,64 @@ if (RUN("W")) {
       return r.width > 0 && r.height > 0 && r.bottom > top && r.top < innerHeight + 40 && cs.visibility !== "hidden" && +cs.opacity > 0.05;
     }).map((e) => `«${e.textContent.trim().slice(0, 24)}»`);
   });
+  const open = async (page, id, lesson) => {
+    await page.goto(BASE + `index.html?step=${id}#/lesson/${lesson}`);
+    await page.reload();
+    await wait(page, 1200);
+    return whoState(page);
+  };
   for (const vp of [{ width: 375, height: 667 }, { width: 390, height: 844 }, { width: 1280, height: 800 }, { width: 1366, height: 768 }]) {
     const touch = vp.width < 700, tag = `${vp.width}×${vp.height}`;
     const { ctx, page } = await newPage(vp, { touch });
     await page.goto(BASE + "index.html?unlock=all");
     await page.reload();
     await wait(page, 700);
-    // Default: the step's own layout (A for both).
-    await page.goto(BASE + "index.html?step=who-el#/lesson/1.1-2");
-    await page.reload();
-    await wait(page, 1300);
-    const d = await whoState(page);
-    ok(d?.step === "who-el" && d.v === "a" && d.speaker, `${tag}: who-el opens in layout A by default (Max says the line)`);
-    for (const v of ["a", "b", "c"]) for (const id of ["who-el", "who-ella"]) for (const wrong of [false, true]) {
-      const w = WHO[id], pick = wrong ? 1 - w.answer : w.answer, name = `${tag} ${v.toUpperCase()} ${id}${wrong ? " (wrong)" : ""}`;
-      await page.goto(BASE + `index.html?whoLayout=${v}&step=${id}#/lesson/1.1-2`);
-      await page.reload();
-      await wait(page, 1200);
-      let st = await whoState(page);
-      if (!ok(st && st.step === id && st.v === v, `${name}: the step opens in layout ${v.toUpperCase()}`)) continue;
-      ok(st.labels.join("|") === NAMES.join("|"), `${name}: the characters are buttons named ${NAMES.join(" and ")}`);
+    for (const [id, lesson] of WHO) for (const wrong of [false, true]) {
+      const name = `${tag} ${id}${wrong ? " (wrong)" : ""}`;
+      let st = await open(page, id, lesson);
+      if (!ok(st && st.step.id === id, `${name}: opens in the bubbles layout`)) continue;
+      const s = st.step, n = s.optionsArt.length, names = s.optionsArt.map((o) => o.labelEn);
+      const tags = s.optionsArt.map((o, k) => s.tagsEs?.[k] ?? o.tagEs);
+      const pick = wrong ? (s.answer + 1) % n : s.answer;
+      ok(st.labels.join("|") === names.join("|"), `${name}: the people are buttons named ${names.join(", ")}`);
       ok(st.over <= 1 && st.sideways <= 0, `${name}: fits without scrolling (${st.over}px, sideways ${st.sideways}px)`);
-      if (v === "a") ok(st.bubbles.every((b) => !b.shown), `${name}: A: no reply bubbles before answering`);
-      else ok(st.bubbles.every((b) => b.text === "…"), `${name}: ${v.toUpperCase()}: an empty bubble «…» over each character`);
-      if (v === "c") ok(st.focus === w.line.split(" ")[0], `${name}: C: the pronoun «${st.focus}» is marked in the line`);
+      ok(st.speaker === !!s.speaker, `${name}: ${s.speaker ? `${s.speaker} says the line` : "the line sits in a plain bubble (the speaker is the one to find)"}`);
+      ok(s.focusEs ? st.focus === s.focusEs : /^(él|ella)$/i.test(st.focus), `${name}: the deciding word «${st.focus}» is marked`);
+      ok(st.bubbles.every((b) => b.text === "…"), `${name}: an empty bubble «…» for each person`);
+      if (s.namesAfter) ok(st.names.every((v) => v === "hidden"), `${name}: no names under the pictures before the answer (the name decides)`);
+      if (n === 4) ok(st.cols === (touch ? 2 : 4), `${name}: four people in ${touch ? "a 2×2 grid" : "one row"} (${st.cols} columns)`);
       if (touch) await page.locator(".lesson-body .who-char").nth(pick).tap();
       else {
         await page.keyboard.press(String(pick + 1));
         const ring = await page.evaluate(() => { const a = document.activeElement; return a?.matches(".who-char") ? getComputedStyle(a).outlineStyle : "not focused"; });
-        ok(ring === "solid", `${name}: key ${pick + 1} picks and focuses ${NAMES[pick]} with a focus ring (${ring})`);
+        ok(ring === "solid", `${name}: key ${pick + 1} picks and focuses ${names[pick]} with a focus ring (${ring})`);
       }
       await wait(page, 250);
       st = await whoState(page);
-      ok(st.pressed[pick] === "true" && st.pressed[1 - pick] === "false", `${name}: ${NAMES[pick]} is selected`);
-      if (v === "b") ok(st.bubbles[pick].text === w.line && /is-placed/.test(st.bubbles[pick].cls), `${name}: B: the line moves into ${NAMES[pick]}'s bubble`);
+      ok(st.pressed.every((p, k) => p === String(k === pick)), `${name}: ${names[pick]} is selected`);
       if (touch) await page.click('.lesson-foot [data-act="main"]'); else await page.keyboard.press("Enter");
       await wait(page, 900);
       ok(await sheet(page) === (wrong ? "wrong" : "correct"), `${name}: the feedback bar says ${wrong ? "not yet" : "right"}`);
       st = await whoState(page);
-      const r = st.bubbles[w.answer], c = st.bubbles[pick];
-      if (v === "a") ok(/is-right/.test(r.cls) && r.text === w.reply && r.shown, `${name}: A: ${NAMES[w.answer]} answers «${r.text}»`);
-      if (v === "b") ok(/is-right/.test(r.cls) && r.text === w.line, `${name}: B: the line is in ${NAMES[w.answer]}'s bubble`);
-      if (v === "c") ok(st.bubbles.map((b) => b.text).join("|") === PRON.join("|") && /is-right/.test(r.cls), `${name}: C: the bubbles show «él» and «ella»`);
-      if (wrong && v !== "c") ok(/is-wrong/.test(c.cls) && c.text === "?", `${name}: a «?» over ${NAMES[pick]}`);
-      if (wrong) ok(/thinking/.test(st.imgs[pick]), `${name}: ${NAMES[pick]} looks puzzled (${st.imgs[pick]})`);
-      ok(/celebrat/.test(st.imgs[w.answer]), `${name}: ${NAMES[w.answer]} celebrates (${st.imgs[w.answer]})`);
+      ok(st.bubbles.map((b) => b.text).join("|") === tags.join("|") && /is-right/.test(st.bubbles[s.answer].cls), `${name}: the bubbles show ${tags.join(" / ")}`);
+      if (POSED.test(s.optionsArt[s.answer].art)) ok(/celebrat/.test(st.imgs[s.answer]), `${name}: ${names[s.answer]} celebrates (${st.imgs[s.answer]})`);
+      if (wrong && POSED.test(s.optionsArt[pick].art)) ok(/thinking/.test(st.imgs[pick]), `${name}: ${names[pick]} looks puzzled (${st.imgs[pick]})`);
+      const want = plain(wrong ? s.whyEn.replaceAll("{picked}", names[pick]) : s.rightEn);
+      ok(st.why === want, `${name}: the feedback says why: «${st.why}»`);
       const under = await underBar(page);
       ok(under.length === 0, `${name}: nothing under the feedback bar${under.length ? ": " + under.join(", ") : ""}`);
-      if (vp.width === 390 || vp.width === 1366) await shot(page, `w-${vp.width}-${v}-${id}${wrong ? "-wrong" : "-right"}`);
+      if (vp.width === 390 || (vp.width === 1366 && id === "who-el")) await shot(page, `w-${vp.width}-${id}${wrong ? "-wrong" : "-right"}`);
       if (touch) await page.click('.feedback [data-act="continue"]'); else await page.keyboard.press("Enter");
       await wait(page, 700);
-      const next = (await step(page)).step?.id;
-      ok(next && next !== id, `${name}: Continue moves on (${next})`);
+      const nx = await step(page); // the last step of a lesson ends it (or comes back once, after a wrong answer)
+      ok(nx.complete || (nx.step && (nx.step.id !== id || nx.step.retry)), `${name}: Continue moves on (${nx.complete ? "lesson complete" : nx.step?.id + (nx.step?.retry ? ", again" : "")})`);
     }
-    if (!touch) { // Skip (wide screens): shows the answer, the step comes back later
-      await page.goto(BASE + "index.html?whoLayout=b&step=who-el#/lesson/1.1-2");
-      await page.reload();
-      await wait(page, 1200);
+    if (!touch) { // Skip (wide screens): shows the answer and the reason, no «?»
+      const st0 = await open(page, "who-el", "1.1-2");
       await page.click('.lesson-foot [data-act="skip"]');
       await wait(page, 800);
       const st = await whoState(page);
-      ok(await sheet(page) === "wrong" && /is-right/.test(st.bubbles[0].cls) && !st.bubbles[1].text.includes("?"), `${tag}: Skip shows the answer in Buhísimo's bubble, no «?»`);
+      ok(await sheet(page) === "wrong" && /is-right/.test(st.bubbles[0].cls) && st.why === plain(st0.step.rightEn), `${tag}: Skip shows the answer and why («${st.why}»)`);
     }
     await ctx.close();
   }

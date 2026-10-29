@@ -138,6 +138,19 @@
   },
   "Tres, dos, uno… ¡Max!": {
    "max": "audio/max/tres-dos-uno-max-f4497f.mp3"
+  },
+  "Él es de Salento.": {
+   "max": "audio/max/el-es-de-salento-e79a9d-r6.mp3"
+  },
+  "Ella es de Melbourne.": {
+   "max": "audio/max/ella-es-de-melbourne-44ab49-r6.mp3"
+  },
+  "Es la amiga de Matilda.": {
+   "max": "audio/max/es-la-amiga-de-matilda-ad2fad-r6.mp3"
   }
+ },
+ "speakers": {
+  "Él es de Salento.": "max",
+  "Es la amiga de Matilda.": "max"
  }
 }
