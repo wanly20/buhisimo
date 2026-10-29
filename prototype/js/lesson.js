@@ -31,6 +31,10 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings, onGra
     if (s.type === "listen" && hasAudio(s.sayEs) && (!tts.available() || !store.listenOn())) return false;
     return true;
   }).map((s) => ({ ...s, tries: 0 }));
+  // Teacher preview: ?step=<id> (with every lesson open) starts the lesson at that step.
+  let jump = "";
+  try { jump = new URLSearchParams(location.search).get("step") || ""; } catch { /* file:// */ }
+  if (jump && store.get().unlockAll) { const j = queue.findIndex((s) => s.id === jump); if (j > 0) queue = queue.slice(j); }
   let total = queue.length;
   let done = 0;
   let idx = -1;
@@ -1011,6 +1015,8 @@ function readChoose(step, api) {
 // Prompt: Spanish (promptEs, with audio) and/or English (promptEn), with a character,
 // noun picture or map. Options: Spanish (optionsEs), English (optionsEn) or pictures (optionsArt).
 function choose(step, api) {
+  const who = whoLayout(step);
+  if (who) return chooseWho(step, api, who);
   const picture = !!(step.optionsArt || step.optionsFace);
   const opts = step.optionsEs || step.optionsEn || (step.optionsArt || []).map((o) => o.labelEn) || [];
   const { html } = picture ? { html: "" } : optionList(opts, { spanish: !!step.optionsEs });
@@ -1043,6 +1049,104 @@ function choose(step, api) {
   return choiceController(node, step, api, {
     result: (ok) => ({ ok, answerEs: step.answerEs ?? (step.optionsEs ? step.optionsEs[step.answer] : undefined), answerEn: step.answerEn ?? (step.optionsEn ? step.optionsEn[step.answer] : undefined) }),
     ctrl: { mount() { if (audible) setTimeout(() => api.speak(sayable), 350); } },
+  });
+}
+
+// ------------------------------------------------------------ «Who is it?» with speech bubbles
+// A picture choice between characters (`optionsArt`), shown as people standing side by side,
+// each with a speech bubble. Turned on per step with `layout`:
+//   "bubbles-a"  "Max tells you": a `speaker` (and optional `speakerArt`) says the line in a bubble;
+//                after checking, the right character answers in its own bubble (`replyEs`).
+//   "bubbles-b"  "Two bubbles": the line is the prompt at the top; each character has an empty
+//                bubble «…». The tapped character's bubble takes the line; a wrong one gets «?».
+//   "bubbles-c"  "Spot the word": the pronoun of the line (él / ella, or `focusEs`) is highlighted;
+//                after checking, every character's bubble shows its own pronoun (`pronounEs`),
+//                so each answer shows the él / ella contrast.
+// Options: { art, labelEn, who?, replyEs?, pronounEs?, artYes?, artHmm? }. Teacher preview:
+// ?whoLayout=a|b|c (or plain) in the address bar overrides the layout of every such step.
+const POSES = { owl: ["owl-celebrating", "owl-thinking"], matilda: ["matilda-celebrate", "matilda-thinking"], max: ["max-celebrate", "max-thinking"] };
+const poseOf = (o, yes) => (yes ? o.artYes : o.artHmm) || POSES[o.art.split("-")[0]]?.[yes ? 0 : 1] || o.art;
+function whoLayout(step) {
+  if (!step.optionsArt || !/^bubbles-[abc]$/.test(step.layout || "")) return "";
+  let q = "";
+  try { q = (new URLSearchParams(location.search).get("whoLayout") || "").toLowerCase(); } catch { /* file:// */ }
+  if (q === "plain") return "";
+  return /^[abc]$/.test(q) ? q : step.layout.slice(-1);
+}
+/** The line as HTML, with its pronoun (él / ella, or step.focusEs) marked. */
+function focusHtml(text, word) {
+  const m = word ? { index: text.indexOf(word), w: word } : (() => { const r = /(^|[\s¿¡—])(él|ella|Él|Ella)(?=[\s.,;:?!]|$)/u.exec(text); return r ? { index: r.index + r[1].length, w: r[2] } : { index: -1 }; })();
+  if (m.index < 0) return es(text);
+  return `<span lang="es" class="es">${esc(text.slice(0, m.index))}<mark class="who-focus">${esc(m.w)}</mark>${esc(text.slice(m.index + m.w.length))}</span>`;
+}
+function chooseWho(step, api, v) {
+  const opts = step.optionsArt;
+  const say = step.sayEs || step.promptEs;
+  const speakerArt = step.speakerArt || step.speaker;
+  const lineHtml = v === "c" ? focusHtml(step.promptEs, step.focusEs) : es(step.promptEs);
+  const play = `<button class="press icon-btn icon-btn--primary icon-btn--sm" data-audio="normal" aria-label="Play audio"><span class="face">${icon("volume-2", 22)}</span></button>`;
+  const prompt = v === "a" && speakerArt
+    ? `<div class="speaker-row who-speaker">${charImg(speakerArt)}<div class="bubble">${play}${lineHtml}</div></div>`
+    : `<div class="speaker-row speaker-row--solo who-prompt"><div class="bubble">${play}${lineHtml}</div></div>`;
+  const empty = v === "a" ? "" : `<span class="who-dots" aria-hidden="true">…</span>`;
+  const node = el(`
+    <div class="ex ex-choose ex-who ex-who--${v}" data-who="${v}">
+      ${head(esc(step.titleEn || "Who is it?"))}
+      ${prompt}
+      <div class="who-cast" role="group" aria-label="${esc(step.titleEn || "Who is it?")}" style="--n:${opts.length}">
+        ${opts.map((o, k) => `
+        <div class="who-col" data-col="${k}">
+          <div class="who-bubble ${empty ? "" : "is-empty"}" aria-live="polite">${empty}</div>
+          <button class="press option who-char" data-oi="${k}" aria-pressed="false" aria-label="${esc(o.labelEn)}">
+            <span class="face"><span class="key" aria-hidden="true">${k + 1}</span><img class="who-img" src="assets/${o.art}.webp" alt="" draggable="false"><span class="who-name" aria-hidden="true">${esc(o.labelEn)}</span></span>
+          </button>
+        </div>`).join("")}
+      </div>
+    </div>`);
+  const cols = $$(".who-col", node);
+  const bubbleOf = (k) => $(".who-bubble", cols[k]);
+  const fill = (k, html, cls = "") => {
+    const b = bubbleOf(k);
+    b.className = `who-bubble ${cls}`;
+    b.innerHTML = html;
+    restartAnim(b, "pop");
+  };
+  let chosen = null, replyTimer = 0;
+  const audible = markAudio(node, say);
+  wireAudio(node, api, say);
+  return choiceController(node, step, api, {
+    onChoose: (i) => {
+      chosen = i;
+      // B: the line moves into the bubble of the character you tapped (like a gap fill).
+      if (v !== "b") return;
+      cols.forEach((c, k) => {
+        if (k === i) fill(k, es(step.promptEs), "is-placed");
+        else { bubbleOf(k).className = "who-bubble is-empty"; bubbleOf(k).innerHTML = empty; }
+      });
+    },
+    result: (ok) => {
+      const right = step.answer;
+      node.classList.add("is-answered");
+      cols.forEach((c, k) => {
+        const o = opts[k], img = $(".who-img", c);
+        if (k === right) img.src = `assets/${poseOf(o, true)}.webp`;
+        else if (k === chosen) img.src = `assets/${poseOf(o, false)}.webp`;
+        else c.classList.add("is-out");
+        if (v === "c") fill(k, o.pronounEs ? es(o.pronounEs) : "", k === right ? "is-right" : k === chosen ? "" : "is-muted");
+        else if (k === right) fill(k, v === "a" ? es(o.replyEs || step.promptEs) : es(step.promptEs), "is-right");
+        else if (k === chosen) fill(k, `<span class="who-q">?</span>`, "is-wrong");
+        else if (v === "b") bubbleOf(k).classList.add("is-muted");
+      });
+      if (v === "c") $(".who-focus", node)?.classList.add(ok ? "is-right" : "is-wrong");
+      // A: the right character says its reply in its own voice (once it is recorded).
+      const reply = v === "a" && opts[right].replyEs;
+      if (reply && hasAudio(reply) && store.listenOn()) replyTimer = setTimeout(() => api.speak(reply, false, opts[right].who || opts[right].art), 1300);
+      return { ok, answerEs: step.answerEs ?? step.promptEs, answerEn: step.answerEn };
+    },
+    ctrl: {
+      mount() { if (audible) setTimeout(() => api.speak(say), 350); },
+      destroy() { clearTimeout(replyTimer); },
+    },
   });
 }
 

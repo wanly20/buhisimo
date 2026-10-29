@@ -10,7 +10,8 @@
 // wrong answers and the retry), "fits 1366×768 without scrolling" for every step, Review
 // (spaced repetition + My knowledge), the story, Radio Búho karaoke highlighting, the
 // phone tab bar, the progress file, offline mode and the service worker. Section U is Unit 1.2;
-// section V is Unit 1.3 (numbers, number songs and their karaoke, Number Invaders, the ID card).
+// section V is Unit 1.3 (numbers, number songs and their karaoke, Number Invaders, the ID card);
+// section W is the «Who is it?» speech-bubble layouts (1.1-2, A/B/C, four sizes, keyboard and touch).
 import { createRequire } from "node:module";
 import { mkdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -1069,6 +1070,104 @@ if (RUN("K")) for (const vp of [{ width: 1366, height: 768, tag: "d" }, { width:
   const it = await page.evaluate(() => JSON.parse(localStorage.getItem("buhisimo.prototype.v1")).items.espana);
   ok(it && it.box === 0 && it.wrong >= 1, `${vp.tag}: not a first-try answer, so Review brings España back soon (box ${it?.box})`);
   await ctx.close();
+}
+
+// ===================================================================== W. «Who is it?» with speech bubbles
+// The two 1.1-2 «Who is it?» steps (who-el: Buhísimo, who-ella: Matilda) in each layout (A: Max tells you,
+// B: two bubbles, C: spot the word; ?whoLayout= overrides the step's layout, ?step= opens the lesson at it),
+// at four sizes: keyboard on the wide ones, touch on the phones; right and wrong answers.
+log("W. «Who is it?»: speech-bubble layouts A, B, C (both steps, keyboard and touch, four sizes)");
+if (RUN("W")) {
+  const WHO = { "who-el": { answer: 0, line: "Él es de Salento.", reply: "¡Soy de Salento!" }, "who-ella": { answer: 1, line: "Ella es de Melbourne.", reply: "Soy de Melbourne." } };
+  const NAMES = ["Buhísimo", "Matilda"], PRON = ["él", "ella"];
+  const whoState = (page) => page.evaluate(() => {
+    const ex = document.querySelector(".lesson-body .ex-who:not(.step-leave)");
+    if (!ex) return null;
+    const body = document.querySelector(".lesson-body");
+    return {
+      v: ex.dataset.who, step: window.__buho.step().id,
+      labels: [...ex.querySelectorAll(".who-char")].map((b) => b.getAttribute("aria-label")),
+      pressed: [...ex.querySelectorAll(".who-char")].map((b) => b.getAttribute("aria-pressed")),
+      bubbles: [...ex.querySelectorAll(".who-bubble")].map((b) => ({ cls: b.className, text: b.textContent.trim(), shown: getComputedStyle(b).visibility !== "hidden" })),
+      imgs: [...ex.querySelectorAll(".who-img")].map((i) => i.getAttribute("src").replace(/^assets\/|\.webp$/g, "")),
+      over: body.scrollHeight - body.clientHeight, sideways: document.scrollingElement.scrollWidth - innerWidth,
+      speaker: !!ex.querySelector(".who-speaker"), focus: ex.querySelector(".who-focus")?.textContent || "",
+    };
+  });
+  const underBar = (page) => page.evaluate(() => {
+    const bar = document.querySelector(".feedback.is-open");
+    if (!bar) return ["(no feedback bar)"];
+    const top = bar.getBoundingClientRect().top + 1;
+    return [...document.querySelectorAll("#app *")].filter((e) => {
+      if (e.closest(".feedback, .lesson-foot") || ![...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) return false;
+      const r = e.getBoundingClientRect(), cs = getComputedStyle(e);
+      return r.width > 0 && r.height > 0 && r.bottom > top && r.top < innerHeight + 40 && cs.visibility !== "hidden" && +cs.opacity > 0.05;
+    }).map((e) => `«${e.textContent.trim().slice(0, 24)}»`);
+  });
+  for (const vp of [{ width: 375, height: 667 }, { width: 390, height: 844 }, { width: 1280, height: 800 }, { width: 1366, height: 768 }]) {
+    const touch = vp.width < 700, tag = `${vp.width}×${vp.height}`;
+    const { ctx, page } = await newPage(vp, { touch });
+    await page.goto(BASE + "index.html?unlock=all");
+    await page.reload();
+    await wait(page, 700);
+    // Default: the step's own layout (A for both).
+    await page.goto(BASE + "index.html?step=who-el#/lesson/1.1-2");
+    await page.reload();
+    await wait(page, 1300);
+    const d = await whoState(page);
+    ok(d?.step === "who-el" && d.v === "a" && d.speaker, `${tag}: who-el opens in layout A by default (Max says the line)`);
+    for (const v of ["a", "b", "c"]) for (const id of ["who-el", "who-ella"]) for (const wrong of [false, true]) {
+      const w = WHO[id], pick = wrong ? 1 - w.answer : w.answer, name = `${tag} ${v.toUpperCase()} ${id}${wrong ? " (wrong)" : ""}`;
+      await page.goto(BASE + `index.html?whoLayout=${v}&step=${id}#/lesson/1.1-2`);
+      await page.reload();
+      await wait(page, 1200);
+      let st = await whoState(page);
+      if (!ok(st && st.step === id && st.v === v, `${name}: the step opens in layout ${v.toUpperCase()}`)) continue;
+      ok(st.labels.join("|") === NAMES.join("|"), `${name}: the characters are buttons named ${NAMES.join(" and ")}`);
+      ok(st.over <= 1 && st.sideways <= 0, `${name}: fits without scrolling (${st.over}px, sideways ${st.sideways}px)`);
+      if (v === "a") ok(st.bubbles.every((b) => !b.shown), `${name}: A: no reply bubbles before answering`);
+      else ok(st.bubbles.every((b) => b.text === "…"), `${name}: ${v.toUpperCase()}: an empty bubble «…» over each character`);
+      if (v === "c") ok(st.focus === w.line.split(" ")[0], `${name}: C: the pronoun «${st.focus}» is marked in the line`);
+      if (touch) await page.locator(".lesson-body .who-char").nth(pick).tap();
+      else {
+        await page.keyboard.press(String(pick + 1));
+        const ring = await page.evaluate(() => { const a = document.activeElement; return a?.matches(".who-char") ? getComputedStyle(a).outlineStyle : "not focused"; });
+        ok(ring === "solid", `${name}: key ${pick + 1} picks and focuses ${NAMES[pick]} with a focus ring (${ring})`);
+      }
+      await wait(page, 250);
+      st = await whoState(page);
+      ok(st.pressed[pick] === "true" && st.pressed[1 - pick] === "false", `${name}: ${NAMES[pick]} is selected`);
+      if (v === "b") ok(st.bubbles[pick].text === w.line && /is-placed/.test(st.bubbles[pick].cls), `${name}: B: the line moves into ${NAMES[pick]}'s bubble`);
+      if (touch) await page.click('.lesson-foot [data-act="main"]'); else await page.keyboard.press("Enter");
+      await wait(page, 900);
+      ok(await sheet(page) === (wrong ? "wrong" : "correct"), `${name}: the feedback bar says ${wrong ? "not yet" : "right"}`);
+      st = await whoState(page);
+      const r = st.bubbles[w.answer], c = st.bubbles[pick];
+      if (v === "a") ok(/is-right/.test(r.cls) && r.text === w.reply && r.shown, `${name}: A: ${NAMES[w.answer]} answers «${r.text}»`);
+      if (v === "b") ok(/is-right/.test(r.cls) && r.text === w.line, `${name}: B: the line is in ${NAMES[w.answer]}'s bubble`);
+      if (v === "c") ok(st.bubbles.map((b) => b.text).join("|") === PRON.join("|") && /is-right/.test(r.cls), `${name}: C: the bubbles show «él» and «ella»`);
+      if (wrong && v !== "c") ok(/is-wrong/.test(c.cls) && c.text === "?", `${name}: a «?» over ${NAMES[pick]}`);
+      if (wrong) ok(/thinking/.test(st.imgs[pick]), `${name}: ${NAMES[pick]} looks puzzled (${st.imgs[pick]})`);
+      ok(/celebrat/.test(st.imgs[w.answer]), `${name}: ${NAMES[w.answer]} celebrates (${st.imgs[w.answer]})`);
+      const under = await underBar(page);
+      ok(under.length === 0, `${name}: nothing under the feedback bar${under.length ? ": " + under.join(", ") : ""}`);
+      if (vp.width === 390 || vp.width === 1366) await shot(page, `w-${vp.width}-${v}-${id}${wrong ? "-wrong" : "-right"}`);
+      if (touch) await page.click('.feedback [data-act="continue"]'); else await page.keyboard.press("Enter");
+      await wait(page, 700);
+      const next = (await step(page)).step?.id;
+      ok(next && next !== id, `${name}: Continue moves on (${next})`);
+    }
+    if (!touch) { // Skip (wide screens): shows the answer, the step comes back later
+      await page.goto(BASE + "index.html?whoLayout=b&step=who-el#/lesson/1.1-2");
+      await page.reload();
+      await wait(page, 1200);
+      await page.click('.lesson-foot [data-act="skip"]');
+      await wait(page, 800);
+      const st = await whoState(page);
+      ok(await sheet(page) === "wrong" && /is-right/.test(st.bubbles[0].cls) && !st.bubbles[1].text.includes("?"), `${tag}: Skip shows the answer in Buhísimo's bubble, no «?»`);
+    }
+    await ctx.close();
+  }
 }
 
 // ===================================================================== E. audio coverage

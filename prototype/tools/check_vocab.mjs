@@ -42,7 +42,8 @@ const isSpellText = (t) => /se escribe|alfabeto/i.test(t);
 // ---------------------------------------------------------------- collectors
 // Each string: { where, text, unit, lesson, key, who, spoken, unitOnly, spell }
 // qEs/valueEs: the ID card's questions and answers (1.3); aEs/bEs: the parts of a pattern row (only its result, cEs, is said).
-const NOT_SPOKEN = new Set(["tilesEs", "optionsEs", "bucketsEs", "titleEs", "stampEs", "examplesEs", "specimenEs", "formsEs", "learnedEs", "maskEs", "linesEs", "qEs", "valueEs", "aEs", "bEs"]);
+// pronounEs: the él / ella label on a character in a «Who is it?» step (layout C, shown, not said).
+const NOT_SPOKEN = new Set(["tilesEs", "optionsEs", "bucketsEs", "titleEs", "stampEs", "examplesEs", "specimenEs", "formsEs", "learnedEs", "maskEs", "linesEs", "qEs", "valueEs", "aEs", "bEs", "pronounEs"]);
 function collect(obj, path, out, ctx) {
   if (obj == null || typeof obj !== "object") return;
   if (Array.isArray(obj)) { obj.forEach((v, i) => collect(v, `${path}[${i}]`, out, ctx)); return; }

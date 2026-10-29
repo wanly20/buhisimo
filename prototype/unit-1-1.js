@@ -70,6 +70,12 @@ export const ITEMS = [
 ];
 
 // ------------------------------------------------------------------ lessons 2–11
+// The two characters of the L2 «Who is it?» steps: his/her reply after the answer (replyEs,
+// in their own voice once recorded) and the pronoun for each (pronounEs, layout C).
+const WHO_BUHO_MATILDA = [
+  { art: "owl-explaining", labelEn: "Buhísimo", who: "owl", replyEs: "¡Soy de Salento!", pronounEs: "él" },
+  { art: "matilda", labelEn: "Matilda", who: "matilda", replyEs: "Soy de Melbourne.", pronounEs: "ella" },
+];
 const L2 = {
   ...common,
   id: "1.1-2", n: 2, kind: "learn",
@@ -89,9 +95,13 @@ const L2 = {
       noteEn: "[[ella]] = she · [[él]] = he" },
     { id: "pick-donde-es", type: "pick", character: "max", promptEs: "¿De dónde es Matilda?",
       options: ["Where is Matilda from?", "Where are you from?", "Matilda is from Melbourne.", "Where is Max from?"], answer: 0 },
-    { id: "who-el", type: "choose", titleEn: "Who is it?", promptEs: "Él es de Salento.",
-      optionsArt: [{ art: "owl-explaining", labelEn: "Buhísimo" }, { art: "matilda", labelEn: "Matilda" }], answer: 0,
+    // «Who is it?» with speech bubbles (layout: see chooseWho in js/lesson.js; ?whoLayout=a|b|c previews the others).
+    { id: "who-el", type: "choose", layout: "bubbles-a", speaker: "max", speakerArt: "max-wave", titleEn: "Who is it?", promptEs: "Él es de Salento.",
+      optionsArt: WHO_BUHO_MATILDA, answer: 0,
       answerEs: "Él es de Salento.", answerEn: "He's from Salento. Buhísimo is from Salento!" },
+    { id: "who-ella", type: "choose", layout: "bubbles-a", speaker: "max", speakerArt: "max-wave", titleEn: "Who is it?", promptEs: "Ella es de Melbourne.",
+      optionsArt: WHO_BUHO_MATILDA, answer: 1,
+      answerEs: "Ella es de Melbourne.", answerEn: "She's from Melbourne. Matilda is from Melbourne!" },
     { id: "intro-pais", type: "intro", character: "owl-explaining", flag: "co", contextEn: "Buhísimo is proud of his country:",
       es: "el país", en: "the country",
       exampleEs: "Colombia es el país de Buhísimo.", exampleEn: "Colombia is Buhísimo's country.",
