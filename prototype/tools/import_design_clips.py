@@ -14,7 +14,7 @@ import hashlib, json, re, shutil, unicodedata
 from pathlib import Path
 
 PROTO = Path(__file__).resolve().parent.parent
-LINES = Path.home() / "Documents/spanish/spanish_app/design/voices/lines"
+LINES = Path.home() / "Jobs/School/spanish/apps/claro_reviewer/design/voices/lines"
 
 # design voice -> prototype voice (same reference wav, checked by md5)
 VOICES = {"maria_bogota_warm": "maria_bogota", "maria_paisa_warm": "maria_paisa",

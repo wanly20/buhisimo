@@ -7,7 +7,7 @@ Run with the Python that has rembg installed (CPU is enough):
 With names, only those assets are rebuilt (e.g. `max-wave noun-mapa`).
 
 Reads the source PNGs (never modifies them) from
-~/Documents/spanish/spanish_app/design/prototype_art/ and writes optimised
+~/Jobs/School/spanish/apps/claro_reviewer/design/prototype_art/ and writes optimised
 WebP files (each <= 150 KB) to prototype/assets/.
 
 Characters: background removed with rembg, then only the connected component(s)
@@ -21,14 +21,14 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 from scipy import ndimage
 
-SRC = Path.home() / "Documents/spanish/spanish_app/design/prototype_art"
+SRC = Path.home() / "Jobs/School/spanish/apps/claro_reviewer/design/prototype_art"
 # Species-accurate Buhísimo (round head, no ear tufts), seed 3 = most consistent set.
-OWL_SRC = Path.home() / "Documents/spanish/spanish_app/design/characters/owl_fix"
+OWL_SRC = Path.home() / "Jobs/School/spanish/apps/claro_reviewer/design/characters/owl_fix"
 # Oct 18 flat remake (max_s1 style, NAG off): Matilda with the balaca wayuu, the expression
 # poses for Matilda and Max, and the four Unit 1.1 nouns. Replaces the round-5 art that
 # process_art_l2.py used to cut out.
 # matilda_stand_s4.png is Juan's pick from matilda_girl/balaca_style/, copied into remake_flat/.
-FLAT_SRC = Path.home() / "Documents/spanish/spanish_app/design/characters/remake_flat"
+FLAT_SRC = Path.home() / "Jobs/School/spanish/apps/claro_reviewer/design/characters/remake_flat"
 OUT = Path(__file__).resolve().parent.parent / "assets"
 MAX_BYTES = 150 * 1024
 

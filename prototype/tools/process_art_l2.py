@@ -6,7 +6,7 @@ process_art.py, without rembg) is enough. CPU only, numpy + scipy + Pillow:
 
     CUDA_VISIBLE_DEVICES="" ~/Documents/video_generation/Wan2GP/.venv/bin/python prototype/tools/process_art_l2.py
 
-Reads (never modifies) ~/Documents/spanish/spanish_app/design/characters/art_round5/
+Reads (never modifies) ~/Jobs/School/spanish/apps/claro_reviewer/design/characters/art_round5/
 and writes optimised WebP files (each <= 120 KB) to prototype/assets/, plus
 prototype/icons/*.png from the existing owl cut-out.
 """
@@ -17,7 +17,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 from scipy import ndimage
 
-SRC = Path.home() / "Documents/spanish/spanish_app/design/characters/art_round5"
+SRC = Path.home() / "Jobs/School/spanish/apps/claro_reviewer/design/characters/art_round5"
 PROTO = Path(__file__).resolve().parent.parent
 OUT = PROTO / "assets"
 ICONS = PROTO / "icons"
