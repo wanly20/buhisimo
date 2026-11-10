@@ -61,7 +61,7 @@
     {"unit": "1.4", "lesson": 7, "type": "listen", "titleEn": "Radio Búho: the week and the months", "new": [], "podcast": "calendario"},
     {"unit": "1.4", "lesson": 8, "type": "game", "titleEn": "Game: calendar tap", "new": []},
     {"unit": "1.4", "lesson": 9, "type": "learn", "titleEs": "¿Cuándo es tu cumpleaños?", "titleEn": "When is your birthday?", "new": ["¿Cuándo es tu cumpleaños?", "el cumpleaños", "tu", "el primero", "el uno"]},
-    {"unit": "1.4", "lesson": 10, "type": "learn", "titleEs": "La fecha: el veinte de julio", "titleEn": "The date", "new": ["el", "la fecha"]},
+    {"unit": "1.4", "lesson": 10, "type": "learn", "titleEs": "La fecha: el veinte de julio", "titleEn": "The date", "new": ["el", "la fecha", "¡Feliz cumpleaños!"]},
     {"unit": "1.4", "lesson": 11, "type": "speak", "titleEn": "Speak: say the date", "new": []},
     {"unit": "1.4", "lesson": 12, "type": "story", "titleEs": "El cumpleaños de Max", "titleEn": "Story: Max's birthday", "new": []},
     {"unit": "1.4", "lesson": 13, "type": "check", "titleEn": "Unit check: the party calendar", "new": []},
