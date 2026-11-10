@@ -49,6 +49,12 @@ function gradedTexts(step) {
     case "numpick": case "dictation": case "count": return [step.sayEs];
     case "numtype": return [step.answerEs];
     case "invaders": return step.rounds.map((r) => r.sayEs);
+    // Unit 1.4
+    case "calendar": return step.mode === "card" ? [] : step.mode === "read" ? [step.optionsEs[step.answer]] : [step.sayEs || step.es].filter(Boolean);
+    case "order": return step.wordsEs;
+    case "caltap": return step.waves.flatMap((w) => w.rounds.map((r) => r.sayEs));
+    case "datedict": return [step.sayEs];
+    case "calradio": return step.rows.map((r) => r.whenEs);
     default: return [];
   }
 }
@@ -106,6 +112,12 @@ function numberExercises(it, k) {
   ];
 }
 
+// Days and months (1.4): hear (or read) «Es lunes.» and tap it on the week or the year, as in the lessons.
+function calendarExercise(it, k) {
+  if (it.day != null) return { id: `r-cal-${it.id}-${k}`, type: "calendar", mode: "tap", view: "week", sayEs: `Es ${it.es}.`, target: it.day, en: `It's ${it.en}.` };
+  return { id: `r-cal-${it.id}-${k}`, type: "calendar", mode: "tap", view: "year", sayEs: `Es ${it.es}.`, target: it.month, en: `It's ${it.en}.` };
+}
+
 function exercisesFor(it, pool, bank, k) {
   if (it.letters) return letterExercise(it, pool, k);
   if (it.num != null) return numberExercises(it, k);
@@ -119,7 +131,9 @@ function exercisesFor(it, pool, bank, k) {
   list.push({ id: `r-choose-${it.id}-${k}`, type: "choose", titleEn: "Which one is it in Spanish?", character: "owl-explaining", promptEn: it.en,
     optionsEs: [display, ...distract(3).map((o) => (o.formsEs ? o.formsEs[0] : o.es))], answer: 0 });
   if (!it.formsEs && !["es", "no", "el"].includes(it.id)) list.push({ id: `r-type-${it.id}-${k}`, type: "type", en: it.en, answerEs: it.es });
-  if (hasAudio(it.es)) list.push({ id: `r-listen-${it.id}-${k}`, type: "listen", sayEs: it.es, en: it.en,
+  if (it.day != null || it.month != null) list.push(calendarExercise(it, k), calendarExercise(it, k + 100));
+  // tu and el (1.4) are never asked bare: they live inside tu cumpleaños and el veinte de julio.
+  if (hasAudio(it.es) && !it.formsEs) list.push({ id: `r-listen-${it.id}-${k}`, type: "listen", sayEs: it.es, en: it.en,
     optionsEs: [it.es, ...distract(3).map((o) => o.es)], answer: 0 });
   const withIt = bank.filter((s) => itemsIn(s.es).includes(it.id));
   if (withIt.length) {

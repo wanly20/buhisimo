@@ -7,9 +7,10 @@ import { tts, stt, fold, speechMatches } from "./speech.js";
 import { sfx } from "./sound.js";
 import { store } from "./store.js";
 import { mapFrame, wireMapPins, wireMapQuiz, placeName, PLACES } from "./worldmap.js";
-import { timeScene, face, faceEn, digitArt, idCard } from "./art.js";
+import { timeScene, face, faceEn, digitArt, idCard, calArt } from "./art.js";
 import { EXERCISES_1_2 } from "./exercises-1-2.js";
 import { EXERCISES_1_3 } from "./exercises-1-3.js";
+import { EXERCISES_1_4 } from "./exercises-1-4.js";
 
 const MAX_RETRIES = 2;
 
@@ -23,7 +24,10 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings, onGra
   // A crowded study map can be split into smaller maps on phones (`phoneSplit`, < 700px wide).
   const narrow = window.innerWidth < 700;
   const expanded = lesson.steps.flatMap((s) => (narrow && s.phoneSplit ? s.phoneSplit.map((p, k) => ({ ...s, ...p, id: `${s.id}-${k + 1}`, phoneSplit: undefined })) : [s]));
-  let queue = expanded.filter((s) => {
+  // In a speaking lesson (1.4 L11), a speak step with `tiles` becomes a sentence builder on the same
+  // sentence when speaking is off or unavailable, so the lesson still practises it (build plan 1.4 §5).
+  const asTiles = (s) => ({ ...s.tiles, id: s.id, type: "tiles", character: s.character, en: s.en, fullEs: s.es });
+  let queue = expanded.map((s) => (s.type === "speak" && s.tiles && lesson.kind === "speak" && (!stt.available() || !store.speakOn()) ? asTiles(s) : s)).filter((s) => {
     if (s.type === "speak" && !stt.available()) { unsupported.push("speaking"); return false; }
     if (s.type === "speak" && !store.speakOn()) return false;
     // Listening is never audio-only without a recording: those steps become
@@ -291,7 +295,7 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings, onGra
       // A focused button (tile, letter, audio, Skip…) does its own thing, except
       // an answer option once CHECK is ready: then Enter checks, as on Duolingo.
       const isButton = t?.matches("button, a[href]") && t !== mainBtn;
-      if (isButton && !(t.matches(".option") && !mainBtn.disabled)) return;
+      if (isButton && !(t.matches(".option, .cal-hit, .id-chip, .face-pick") && !mainBtn.disabled)) return;
       e.preventDefault();
       if (!mainBtn.disabled) mainBtn.click();
     } else if (e.key === "Escape") confirmQuit();
@@ -338,9 +342,10 @@ export function runLesson(app, lesson, { onExit, onComplete, openSettings, onGra
 
 // =================================================================== exercises
 // Unit 1.2 adds letters, letterpick, spell, clip, radio and transcript (js/exercises-1-2.js); Unit 1.3
-// numbers, songs, Number Invaders and the ID card (js/exercises-1-3.js).
+// numbers, songs, Number Invaders and the ID card (js/exercises-1-3.js); Unit 1.4 the calendar, Calendar tap,
+// date dictation, the birthday wall and "Your birthday" (js/exercises-1-4.js).
 const EXERCISES = { intro, pick: pickMeaning, listen, tiles, type: typeIt, match, speak,
-  choose, gap, sort, maptap, mapstudy, table, storyintro, storyline, passport, ...EXERCISES_1_2, ...EXERCISES_1_3 };
+  choose, gap, sort, maptap, mapstudy, table, storyintro, storyline, passport, ...EXERCISES_1_2, ...EXERCISES_1_3, ...EXERCISES_1_4 };
 
 /** Which recorded voice role says a line by this character. */
 export function roleOf(who = "") {
@@ -364,6 +369,7 @@ export function head(title, badge = "") {
 function artHtml(step, cls = "intro-char") {
   if (step.map) return `<div class="intro-map">${mapFrame({ focus: step.map, aspect: 1, pins: false })}</div>`;
   if (step.idcard) return idCard(step.idcard);
+  if (step.cal) return calArt(step.cal);
   if (step.digit != null) return digitArt(step.digit, { label: String(step.digit) });
   if (step.time) return timeScene(step.time);
   if (step.face) return face(step.face, { label: faceEn(step.face) });
@@ -404,9 +410,11 @@ function intro(step, api) {
   const art = step.flags
     ? `<div class="intro-flags">${step.flags.map((f, i) => flagImg(f, `flag flag--fan flag--${i}`)).join("")}</div>`
     : artHtml(step);
+  // A calendar picture on the card (Unit 1.4): the step's character (the lesson's host) stands in the corner.
+  const host = step.cal && step.character ? charImg(step.character, "intro-host") : "";
   const badge = step.badgeEn ? `${icon("sparkles", 16, 2.75)} ${esc(step.badgeEn)}` : `${icon("sparkles", 16, 2.75)} New ${isPhrase ? "phrase" : step.map && step.map !== "hispanic" && !/^(el|la|las|los) /.test(step.es) ? "place" : "word"}`;
   const node = el(`
-    <div class="ex ex-intro ${step.map ? "ex-intro--map" : ""} ${step.time || step.idcard ? "ex-intro--scene" : ""} ${step.idcard ? "ex-intro--card" : ""} ${step.digit != null ? "ex-intro--digit" : ""} ${step.face ? "ex-intro--face" : ""}">
+    <div class="ex ex-intro ${step.map ? "ex-intro--map" : ""} ${step.time || step.idcard || step.cal ? "ex-intro--scene" : ""} ${step.idcard ? "ex-intro--card" : ""} ${step.cal ? `ex-intro--cal ex-intro--cal-${step.cal.view}` : ""} ${step.digit != null ? "ex-intro--digit" : ""} ${step.face ? "ex-intro--face" : ""}">
       ${head("", `<span class="badge">${badge}</span>`)}
       ${step.contextEn ? `<p class="context">${rich(step.contextEn)}</p>` : ""}
       <div class="intro-card">
@@ -416,6 +424,7 @@ function intro(step, api) {
           <p class="intro-en">${esc(step.en)}</p>
         </div>
         <div class="intro-audio">${audioButtons()}</div>
+        ${host}
       </div>
       ${step.exampleEs ? `<div class="example"><button class="press icon-btn icon-btn--secondary icon-btn--sm" data-ex aria-label="Play example"><span class="face">${icon("volume-2", 22)}</span></button><div>${es(step.exampleEs, "example-es")}<span class="example-en">${esc(step.exampleEn)}</span></div></div>` : ""}
       ${step.noteEn ? `<p class="note">${icon("lightbulb", 20, 2.5)}<span>${rich(step.noteEn)}</span></p>` : ""}
@@ -528,20 +537,35 @@ function listen(step, api) {
 }
 
 // ------------------------------------------------------------ build the sentence (tiles)
-function tiles(step, api) {
+// Sentence builder. `dir: "es-en"` (Unit 1.4, the Spanish We Do order): the Spanish is shown and
+// played, and the student builds the English from English tiles (tilesEn → answerEn).
+export function tiles(step, api) {
+  const toEn = step.dir === "es-en";
+  if (toEn) step = { ...step, tilesEs: step.tilesEn, answerEs: step.answerEn };
+  const lang = toEn ? "en" : "es";
   const order = shuffle(step.tilesEs.map((_, i) => i));
-  const node = el(`
-    <div class="ex ex-tiles ${step.lines ? "ex-tiles--lines" : ""}">
-      ${head(esc(step.titleEn || "Write this in Spanish"))}
-      ${step.lines ? `<p class="context">Tap the lines in the order you heard them.</p>` : `<div class="speaker-row">
+  const prompt = toEn
+    ? `<div class="speaker-row">
+        ${charImg(step.character)}
+        <div class="bubble"><button class="press icon-btn icon-btn--primary icon-btn--sm" data-audio="normal" aria-label="Play audio"><span class="face">${icon("volume-2", 22)}</span></button>${es(step.promptEs)}</div>
+      </div>`
+    : step.cal
+      ? `<div class="speaker-row tiles-cal"><div class="type-cal">${calArt(step.cal)}</div><div class="bubble"><span class="en">${esc(step.en)}</span></div></div>`
+      : `<div class="speaker-row">
         ${charImg(step.character)}
         <div class="bubble"><span class="en">${esc(step.en)}</span></div>
-      </div>`}
-      <div class="answer-lines" aria-label="Your answer" lang="es"></div>
-      <div class="bank" aria-label="Word bank" lang="es">
+      </div>`;
+  const node = el(`
+    <div class="ex ex-tiles ${step.lines ? "ex-tiles--lines" : ""} ${toEn ? "ex-tiles--es-en" : ""}">
+      ${head(esc(step.titleEn || (toEn ? "What does it mean? Build it in English" : "Write this in Spanish")))}
+      ${step.lines ? `<p class="context">Tap the lines in the order you heard them.</p>` : prompt}
+      <div class="answer-lines" aria-label="Your answer" lang="${lang}"></div>
+      <div class="bank" aria-label="Word bank" lang="${lang}">
         ${order.map((ti, k) => `<span class="tile-slot"><button class="press tile" data-ti="${ti}"><span class="face" data-key="${k + 1}">${esc(step.tilesEs[ti])}</span></button></span>`).join("")}
       </div>
     </div>`);
+  let audible = false;
+  if (toEn) { audible = markAudio(node, step.promptEs); wireAudio(node, api, step.promptEs); }
   const answer = $(".answer-lines", node);
   const placed = [];
   const screenRoot = () => node.closest(".lesson");
@@ -605,6 +629,7 @@ function tiles(step, api) {
     el: node,
     footer: { label: "Check", enabled: false },
     aside: ["skip"],
+    mount() { if (audible) setTimeout(() => api.speak(step.promptEs, false, step.speaker || step.character), 350); },
     onKey(k) {
       if (node.classList.contains("is-locked")) return;
       if (k === "Backspace") { $$(".tile", answer).at(-1)?.click(); return; }
@@ -618,6 +643,7 @@ function tiles(step, api) {
       const ok = got === want;
       answer.classList.add(ok ? "is-correct" : "is-wrong");
       if (!ok && !skipped) restartAnim(answer, "shake");
+      if (toEn) return { ok, answerEs: step.promptEs, answerEn: step.answerEs.join(" ") };
       return { ok, answerEs: step.lines ? undefined : step.fullEs, answerEn: ok ? step.en : "",
         body: step.lines && !ok ? `<span class="feedback__tip">The order was: ${step.answerEs.map((l, i) => `${i + 1}. ${es(l)}`).join(" ")}</span>` : "" };
     },
@@ -667,6 +693,8 @@ export function capsIssues(typed, want, sentence) {
 /** Explain a capital-letter slip in one kind sentence. */
 export function capsMessage(issues) {
   if (issues.some((x) => x.need === "lower" && SMALL_WORDS.has(x.word.toLowerCase()))) return "Small letters: in Spanish, languages, days and months don't take a capital (el español, lunes, enero).";
+  // A day or month that starts a sentence still takes a capital (Unit 1.4: «Lunes, miércoles, viernes.»).
+  if (issues.some((x) => x.need === "upper" && SMALL_WORDS.has(x.word.toLowerCase()))) return "A sentence starts with a capital letter, even when it starts with a day or a month.";
   if (issues.some((x) => x.need === "upper")) return "Capital letters: Spanish starts a sentence with a capital (after ¿ or ¡ too), and names of countries, places and people always have one.";
   return "Small letters: only the first word of a sentence and names take a capital letter.";
 }
@@ -695,6 +723,7 @@ export function typeIt(step, api) {
   const node = el(`
     <div class="ex ex-type">
       ${head(esc(step.titleEn || "Type this in Spanish"))}
+      ${step.cal ? `<div class="type-cal">${calArt(step.cal)}</div>` : ""}
       ${step.headHtml || `<div class="type-prompt">
         ${step.flag ? flagImg(step.flag, "flag type-flag") : `<span class="type-prompt__icon">${icon("type", 28, 2.5)}</span>`}
         <span class="type-prompt__en">${esc(step.en)}</span>
@@ -732,19 +761,21 @@ export function typeIt(step, api) {
       api.complete({ ok: false, skipped: true, answerEs: step.answerEs, answerEn: step.en });
     },
     onMain() {
-      const g = grade(input.value, step.answerEs);
+      // altEs: other right answers (1.4: «el uno de mayo» for «el primero de mayo»); grade against the closest one.
+      const target = [step.answerEs, ...(step.altEs || [])].find((t) => fold(normalize(input.value)) === fold(normalize(t))) || step.answerEs;
+      const g = grade(input.value, target);
       input.readOnly = true;
       input.blur();
-      if (g.verdict === "accents" || g.verdict === "caps") return startFixup(g);
+      if (g.verdict === "accents" || g.verdict === "caps") return startFixup(g, target);
       const ok = g.verdict === "correct";
       step.onResult?.(ok, node);
       node.querySelector(".type-field").classList.add(ok ? "is-correct" : "is-wrong");
       if (!ok) restartAnim(node.querySelector(".type-field"), "shake");
       api.complete({
         ok,
-        answerEs: step.answerEs,
+        answerEs: target,
         answerEn: ok ? step.en : "",
-        body: g.missingArticle ? `<span class="feedback__tip">Remember the little word in front: ${es(step.answerEs)}</span>` : "",
+        body: g.missingArticle ? `<span class="feedback__tip">Remember the little word in front: ${es(target)}</span>` : "",
       });
     },
   };
@@ -752,8 +783,7 @@ export function typeIt(step, api) {
   // The fix-up: the student's own letters, to be fixed by tapping. Stage 1 fixes accents and ñ
   // (tap a vowel: a → á; tap n: ñ). Stage 2 fixes capital letters (tap a letter: a ↔ A); the letters
   // that need it are highlighted and the rule is named. A capitals fix is right, but not first-try.
-  function startFixup(g) {
-    const target = step.answerEs;
+  function startFixup(g, target = step.answerEs) {
     const lockedUpTo = g.missingArticle ? g.typed.indexOf(" ") : -1; // article we added for them
     const cur = [...g.typed];
     const want = [...g.want];
@@ -947,9 +977,9 @@ function match(step, api) {
 }
 
 // ------------------------------------------------------------ say it
-function speak(step, api) {
+export function speak(step, api) {
   const node = el(`
-    <div class="ex ex-speak">
+    <div class="ex ex-speak ${step.es.length > 48 ? "ex-speak--long" : ""}">
       ${head("Say this out loud")}
       <div class="speaker-row">
         ${charImg(step.character)}

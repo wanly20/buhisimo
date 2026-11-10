@@ -1,0 +1,5 @@
+{
+ "_about": "Unit 1.4 recordings (docs/recording_list_1.4.md, written by the 1.4 recording run in video_generation/scripts/voice_tools/). Same shape as the other manifests: clips = Spanish text -> { voice: \"audio/<voice>/<slug>.mp3\" }; speakers = Spanish text -> role, for lines that always play in one character's voice. Empty until the GPU session runs: until then every 1.4 line falls back to text ('Audio soon').",
+ "clips": {},
+ "speakers": {}
+}

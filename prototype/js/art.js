@@ -1,6 +1,7 @@
 // Small flat pictures drawn in SVG (Salento palette, no outlines, one shadow tone), so the
 // 1.2 lessons need no new image files: the time of day over the Cocora hills, and five
 // feeling faces from "fatal" to "fenomenal". Decorative only: the step text carries the meaning.
+import { DAYS_ES, DAY_LETTERS, MONTHS_ES, monthCells } from "./calendar.js";
 
 const C = {
   sky: "#e3f6f5", skyPm: "#fde8f1", sun: "#f7b928", sunEdge: "#e19c08", hill1: "#2fbf71", hill2: "#17a35a", hill3: "#0e7f45",
@@ -109,4 +110,93 @@ export function idCard({ photo = "", fields = [], number = "", highlight = -1, c
       <span class="idcard__no">${escA(number)}</span>
     </div>
   </div>`;
+}
+
+// =================================================================== Unit 1.4: the calendar
+// Drawn in code (HTML + CSS in css/unit-1-4.css), like the ID card: every day and month name is
+// real text in small letters, so the Spanish on a calendar is always exact. Monday first, X for
+// miércoles (L M X J V S D), no year anywhere (the story year 2025 is never shown: js/calendar.js).
+// Each renderer returns HTML. With `tap`, the cells are buttons (class `cal-hit`, data-oi = the value)
+// that exercises-1-4.js wires up; without it they are plain pictures.
+
+const cellTag = (tap, value, inner, cls, on = true, label = "") => tap
+  ? `<button class="press cal-hit ${cls}" data-oi="${escA(value)}" ${on ? "" : "disabled"} aria-label="${escA(label)}"><span class="face">${inner}</span></button>`
+  : `<span class="${cls}" ${label ? `aria-label="${escA(label)}"` : ""}>${inner}</span>`;
+
+/**
+ * The week: L M X J V S D, each with its day name under the letter (`names`: all, or only the lit ones).
+ *   weekStrip({ active: [0, 1], lit: [0], tap: true, names: "lit" })
+ */
+export function weekStrip({ active = [0, 1, 2, 3, 4, 5, 6], lit = [], tap = false, names = "all", cls = "" } = {}) {
+  return `<div class="cal-week ${cls}" role="group" aria-label="The week, Monday first">
+    ${DAYS_ES.map((d, i) => {
+      const on = active.includes(i), isLit = lit.includes(i);
+      const showName = names === "all" || (names === "lit" && isLit) || (names === "active" && on);
+      const inner = `<span class="cal-week__l" aria-hidden="true">${DAY_LETTERS[i]}</span><span class="cal-week__n" lang="es">${showName ? escA(d) : "&nbsp;"}</span>`;
+      return cellTag(tap, i, inner, `cal-week__d ${on ? "" : "is-off"} ${isLit ? "is-lit" : ""} ${i >= 5 ? "is-weekend" : ""}`, on, showName || tap ? d : DAY_LETTERS[i]);
+    }).join("")}
+  </div>`;
+}
+
+/** The year: twelve month tiles (1 = enero). `names`: "all" | "lit" | "active" (only active months named). */
+export function yearView({ active = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], lit = [], tap = false, names = "all", cls = "" } = {}) {
+  return `<div class="cal-year ${cls}" role="group" aria-label="The year">
+    ${MONTHS_ES.map((name, i) => {
+      const m = i + 1, on = active.includes(m), isLit = lit.includes(m);
+      const showName = names === "all" || (names === "lit" && isLit) || (names === "active" && on);
+      const inner = `<span class="cal-year__ring" aria-hidden="true"><i></i><i></i></span><span class="cal-year__n" lang="es">${showName ? escA(name) : "?"}</span>`;
+      return cellTag(tap, m, inner, `cal-year__m cal-year__m--${(i % 4) + 1} ${on ? "" : "is-off"} ${isLit ? "is-lit" : ""}`, on, showName ? name : `month ${m}`);
+    }).join("")}
+  </div>`;
+}
+
+/**
+ * A month page: the month name (small letters) over a Monday-first grid. `circle`: days drawn with a
+ * ring; `stickers`: days with a party sticker; `tap`: the days are buttons; `flip`: ‹ › buttons beside
+ * the name (data-flip="-1" / "1"); `leap`: a leap-year February (Max's 29th). No year is ever shown.
+ */
+export function monthPage(m, { leap = false, circle = [], stickers = [], tap = false, flip = false, lit = -1, small = false, cls = "" } = {}) {
+  const cells = monthCells(m, { leap });
+  return `<div class="cal-page ${small ? "cal-page--small" : ""} ${cls}" data-month="${m}" role="group" aria-label="The calendar page for ${escA(MONTHS_ES[m - 1])}">
+    <div class="cal-page__head">
+      ${flip ? `<button class="press icon-btn icon-btn--secondary icon-btn--sm cal-flip" data-flip="-1" aria-label="Previous month"><span class="face">‹</span></button>` : ""}
+      <span class="cal-page__name" lang="es">${escA(MONTHS_ES[m - 1])}</span>
+      ${flip ? `<button class="press icon-btn icon-btn--secondary icon-btn--sm cal-flip" data-flip="1" aria-label="Next month"><span class="face">›</span></button>` : ""}
+    </div>
+    <div class="cal-page__grid">
+      ${DAY_LETTERS.map((l, i) => `<span class="cal-page__dow ${i === lit ? "is-lit" : ""} ${i >= 5 ? "is-weekend" : ""}" data-dow="${i}" aria-hidden="true">${l}</span>`).join("")}
+      ${cells.map((d, k) => d == null ? `<span class="cal-page__blank"></span>` : cellTag(tap, d, `<span class="cal-page__d">${d}</span>${stickers.includes(d) ? `<span class="cal-sticker" aria-hidden="true">★</span>` : ""}`,
+        `cal-page__day ${circle.includes(d) ? "is-circled" : ""} ${k % 7 >= 5 ? "is-weekend" : ""}`, true, `${d}`)).join("")}
+    </div>
+  </div>`;
+}
+
+/** The seasons culture card (1.4 L5): Melbourne in July (beanie, rain) and Salento (the same all year). */
+export function seasonsArt() {
+  return `<svg class="art-seasons" viewBox="0 0 320 150" role="img" aria-label="Melbourne in July: cold and rainy. Salento: mild all year.">
+    <rect x="4" y="4" width="150" height="142" rx="18" fill="#e3f6f5"/>
+    <rect x="166" y="4" width="150" height="142" rx="18" fill="#fff5d6"/>
+    <g fill="#9aa9b5"><ellipse cx="60" cy="40" rx="30" ry="14"/><ellipse cx="86" cy="34" rx="22" ry="13"/><ellipse cx="104" cy="44" rx="20" ry="11"/></g>
+    <g stroke="#14a39e" stroke-width="4" stroke-linecap="round"><path d="M50 62 l-6 12"/><path d="M72 62 l-6 12"/><path d="M94 62 l-6 12"/><path d="M61 82 l-6 12"/><path d="M83 82 l-6 12"/></g>
+    <path d="M52 128 q27 -40 54 0 z" fill="#d6247a"/><rect x="48" y="124" width="62" height="10" rx="5" fill="#b3135f"/><circle cx="79" cy="88" r="7" fill="#ee4f97"/>
+    <circle cx="241" cy="46" r="20" fill="#f7b928"/><circle cx="241" cy="46" r="28" fill="#f7b928" opacity="0.25"/>
+    <g fill="#ffffff"><ellipse cx="270" cy="62" rx="22" ry="10"/><ellipse cx="252" cy="66" rx="16" ry="8"/></g>
+    <path d="M166 120 Q220 92 316 112 V146 H166 Z" fill="#2fbf71"/>
+    <rect x="214" y="70" width="4" height="52" rx="2" fill="#eadfcf"/><path d="M216 70 q-14 -2 -20 8 M216 70 q14 -2 20 8 M216 70 q-6 -12 -16 -12 M216 70 q6 -12 16 -12" stroke="#0e7f45" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <text x="79" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#075c59" font-family="system-ui, sans-serif">Melbourne</text>
+    <text x="241" y="140" text-anchor="middle" font-size="13" font-weight="700" fill="#3d2a00" font-family="system-ui, sans-serif">Salento</text>
+  </svg>`;
+}
+
+/**
+ * A calendar picture for an intro card or a choice (not interactive):
+ *   { view: "week", lit: [0] } · { view: "year", lit: [7] } · { view: "month", month: 3, circle: [1] }
+ *   { view: "pair", months: [6, 7] } (two pages side by side: junio / julio) · { view: "namecard" } (Samuel's ID card next to noviembre)
+ */
+export function calArt(c = {}) {
+  if (c.view === "week") return weekStrip({ active: c.active, lit: c.lit || [], names: c.names || "all" });
+  if (c.view === "year") return yearView({ active: c.active, lit: c.lit || [], names: c.names || "all" });
+  if (c.view === "pair") return `<div class="cal-pair">${c.months.map((m, k) => monthPage(m, { small: true, circle: c.circle || [], cls: `cal-page--tone${k + 1}` })).join("")}</div>`;
+  if (c.view === "namecard") return `<div class="cal-pair cal-pair--namecard">${idCard({ photo: "samuel", fields: [{ qEs: "¿El nombre?", valueEs: "Samuel" }], cls: "idcard--mini" })}${monthPage(11, { small: true })}</div>`;
+  return monthPage(c.month, { leap: !!c.leap, circle: c.circle || [], small: c.small !== false }); // small on cards and prompts
 }

@@ -4,6 +4,9 @@
 // Setup (outside the repo):  mkdir -p $PW && cd $PW && npm i playwright-core@1.48.2
 // Serve:  cd prototype && python3 -m http.server 8765 --bind 127.0.0.1   (another port: BASE=http://127.0.0.1:8780/)
 // Run:    NODE_PATH=$PW/node_modules node prototype/tools/e2e-unit.mjs <outDir>
+// No server: ROUTE=1 serves prototype/ straight from disk through Playwright's request routing
+// (http://buho.test/, no port opened; the service worker is blocked, so skip A5 there).
+//   ROUTE=1 SECTIONS=X NODE_PATH=$PW/node_modules node prototype/tools/e2e-unit.mjs <outDir>
 //
 // Covers: lesson locks (sequential, URL-proof, ?unlock=all / ?unlock=off), map questions
 // (study map with names, questions without, 44px targets for small islands at 390×844), every 1.1 lesson played start to finish (keyboard on the Chromebook size, with
@@ -11,17 +14,19 @@
 // (spaced repetition + My knowledge), the story, Radio Búho karaoke highlighting, the
 // phone tab bar, the progress file, offline mode and the service worker. Section U is Unit 1.2;
 // section V is Unit 1.3 (numbers, number songs and their karaoke, Number Invaders, the ID card);
-// section W is the «Who is it?» speech-bubble steps (1.1-2 and 1.3, four sizes, keyboard and touch).
+// section W is the «Who is it?» speech-bubble steps (1.1-2 and 1.3, four sizes, keyboard and touch);
+// section X is Unit 1.4 (the calendar, Calendar tap, dates, the birthday wall, "Your birthday").
 import { createRequire } from "node:module";
-import { mkdirSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { mkdirSync, readFileSync, existsSync } from "node:fs";
+import { dirname, join, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright-core"); // resolved through NODE_PATH
 const OUT = process.argv[2] || "e2e-unit-shots";
 mkdirSync(OUT, { recursive: true });
-const BASE = process.env.BASE || "http://127.0.0.1:8765/"; // e.g. BASE=http://127.0.0.1:8780/
+const ROUTE = !!process.env.ROUTE;
+const BASE = process.env.BASE || (ROUTE ? "http://buho.test/" : "http://127.0.0.1:8765/"); // e.g. BASE=http://127.0.0.1:8780/
 const PROTO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
 let OFFLINE = false;
@@ -30,7 +35,7 @@ const ok = (c, msg) => { if (!c) { errors.push("ASSERT: " + msg); log("  ✗", m
 const shots = new Set();
 // Every recorded clip (the six manifests js/speech.js merges): text -> voices.
 const CLIPS = {};
-for (const m of ["manifest.json", "manifest-extra.json", "manifest-l2.json", "manifest-max.json", "manifest-matilda.json", "manifest-callers.json"]) {
+for (const m of ["manifest.json", "manifest-extra.json", "manifest-l2.json", "manifest-max.json", "manifest-matilda.json", "manifest-callers.json", "manifest-u14.json"]) {
   try { for (const [t, by] of Object.entries(JSON.parse(readFileSync(join(PROTO, "audio", m), "utf8")).clips)) CLIPS[t] = { ...CLIPS[t], ...by }; } catch { /* optional */ }
 }
 const hasClip = (t) => !!CLIPS[t];
@@ -68,8 +73,17 @@ const browser = await chromium.launch({
 });
 
 async function newPage(viewport, { touch = false } = {}) {
-  const ctx = await browser.newContext({ viewport, hasTouch: touch, acceptDownloads: true });
+  const ctx = await browser.newContext({ viewport, hasTouch: touch, acceptDownloads: true, ...(ROUTE ? { serviceWorkers: "block" } : {}) });
   await ctx.addInitScript(MOCK_SPEECH);
+  if (ROUTE) {
+    const TYPES = { ".html": "text/html", ".js": "text/javascript", ".mjs": "text/javascript", ".css": "text/css", ".json": "application/json", ".webp": "image/webp", ".png": "image/png", ".svg": "image/svg+xml", ".mp3": "audio/mpeg", ".webmanifest": "application/manifest+json" };
+    await ctx.route(`${BASE}**`, (route) => {
+      const path = decodeURIComponent(new URL(route.request().url()).pathname).replace(/^\/+/, "") || "index.html";
+      const file = join(PROTO, path);
+      if (!file.startsWith(PROTO) || !existsSync(file)) return route.fulfill({ status: 404, body: "not found" });
+      return route.fulfill({ status: 200, path: file, headers: { "content-type": TYPES[extname(file)] || "application/octet-stream" } });
+    });
+  }
   const page = await ctx.newPage();
   // A missing file is reported by its URL (below); optional art may be missing (the scene falls back to a character).
   page.on("console", (m) => { if (m.type() === "error" && !/favicon|Failed to load resource: the server responded with a status of 404/.test(m.text()) && !(OFFLINE && /ERR_INTERNET_DISCONNECTED/.test(m.text()))) errors.push(`console.error: ${m.text()} (${m.location()?.url || ""})`); });
@@ -107,7 +121,94 @@ async function pickByKey(page, selector, test, { useKeys = true } = {}) {
 async function answer(page, s, { wrong = false, keys = true } = {}) {
   const t = s.type;
   const enter = async () => { if (keys) await page.keyboard.press("Enter"); else await page.click('.lesson-foot [data-act="main"]'); };
-  if (["intro", "table", "storyintro", "storyline", "mapstudy", "letters", "clip", "transcript", "numcard", "pattern", "song", "songset"].includes(t)) { await enter(); return "next"; }
+  if (["intro", "table", "storyintro", "storyline", "mapstudy", "letters", "clip", "transcript", "numcard", "pattern", "song", "songset", "wall", "datepattern", "culture"].includes(t) || (t === "calendar" && s.mode === "card")) { await enter(); return "next"; }
+  // ---- Unit 1.4
+  if (t === "calendar" && s.mode === "say") {
+    if (await page.locator(".lesson-body .ex-tiles").count()) return answer(page, { ...s, ...s.tiles, type: "tiles" }, { wrong, keys });
+    await page.evaluate((es) => { window.__heard = es; }, s.es);
+    await page.click(".lesson-body .ex-cal--say .mic-btn");
+    await wait(page, 1000); return "graded";
+  }
+  if (t === "calendar") { // tap or read
+    const want = s.mode === "read" ? s.answer : s.target;
+    if (s.mode === "read") await pickByKey(page, ".lesson-body .ex-cal .option", wrong ? `(b) => +b.dataset.oi !== ${want}` : `(b) => +b.dataset.oi === ${want}`, { useKeys: keys });
+    else {
+      const sel = wrong ? `.lesson-body .ex-cal .cal-hit:not(:disabled):not([data-oi="${want}"])` : `.lesson-body .ex-cal .cal-hit[data-oi="${want}"]`;
+      await page.locator(sel).first().click();
+    }
+    await wait(page, 150); await enter(); return "graded";
+  }
+  if (t === "order") {
+    for (const w of s.wordsEs) {
+      const idx = await page.evaluate((w) => [...document.querySelectorAll(".lesson-body .order-tile")].findIndex((b) => !b.disabled && b.textContent.trim() === w), w);
+      if (keys && idx < 9) await page.keyboard.press(String(idx + 1)); else await page.locator(".lesson-body .order-tile").nth(idx).click();
+      await wait(page, 220);
+    }
+    await wait(page, 1100); return "graded";
+  }
+  if (t === "caltap") {
+    for (let g = 0; g < 60; g++) {
+      const st = await page.evaluate(() => { const n = document.querySelector(".lesson-body .ex-caltap"); return n && n.dataset.answer ? { a: n.dataset.answer, r: n.dataset.round, page: +n.dataset.page || 0 } : null; });
+      if (!st) break;
+      await wait(page, 1000); // past the wave banner
+      let sel;
+      if (st.a.startsWith("p")) {
+        const [d, m] = st.a.slice(1).split("/").map(Number);
+        for (let k = 0; k < 12; k++) {
+          const pg = await page.evaluate(() => +document.querySelector(".lesson-body .ex-caltap").dataset.page);
+          if (pg === m) break;
+          await page.click(`.lesson-body .ct-squares .cal-flip[data-flip="${(m - pg + 12) % 12 <= 6 ? 1 : -1}"]`);
+          await wait(page, 120);
+        }
+        sel = `.lesson-body .ct-squares .cal-page .cal-hit[data-oi="${d}"]`;
+      } else if (st.a === "card") sel = '.lesson-body .ct-squares [data-k="card"]';
+      else if (st.a.startsWith("d")) sel = `.lesson-body .ct-squares .cal-week .cal-hit[data-oi="${st.a.slice(1)}"]`;
+      else sel = `.lesson-body .ct-squares .cal-year .cal-hit[data-oi="${st.a.slice(1)}"]`;
+      await page.locator(sel).click({ force: true });
+      await page.waitForFunction((r) => { const n = document.querySelector(".lesson-body .ex-caltap"); return !n || !n.dataset.answer || n.dataset.round !== r; }, st.r, { timeout: 6000 }).catch(() => {});
+    }
+    await wait(page, 800); return "graded";
+  }
+  if (t === "datedict") {
+    await page.fill('.lesson-body .ex-datedict .dict-input[data-k="0"]', String(wrong ? (s.d % 28) + 1 : s.d));
+    await page.fill('.lesson-body .ex-datedict .dict-input[data-k="1"]', String(s.m));
+    await wait(page, 150); await enter(); return "graded";
+  }
+  if (t === "calradio") {
+    for (const [k, r] of s.rows.entries()) {
+      const o = wrong && k === 0 ? r.optionsEs.findIndex((x) => x !== r.whenEs) : r.optionsEs.indexOf(r.whenEs);
+      await page.click(`.lesson-body .ex-calradio .id-chip[data-row="${k}"][data-o="${o}"]`);
+      await page.click(`.lesson-body .ex-calradio .face-pick[data-row="${k}"][data-face="${r.face}"]`);
+      await wait(page, 100);
+    }
+    await enter(); return "graded";
+  }
+  if (t === "partycal") {
+    for (const c of s.calls) {
+      for (let k = 0; k < 12; k++) {
+        const pg = await page.evaluate(() => +document.querySelector(".lesson-body .ex-partycal").dataset.page);
+        if (pg === c.m) break;
+        await page.click(`.lesson-body .party-board .cal-flip[data-flip="${(c.m - pg + 12) % 12 <= 6 ? 1 : -1}"]`);
+        await wait(page, 100);
+      }
+      await page.click(`.lesson-body .party-board .cal-hit[data-oi="${c.d}"]`);
+      await wait(page, 300);
+    }
+    await wait(page, 900); return "graded";
+  }
+  if (t === "mydate") {
+    const MY = { d: 20, m: 7, words: ["mi cumpleaños", "es", "el", "veinte", "de", "julio"], es: "Mi cumpleaños es el veinte de julio." };
+    if (s.stage === "pick") {
+      for (let k = 0; k < 6; k++) await page.click('.lesson-body .ex-mydate .cal-flip[data-flip="1"]');
+      await page.click(`.lesson-body .ex-mydate .cal-hit[data-oi="${MY.d}"]`);
+      await wait(page, 150); await enter(); return "next";
+    }
+    if (await page.locator(".lesson-body .ex-tiles").count()) return answer(page, { type: "tiles", answerEs: MY.words }, { keys });
+    if (await page.locator(".lesson-body .ex-type").count()) return answer(page, { type: "type", answerEs: MY.es }, { keys });
+    await page.evaluate((es) => { window.__heard = es; }, MY.es);
+    await page.click(".lesson-body .ex-speak .mic-btn");
+    await wait(page, 1000); return "graded";
+  }
   // ---- Unit 1.3
   if (t === "numpick") {
     await pickByKey(page, ".lesson-body .ex-numpick .option", wrong ? `(b) => +b.dataset.oi !== ${s.answer}` : `(b) => +b.dataset.oi === ${s.answer}`, { useKeys: keys });
@@ -196,7 +297,8 @@ async function answer(page, s, { wrong = false, keys = true } = {}) {
     await wait(page, 150); await enter(); return "graded";
   }
   if (t === "tiles") {
-    const words = wrong ? [...s.answerEs].reverse() : s.answerEs;
+    const want = s.dir === "es-en" ? s.answerEn : s.answerEs;
+    const words = wrong ? [...want].reverse() : want;
     for (const w of words) {
       const idx = await page.evaluate((w) => [...document.querySelectorAll(".lesson-body .ex-tiles .bank .tile")].findIndex((b) => !b.classList.contains("is-ghost") && b.textContent.trim() === w), w);
       if (idx < 0) throw new Error(`tile "${w}" not found`);
@@ -266,14 +368,15 @@ async function playLesson(page, tag, { keys = true, wrongOnce = true, checkFit =
     seen[s.type] = (seen[s.type] || 0) + 1;
     await collectBadges(page, tag, s);
     // 1.1 lines are recorded: listening must be real. 1.2 and 1.3 aren't recorded yet: read-and-choose is expected.
-    const later = /1\.[23]/.test(tag);
+    const later = /1\.[234]/.test(tag);
     if (s.type === "listen" && !later) { if (/\bex-listen\b/.test(st.cls)) listenSteps.audio++; else listenSteps.readOnly.push(`${tag} ${s.id}`); }
     if (s.type === "listen" && later) listenSteps.read12++;
     if (checkFit) { const o = await overflow(page); if (o > 1) fitIssues.push(`${s.id} (${s.type}) +${o}px`); }
     const shotName = `${shotPrefix}${s.type}${s.lines ? "-order" : ""}${s.time ? "-scene" : ""}${s.face ? "-face" : ""}${s.optionsFace ? "-faces" : ""}${s.type === "radio" ? `-${s.mode}` : ""}${variant13(s)}`;
     if (shotTypes.has(s.type) && !shots.has(`${OUT}/${shotName}.png`)) await shot(page, shotName);
     if (s.retry && s.id === wrongId) retried = true;
-    const canWrong = ["pick", "choose", "gap", "maptap", "tiles", "type", "listen", "letterpick", "spell", "radio", "numpick", "numtype", "dictation", "idcard"].includes(s.type) && !s.retry;
+    const canWrong = (["pick", "choose", "gap", "maptap", "tiles", "type", "listen", "letterpick", "spell", "radio", "numpick", "numtype", "dictation", "idcard", "datedict", "calradio"].includes(s.type)
+      || (s.type === "calendar" && ["tap", "read"].includes(s.mode))) && !s.retry;
     const doWrong = !wrongDone && canWrong;
     const res = await answer(page, s, { wrong: doWrong, keys });
     if (res === "graded") {
@@ -1174,6 +1277,171 @@ if (RUN("W")) {
   }
 }
 
+// ===================================================================== X. Unit 1.4
+// Days, months, dates and birthdays (unit-1-4.js, docs/build_plan_1.4.md): locked until the 1.3 check, every
+// lesson in order with the keyboard at 1366×768 (a wrong answer each, every step fits, nothing under the
+// feedback bar), every lesson by touch at 390×844 (no horizontal scroll, calendar targets ≥ 44px), Calendar
+// tap really moves and Slower halves it, the capitals message for a day at the start of a sentence, Review
+// asks days and months on the calendar, and the Radio tab lists L7 but not L13. (X14=d / X14=m: one half only.)
+const U14 = Array.from({ length: 13 }, (_, i) => `1.4-${i + 1}`);
+const NEW14 = new Set(["calendar", "order", "caltap", "datedict", "wall", "datepattern", "culture", "calradio", "partycal", "mydate", "intro", "tiles", "choose", "song", "clip", "songset", "storyintro", "storyline", "type", "calendar:feedback", "datedict:feedback", "calradio:feedback"]);
+const all13Done = () => { const c = all12Done(); for (let i = 1; i <= 20; i++) c[`1.3-${i}`] = { xp: 10, accuracy: 100, at: Date.now(), plays: 1 }; return c; };
+const variant14 = (s) => `${s.mode ? `-${s.mode}` : ""}${s.view ? `-${s.view}` : ""}${s.stage ? `-${s.stage}` : ""}${s.dir ? `-${s.dir}` : ""}${s.cal ? `-cal-${s.cal.view}` : ""}`;
+log("X. Unit 1.4: locked after 1.3, every lesson in order (keyboard, 1366×768), every lesson by touch (390×844), Calendar tap, capitals, Review, the Radio tab");
+if (RUN("X")) {
+  if (process.env.X14 !== "m") {
+    const { ctx, page } = await newPage({ width: 1366, height: 768 });
+    await page.goto(BASE + "index.html");
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+    await wait(page, 1300);
+    ok(await page.locator('.node[data-unit="1.4"]').count() === 13, "the 1.4 path has 13 nodes");
+    ok(await page.locator('.node[data-unit="1.4"].is-locked').count() === 13, "fresh start: all of 1.4 is locked");
+    await page.evaluate((c) => localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ completed: c })), all12Done());
+    await page.goto(BASE + "index.html#/lesson/1.4-1");
+    await page.reload();
+    await wait(page, 1300);
+    ok(await page.locator(".screen.lesson").count() === 0, "#/lesson/1.4-1 is refused while 1.3 isn't done");
+    await page.evaluate((c) => localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ completed: c })), all13Done());
+    await page.goto(BASE + "index.html#/");
+    await page.reload();
+    await wait(page, 1300);
+    ok(await page.locator('.node[data-node="1.4-1"].is-current').count() === 1 && await page.locator('.node[data-unit="1.4"].is-locked').count() === 12, "after the 1.3 check, 1.4 L1 is current and the rest of 1.4 is locked");
+    await page.evaluate(() => document.querySelector('.node[data-node="1.4-1"]').scrollIntoView({ block: "center" }));
+    await wait(page, 300);
+    await shot(page, "x-d-path-1.4");
+    // X14_FROM=1.4-7 starts the keyboard run at that lesson (the ones before it count as done).
+    const from = Math.max(0, U14.indexOf(process.env.X14_FROM || "1.4-1"));
+    if (from) await page.evaluate(([c, ids]) => { for (const id of ids) c[id] = { xp: 10, accuracy: 100, at: Date.now(), plays: 1 }; localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ completed: c })); }, [all13Done(), U14.slice(0, from)]);
+    if (from) { await page.reload(); await wait(page, 1000); }
+    for (const id of U14.slice(from)) {
+      await page.goto(BASE + "index.html#/");
+      await wait(page, 900);
+      const node = page.locator(`.node[data-node="${id}"]`);
+      ok(await node.evaluate((n) => n.classList.contains("is-current")), `${id} is the current node`);
+      await node.focus();
+      await page.keyboard.press("Enter");
+      await wait(page, 450);
+      if (id === "1.4-2") await shot(page, "x-d-popover-1.4-2");
+      await page.keyboard.press("Enter");
+      await wait(page, 1300);
+      const shotTypes = new Set([...NEW14].map((t) => t));
+      const r = await playLesson(page, id, { keys: true, wrongOnce: id !== "1.4-12", checkFit: true, shotTypes, shotPrefix: "x-d-" });
+      ok(r.complete, `${id} played to the end with the keyboard (${Object.entries(r.seen).map(([k, v]) => `${k}×${v}`).join(", ")})`);
+      if (id !== "1.4-12") ok(r.retried, `${id}: the missed question came back later`);
+      ok(r.fitIssues.length === 0, `${id}: every step fits 1366×768 without scrolling${r.fitIssues.length ? ": " + r.fitIssues.join("; ") : ""}`);
+      ok(r.underBar.length === 0, `${id}: nothing shows under or behind the feedback bar${r.underBar.length ? ": " + r.underBar.join("; ") : ""}`);
+      await wait(page, 700);
+      const title = await page.locator(".complete-title").innerText().catch(() => "");
+      if (id === "1.4-13") ok(/Unit 1\.4 complete/.test(title), `the 1.4 check closes the unit (“${title}”)`);
+      if (["1.4-2", "1.4-8", "1.4-11", "1.4-13"].includes(id)) await shot(page, `x-d-complete-${id}`);
+      await page.keyboard.press("Enter");
+      await wait(page, 1200);
+      ok(await page.locator(`.node[data-node="${id}"].is-done`).count() === 1, `${id} shows as done`);
+    }
+    const prog = await page.evaluate(() => JSON.parse(localStorage.getItem("buhisimo.prototype.v1")));
+    if (!from) ok(["la-semana", "day-0", "day-6", "month-1", "month-12", "el-ano", "cuando-cumple", "tu", "la-fecha", "feliz-cumple"].every((k) => prog.items[k]), "Review has met the 1.4 words");
+    const leaked = JSON.stringify(prog).match(/veinte de julio|"mydate|birthday/i);
+    ok(!leaked, `"Your birthday" saved nothing in the progress (${leaked ? leaked[0] : "clean"})`);
+    // Review: due days and months come back as a calendar tap (or another question on them).
+    await page.evaluate(() => { const s = JSON.parse(localStorage.getItem("buhisimo.prototype.v1")); for (const id of ["day-2", "month-6", "month-7", "day-5"]) s.items[id] = { ...s.items[id], due: Date.now() - 864e5, box: 0, wrong: 3 }; localStorage.setItem("buhisimo.prototype.v1", JSON.stringify(s)); });
+    let calQ = 0;
+    for (let k = 0; k < 3 && !calQ; k++) {
+      await page.goto(BASE + "index.html#/review");
+      await page.reload();
+      await wait(page, 1200);
+      await page.click("[data-start-review]");
+      await wait(page, 1300);
+      const rr = await playLesson(page, "review-1.4", { keys: true, wrongOnce: false, checkFit: true, shotTypes: new Set(["calendar"]), shotPrefix: "x-d-review-" });
+      ok(rr.complete, `a review session with due 1.4 words plays to the end (${Object.entries(rr.seen).map(([a, v]) => `${a}×${v}`).join(", ")})`);
+      calQ = rr.seen.calendar || 0;
+      await page.waitForFunction(() => document.activeElement?.matches("[data-done]"), null, { timeout: 5000 }).catch(() => {});
+      await page.keyboard.press("Enter");
+      await wait(page, 800);
+    }
+    ok(calQ > 0, "Review asks a day or month as a calendar tap");
+    // The Radio tab lists the L7 episode (with its two songs) and not the L13 call-in.
+    await page.goto(BASE + "index.html#/radio");
+    await wait(page, 1500);
+    ok(await page.locator(".radio-ep-chip:not([disabled])").count() === 6, "Radio tab: the demo, two 1.2, two 1.3 and the 1.4 L7 episode (not L13)");
+    await page.click('.radio-ep-chip[data-ep="5"]');
+    await wait(page, 600);
+    ok(await page.locator(".radio-ep .radio-songs [data-song]").count() === 2, "the 1.4 episode lists its two songs");
+    await shot(page, "x-d-radio-tab");
+    await page.goto(BASE + "index.html#/profile");
+    await wait(page, 900);
+    ok((await page.locator(".me-card").filter({ hasText: "Unit 1.4" }).innerText()).includes("13 of 13"), "Me: Unit 1.4, 13 of 13 lessons done");
+    // Capitals: a day at the start of a sentence needs its capital, and the message says so; inside, a small letter.
+    const caps = await page.evaluate(async () => {
+      const { grade, capsMessage, capsIssues, isSentence } = await import("./js/lesson.js");
+      const a = grade("lunes, miércoles, viernes.", "Lunes, miércoles, viernes."), b = grade("Es Lunes.", "Es lunes."), c = grade("Jueves", "jueves");
+      return { a: a.verdict, aMsg: capsMessage(a.caps), b: b.verdict, bMsg: capsMessage(b.caps), c: c.verdict, ok: grade("Es lunes.", "Es lunes.").verdict };
+    });
+    ok(caps.a === "caps" && /even when it starts with a day or a month/.test(caps.aMsg), `«lunes, miércoles, viernes.» → Almost: “${caps.aMsg}”`);
+    ok(caps.b === "caps" && /days and months don't take a capital/.test(caps.bMsg), `«Es Lunes.» → Almost: “${caps.bMsg}”`);
+    ok(caps.c === "caps" && caps.ok === "correct", "«Jueves» for jueves is Almost; «Es lunes.» is right");
+    await ctx.close();
+  }
+  if (process.env.X14 !== "d") {
+    // Phone, touch: every 1.4 lesson; targets ≥ 44px; no horizontal scrolling.
+    const { ctx, page } = await newPage({ width: 390, height: 844 }, { touch: true });
+    await page.goto(BASE + "index.html");
+    await page.evaluate(() => { localStorage.clear(); localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ unlockAll: true })); });
+    await page.reload();
+    await wait(page, 1000);
+    await page.evaluate(() => document.querySelector('.node[data-node="1.4-1"]').scrollIntoView({ block: "center" }));
+    await wait(page, 300);
+    await shot(page, "x-m-path-1.4");
+    const small = new Set();
+    for (const id of U14) {
+      await page.goto(BASE + `index.html#/lesson/${id}`);
+      await wait(page, 1300);
+      // Measure the calendar targets on every step as it comes (inside playLesson's loop we can't, so sample here and below).
+      const r = await playLesson(page, `phone ${id}`, { keys: false, wrongOnce: true, shotTypes: NEW14, shotPrefix: "x-m-" });
+      ok(r.complete, `phone: ${id} played by touch (${Object.keys(r.seen).join(", ")})`);
+      const hs = await page.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth);
+      ok(hs <= 0, `phone: ${id} has no horizontal scrolling`);
+      await page.click("[data-done]");
+      await wait(page, 900);
+    }
+    for (const [id, step] of [["1.4-2", "tap-martes"], ["1.4-6", "tap-octubre"], ["1.4-10", "tap-12-marzo"], ["1.4-9", "pages-mayo"], ["1.4-8", "g-caltap"], ["1.4-11", "my-pick"], ["1.4-13", "c-party"]]) {
+      await page.goto(BASE + `index.html?step=${step}#/lesson/${id}`);
+      await page.reload();
+      await wait(page, step === "g-caltap" ? 2200 : 1300);
+      const tiny = await page.evaluate(() => [...document.querySelectorAll(".lesson-body .cal-hit:not(:disabled)")].map((b) => b.getBoundingClientRect()).filter((r) => r.width < 43.5 || r.height < 43.5).map((r) => `${Math.round(r.width)}×${Math.round(r.height)}`));
+      if (tiny.length) small.add(`${id} ${step}: ${tiny.slice(0, 4).join(", ")}${tiny.length > 4 ? "…" : ""}`);
+      await shot(page, `x-m-targets-${step}`);
+    }
+    ok(small.size === 0, `phone: every calendar target is at least 44×44px${small.size ? ": " + [...small].join("; ") : ""}`);
+    await ctx.close();
+  }
+  // Calendar tap up close (375×667, touch): Max hops around, the bar runs down, Slower halves it, a landing comes back.
+  {
+    const { ctx, page } = await newPage({ width: 375, height: 667 }, { touch: true });
+    await page.goto(BASE + "index.html");
+    await page.evaluate(() => { localStorage.clear(); localStorage.setItem("buhisimo.prototype.v1", JSON.stringify({ unlockAll: true })); });
+    await page.goto(BASE + "index.html?step=g-caltap#/lesson/1.4-8");
+    await page.reload();
+    await wait(page, 2400);
+    const at = () => page.evaluate(() => { const m = document.querySelector(".lesson-body .ct-max"); const b = document.querySelector(".lesson-body .ct-timer i"); return { x: m.style.getPropertyValue("--mx"), y: m.style.getPropertyValue("--my"), t: new DOMMatrix(getComputedStyle(b).transform).a }; });
+    const p0 = await at(); await wait(page, 2200); const p1 = await at();
+    ok(p0.x !== p1.x || p0.y !== p1.y, `Calendar tap: Max hops around the calendar (${p0.x},${p0.y} → ${p1.x},${p1.y})`);
+    const fast = p0.t - p1.t;
+    ok(fast > 0.1, `Calendar tap: the time bar runs down (${p0.t.toFixed(2)} → ${p1.t.toFixed(2)})`);
+    await shot(page, "x-m-caltap-hopping");
+    const landed = await page.waitForFunction(() => document.querySelector(".lesson-body .ex-caltap.is-landed"), null, { timeout: 12000 }).then(() => true).catch(() => false);
+    ok(landed, "Calendar tap: left alone, Max lands on the answer (a miss)");
+    await shot(page, "x-m-caltap-landed");
+    await page.waitForFunction(() => !document.querySelector(".lesson-body .ex-caltap.is-landed"), null, { timeout: 4000 }).catch(() => {});
+    await wait(page, 300);
+    await page.click(".lesson-body .inv-slow");
+    const s0 = await at(); await wait(page, 2000); const s1 = await at();
+    const ratio = (s0.t - s1.t) / Math.max(0.01, fast * (2000 / 2200));
+    ok(ratio > 0.3 && ratio < 0.7, `Calendar tap: Slower halves the speed (bar ${fast.toFixed(2)} → ${(s0.t - s1.t).toFixed(2)} in ~2 s)`);
+    await ctx.close();
+  }
+}
+
 // ===================================================================== E. audio coverage
 log("E. Audio coverage");
 if (RUN("E")) {
@@ -1190,4 +1458,4 @@ if (RUN("E")) {
 await browser.close();
 log(`\nScreenshots: ${shots.size} in ${OUT}`);
 if (errors.length) { log(`\n✗ ${errors.length} problem(s):\n  ` + errors.join("\n  ")); process.exit(1); }
-log("\n✓ PASS: Units 1.1, 1.2 and 1.3 end to end");
+log("\n✓ PASS: Units 1.1 to 1.4 end to end");

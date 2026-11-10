@@ -14,12 +14,12 @@ import { tokens } from "./numbers.js";
 const BEAT_MS = 667; // 90 BPM, as the 1.2 clips: one word per beat while a song isn't there yet
 
 /** Play buttons for a Spanish line, or the line itself to read while it isn't recorded. */
-function cue(text, { big = false, read = "" } = {}) {
+export function cue(text, { big = false, read = "" } = {}) {
   return hasAudio(text)
     ? `<div class="cue cue--audio"><button class="press icon-btn icon-btn--primary ${big ? "listen-big" : ""}" data-cue="normal" aria-label="Play"><span class="face">${icon("volume-2", big ? 48 : 30, 2.5)}</span></button><button class="press icon-btn icon-btn--secondary" data-cue="slow" aria-label="Play slowly"><span class="face">${icon("turtle", 28)}</span></button></div>`
     : `<div class="cue cue--read">${read ? `<span class="cue__read">${esc(read)}</span>` : ""}${es(text, "cue__es")}${audioSoon(true)}</div>`;
 }
-function wireCue(node, api, text, who) {
+export function wireCue(node, api, text, who) {
   node.addEventListener("click", (e) => { const b = e.target.closest("[data-cue]"); if (b) api.speak(text, b.dataset.cue === "slow", who); });
 }
 
@@ -480,6 +480,7 @@ export function songPlayer({ song, linesEs, numerals = false, onState = () => {}
   let data = null, audio = null, raf = 0, timers = [], timeline = [], toks = [], playing = false;
   const render = (lines) => {
     linesEl.classList.toggle("song-lines--many", lines.length > 4);
+    linesEl.classList.toggle("song-lines--xl", lines.length > 8); // 1.4: «El año» (9 lines), the birthday song (10)
     linesEl.innerHTML = lines.map((ln, li) => `<p class="clip-line song-line">${tokens(ln, numerals).map((t, ti) => `<span class="clip-w ${t.n != null ? "song-num" : ""}" data-l="${li}" data-t="${ti}">${esc(t.text)}</span>`).join(" ")}</p>`).join("");
     toks = lines.map((ln, li) => tokens(ln, numerals).map((t, ti) => ({ ...t, el: $(`.clip-w[data-l="${li}"][data-t="${ti}"]`, linesEl) })));
   };

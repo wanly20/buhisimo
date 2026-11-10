@@ -14,7 +14,7 @@ import { gradeStep, meetLesson, buildReview, reviewViewHtml, dueItems, metItems 
 import { mountRadio, stopRadio } from "./radio.js";
 
 // Bump together with VERSION in sw.js for every release (tools/e2e-unit.mjs checks they match).
-export const APP_VERSION = "2026-10-30.who";
+export const APP_VERSION = "2026-11-11.u14";
 
 const app = document.getElementById("app");
 applyFont(store.get().font);
@@ -27,7 +27,7 @@ const PEEKS = {
   "1.2": { img: "matilda", side: "left", at: 0 },
   "1.3a": { img: "valentina", side: "right", at: 1 },
   "1.3b": { img: "samuel", side: "left", at: 3 },
-  "1.4": { img: "owl-thinking", side: "left", at: 0 },
+  "1.4": { img: "valentina", side: "left", at: 2 },
   "1.5": { img: "owl-encouraging", side: "right", at: 0 },
   "1.6": { img: "max", side: "left", at: 0 },
 };
@@ -159,7 +159,7 @@ function showPath(view = "path") {
       </header>
       <main class="path-scroll">
         <div class="path-inner">${unitHtml}
-          <p class="path-end">${icon("sparkles", 18, 2.5)} Units 1.3 to 3 are on their way.</p>
+          <p class="path-end">${icon("sparkles", 18, 2.5)} Units 1.5 to 3 are on their way.</p>
         </div>
         <div class="view-area" hidden></div>
       </main>
@@ -220,7 +220,7 @@ function showPath(view = "path") {
       <div class="node-pop ${open ? `node-pop--${unit.theme}` : "node-pop--soon"}" style="--shift:${-x}px" role="dialog" aria-label="${esc(meta.labelEn)}">
         <span class="node-pop__arrow" style="--ax:${x}px"></span>
         ${open
-          ? `<h3 class="node-pop__title">${titleHtml(l)}</h3>${enLine(l)}
+          ? `${l.host ? `<img class="node-pop__host" src="assets/${esc(l.host)}.webp" alt="" draggable="false">` : ""}<h3 class="node-pop__title">${titleHtml(l)}</h3>${enLine(l)}
              <p class="node-pop__meta">${esc(meta.labelEn)} · ${l.n} of ${unitSize(l)}</p>
              ${button(done ? `Practise again +${l.xpBase} XP` : `Start +${l.xpBase} XP`, { variant: "on-color", attrs: `data-start="${id}"` })}`
           : l
@@ -304,7 +304,7 @@ async function showReview() {
 }
 
 // =================================================================== complete
-const COMPLETE_TITLE = { learn: "Lesson complete!", repaso: "Review complete!", practice: "Practice complete!", conjugation: "Practice complete!", story: "Story complete!", game: "Game complete!", listen: "Radio Búho complete!", review: "Review done!" };
+const COMPLETE_TITLE = { learn: "Lesson complete!", repaso: "Review complete!", practice: "Practice complete!", conjugation: "Practice complete!", story: "Story complete!", game: "Game complete!", listen: "Radio Búho complete!", review: "Review done!", speak: "Speaking complete!" };
 // A unit shown as two map sections (1.3a, 1.3b): the first section's check closes that part, not the unit.
 const partDone = (l) => l.part && LESSONS.some((x) => x.unit === l.unit && x.n > l.n);
 const completeTitle = (l) => (l.kind === "check" ? (partDone(l) ? `Unit ${l.unit}, part ${l.part.slice(-1).toUpperCase()} complete!` : `Unit ${l.unit} complete!`) : COMPLETE_TITLE[l.kind] || "Lesson complete!");
@@ -321,7 +321,7 @@ async function showComplete(lesson, { xp, accuracy }) {
       <canvas class="confetti" aria-hidden="true"></canvas>
       <div class="complete-hero">
         <img class="complete-scene" src="assets/salento-street.webp" alt="A colourful street in Salento, Colombia">
-        <img class="complete-owl" src="assets/owl-celebrating.webp" alt="Buhísimo the owl, celebrating">
+        <img class="complete-owl ${lesson.host ? "complete-owl--host" : ""}" src="assets/${esc(lesson.host || "owl-celebrating")}.webp" alt="${esc(lesson.host ? "This lesson's host" : "Buhísimo the owl, celebrating")}">
       </div>
       <div class="complete-body">
         <h1 class="complete-title">${esc(completeTitle(lesson))}</h1>

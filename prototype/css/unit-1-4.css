@@ -1,0 +1,304 @@
+/* Unit 1.4 «¡…y que cumplas muchos más!»: the calendar drawn in code (js/art.js weekStrip, yearView,
+   monthPage), Calendar tap, date dictation, the birthday wall, the party calendar and "Your birthday"
+   (js/exercises-1-4.js). Same tokens and press recipe as the rest of the prototype; phone first, then
+   ≥ 700px; every step should fit 1366×768 without scrolling; tap targets ≥ 44px at 390px wide. */
+
+/* =================================================================== the week strip: L M X J V S D */
+.cal-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; width: 100%; }
+.cal-week__d { --e: 3px; color: var(--ink); border-radius: var(--r-md); min-width: 0; }
+.cal-week__d > .face, span.cal-week__d { display: grid; justify-items: center; align-content: center; gap: 2px; min-height: 48px; padding: 4px 2px; }
+span.cal-week__d { background: var(--white); border: 2px solid var(--sand-200); border-radius: var(--r-md); }
+.cal-week__l { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; line-height: 1; color: var(--terracotta-600); }
+.cal-week__n { font-size: 0.72rem; font-weight: 700; line-height: 1.1; max-width: 100%; overflow-wrap: anywhere; }
+.cal-week__d.is-weekend .cal-week__l { color: var(--magenta-500); }
+.cal-week__d.is-lit, .cal-week__d.is-lit > .face { --face: var(--terracotta-50); --face-border: var(--terracotta-400); background: var(--terracotta-50); border-color: var(--terracotta-400); }
+.cal-week__d.is-off, .cal-week__d:disabled { opacity: 0.38; }
+.cal-week--big .cal-week__d > .face, .cal-week--big span.cal-week__d { min-height: 64px; }
+.cal-week--big .cal-week__l { font-size: 1.7rem; }
+@media (min-width: 700px) {
+  .cal-week { gap: var(--sp-2); }
+  .cal-week__n { font-size: var(--fs-sm); }
+  .cal-week--big .cal-week__d > .face, .cal-week--big span.cal-week__d { min-height: clamp(76px, 12vh, 104px); }
+  .cal-week--big .cal-week__l { font-size: clamp(1.8rem, 4.5vh, 2.4rem); }
+}
+
+/* =================================================================== the year: twelve month tiles */
+.cal-year { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; width: 100%; }
+.cal-year__m { --e: 3px; color: var(--ink); border-radius: var(--r-md); min-width: 0; }
+.cal-year__m > .face, span.cal-year__m { position: relative; display: grid; place-items: center; min-height: 48px; padding: 10px 4px 6px; }
+span.cal-year__m { background: var(--white); border: 2px solid var(--sand-200); border-radius: var(--r-md); }
+.cal-year__m::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 8px; border-radius: var(--r-md) var(--r-md) 0 0; pointer-events: none; }
+.cal-year__m--1::after { background: var(--turquoise-400); } .cal-year__m--2::after { background: var(--magenta-400); }
+.cal-year__m--3::after { background: var(--mustard-400); } .cal-year__m--4::after { background: var(--emerald-400); }
+.cal-year__ring { position: absolute; top: 2px; left: 0; right: 0; display: flex; justify-content: center; gap: 18px; }
+.cal-year__ring i { width: 5px; height: 9px; border-radius: 3px; background: var(--sand-300); }
+.cal-year__n { font-weight: 700; font-size: var(--fs-sm); line-height: 1.1; overflow-wrap: anywhere; }
+.cal-year__m.is-lit, .cal-year__m.is-lit > .face { --face: var(--terracotta-50); --face-border: var(--terracotta-400); background: var(--terracotta-50); border-color: var(--terracotta-400); }
+.cal-year__m.is-off, .cal-year__m:disabled { opacity: 0.38; }
+@media (min-width: 560px) { .cal-year { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 700px) {
+  .cal-year { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--sp-2); }
+  .cal-year__m > .face, span.cal-year__m { min-height: clamp(52px, 8.5vh, 76px); }
+  .cal-year__n { font-size: var(--fs-md); }
+}
+
+/* =================================================================== a month page (no year, Monday first) */
+.cal-page { --tone: var(--terracotta-500); width: 100%; max-width: 420px; margin: 0 auto; background: var(--white); border: 2px solid var(--sand-200); border-radius: var(--r-lg); overflow: hidden; }
+.cal-page--tone1 { --tone: var(--turquoise-500); } .cal-page--tone2 { --tone: var(--magenta-500); } .cal-page--tone3 { --tone: var(--mustard-500); } .cal-page--tone4 { --tone: var(--emerald-500); }
+.cal-page__head { display: flex; align-items: center; justify-content: center; gap: var(--sp-3); padding: 6px var(--sp-2); background: var(--tone); color: var(--white); }
+.cal-page__name { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-lg); min-width: 6.5em; text-align: center; }
+.cal-page__head .cal-flip { --size: 40px; color: var(--ink); }
+.cal-page__head .cal-flip .face { font-size: 1.5rem; font-weight: 700; }
+.cal-page__grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; padding: 6px; }
+.cal-page__dow { text-align: center; font-family: var(--font-display); font-weight: 700; font-size: var(--fs-sm); color: var(--ink-soft, #6b5b4b); padding: 2px 0; border-radius: 6px; }
+.cal-page__dow.is-weekend { color: var(--magenta-500); }
+.cal-page__dow.is-lit { background: var(--terracotta-100); color: var(--terracotta-700); }
+.cal-page__day { --e: 2px; position: relative; border-radius: 10px; color: var(--ink); min-width: 0; }
+.cal-page__day > .face, span.cal-page__day { position: relative; display: grid; place-items: center; min-height: 44px; padding: 0; }
+span.cal-page__day { background: var(--sand-100, #f6eee2); border-radius: 10px; min-height: 30px; }
+.cal-page__day.is-weekend { color: var(--magenta-600); }
+.cal-page__d { font-weight: 700; font-size: var(--fs-md); }
+.cal-page__day.is-circled > .face::after, span.cal-page__day.is-circled::after { content: ""; position: absolute; inset: 3px; border: 3px solid var(--magenta-500); border-radius: 50%; pointer-events: none; }
+.cal-sticker { position: absolute; right: -2px; top: -6px; font-size: 1.1rem; color: var(--mustard-500); text-shadow: 0 1px 0 var(--white); }
+.cal-page--small { max-width: 220px; }
+.cal-page--small .cal-page__name { font-size: var(--fs-md); min-width: 0; }
+.cal-page--small .cal-page__grid { gap: 2px; padding: 4px; }
+.cal-page--small span.cal-page__day { min-height: 20px; border-radius: 6px; }
+.cal-page--small .cal-page__d { font-size: 0.72rem; }
+.cal-page--small .cal-page__dow { font-size: 0.7rem; }
+@media (min-width: 700px) and (max-height: 820px) {
+  .cal-page__day > .face { min-height: 40px; }
+  .cal-page__grid { padding: 4px 6px; }
+}
+
+/* Several pages, a pair, the name-or-month card */
+.cal-pages, .cal-pair, .cal-namemonth { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); width: 100%; align-items: start; }
+.cal-pages--n2 { max-width: 480px; margin: 0 auto; }
+@media (min-width: 700px) { .cal-pages--n4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.cal-pagebtn { --e: 4px; border-radius: var(--r-lg); color: var(--ink); }
+.cal-pagebtn > .face { padding: 6px; display: grid; place-items: center; }
+.cal-pagebtn .cal-page { border: 0; }
+.cal-pair--namecard { align-items: center; }
+.idcard--mini { max-width: 240px; font-size: 0.78em; }
+.idcard--mini .idcard__field dd { font-size: var(--fs-sm); }
+
+/* Tap states shared by every calendar button */
+.cal-hit[aria-pressed="true"] { --face: var(--turquoise-50); --face-border: var(--turquoise-400); --edge-c: var(--turquoise-400); }
+.cal-hit.is-correct, .cal-hit.is-hit { --face: var(--emerald-50); --face-border: var(--emerald-400); --edge-c: var(--emerald-400); }
+.cal-hit.is-wrong, .cal-hit[aria-disabled="true"] { --face: var(--terracotta-50); --face-border: var(--terracotta-400); --edge-c: var(--terracotta-400); }
+.cal-hit[aria-disabled="true"] { opacity: 0.5; }
+.cal-hit.is-answer { --face: var(--mustard-50); --face-border: var(--mustard-500); --edge-c: var(--mustard-500); }
+.cal-hit.is-heard { --face: var(--terracotta-50); --face-border: var(--terracotta-400); }
+
+/* =================================================================== calendar steps */
+.cal-board { display: grid; gap: var(--sp-3); width: 100%; justify-items: center; }
+.cal-cue { display: grid; place-items: center; min-height: 72px; }
+.cal-who .char { width: 96px; }
+.cal-read { display: grid; gap: var(--sp-4); }
+@media (min-width: 700px) {
+  .cal-read { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+  .ex-cal--tap .cal-board .cal-page { max-width: 460px; }
+}
+.ex-cal--say .cal-board .cal-page { max-width: 340px; }
+.ex-cal--say .mic-stage { margin-top: 0; }
+
+/* Intro cards with a calendar picture (+ the host, small, in the corner) */
+.ex-intro--cal .intro-art { background: none; border-radius: var(--r-lg); width: min(100%, 320px); height: auto; aspect-ratio: auto; overflow: visible; }
+.ex-intro--cal-month .intro-art { width: min(100%, 260px); }
+.ex-intro--cal .cal-week__n { font-size: 0.62rem; }
+.ex-intro--cal .cal-year__n { font-size: 0.72rem; }
+.ex-intro--cal .cal-year__m > .face, .ex-intro--cal span.cal-year__m { min-height: 36px; padding: 8px 2px 4px; }
+.ex-intro--cal span.cal-week__d { min-height: 44px; }
+.ex-intro--cal .cal-page__day.is-circled::after { inset: 1px; }
+.ex-intro--cal .intro-card { position: relative; }
+.intro-host { position: absolute; right: 10px; bottom: 6px; width: 64px; height: 70px; object-fit: contain; object-position: bottom; filter: drop-shadow(0 4px 6px rgb(44 33 24 / 0.2)); pointer-events: none; }
+/* On the card the word is written beside the picture, so the week shows its letters only. */
+.ex-intro--cal .cal-week__n { display: none; }
+.ex-intro--cal-week .intro-art { width: min(100%, 340px); }
+@media (min-width: 700px) {
+  .ex-intro--cal .intro-card { --art: clamp(150px, 26vh, 220px); grid-template-columns: calc(var(--art) * 1.6) minmax(0, 1fr); }
+  .ex-intro--cal .intro-art { width: calc(var(--art) * 1.6); height: auto; }
+  .ex-intro--cal .cal-year { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+  .ex-intro--cal .cal-week { gap: 3px; }
+  .ex-intro--cal .cal-week__n { font-size: 0.66rem; }
+  .ex-intro--cal .cal-week__l { font-size: 1.2rem; }
+  .intro-host { width: 88px; height: 96px; right: 16px; bottom: 10px; }
+  .ex-intro--cal-week .intro-card { grid-template-columns: calc(var(--art) * 1.9) minmax(0, 1fr); }
+  .ex-intro--cal-week .intro-art { width: calc(var(--art) * 1.9); }
+  .ex-intro--cal-week .cal-week__l { font-size: 1.5rem; }
+}
+@media (min-width: 700px) and (max-height: 820px) { .ex-intro--cal .intro-card { --art: clamp(130px, 21vh, 200px); } }
+
+/* Type / tiles with a calendar picture */
+.type-cal { display: grid; place-items: center; }
+.type-cal .cal-page { max-width: 260px; }
+@media (min-width: 700px) and (max-height: 820px) { .type-cal .cal-page__grid { gap: 2px; } .type-cal span.cal-page__day { min-height: 22px; } }
+
+/* =================================================================== order */
+.order-board { max-width: 760px; margin: 0 auto; }
+.order-bank .tile.is-ghost { opacity: 0.35; }
+.order-clock { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 0; font-weight: 700; color: var(--terracotta-700); }
+.order-clock b { font-family: var(--font-display); font-size: var(--fs-xl); min-width: 3ch; text-align: right; }
+.ex-order--year .order-board .cal-year__m > .face, .ex-order--year .order-board span.cal-year__m { min-height: 40px; }
+
+/* =================================================================== Calendar tap (game) */
+.ct-hud { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--sp-2) var(--sp-4); font-weight: 700; font-size: var(--fs-sm); }
+.ct-wave { flex-basis: 100%; text-align: center; font-family: var(--font-display); color: var(--terracotta-700); }
+.ct-streak { color: var(--magenta-600); display: inline-flex; align-items: center; gap: 4px; }
+.ct-best { color: var(--mustard-600); display: inline-flex; align-items: center; gap: 4px; }
+.ct-timer { height: 8px; border-radius: var(--r-pill); background: var(--sand-200); overflow: hidden; flex: none; }
+.ct-timer i { display: block; height: 100%; background: var(--terracotta-500); transform-origin: left center; }
+.ct-board { position: relative; display: grid; gap: var(--sp-3); width: 100%; padding-top: 36px; }
+.ct-squares { display: grid; gap: var(--sp-2); justify-items: center; }
+.ct-mixrow { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-2); width: 100%; align-items: center; }
+.ct-card { --e: 4px; border-radius: var(--r-lg); justify-self: center; }
+.ct-card > .face { padding: 4px; }
+.ct-card .idcard--mini { max-width: 180px; font-size: 0.66em; }
+@media (min-width: 700px) { .ct-mixrow { grid-template-columns: minmax(0, 1fr) 190px; } .ct-mixrow .cal-year { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.ct-max { position: absolute; left: 0; top: 0; width: 56px; height: 56px; object-fit: contain; pointer-events: none; z-index: 3;
+  transform: translate(calc(var(--mx, 40px) - 28px), calc(var(--my, 40px) - 50px)); transition: transform 0.32s cubic-bezier(0.34, 1.4, 0.64, 1);
+  filter: drop-shadow(0 4px 4px rgb(44 33 24 / 0.25)); }
+.ct-max.hop { animation: ct-hop 0.32s ease-out; }
+@keyframes ct-hop { 40% { scale: 1.12 0.9; } 70% { scale: 0.95 1.08; } }
+.ex-caltap.is-still .ct-max { transition: none; animation: none; }
+.ex-caltap.is-landed .ct-timer i { background: var(--mustard-500); }
+@media (prefers-reduced-motion: reduce) { .ct-max { transition: none; } .ct-max.hop { animation: none; } }
+@media (min-width: 700px) { .ct-max { width: 68px; height: 68px; transform: translate(calc(var(--mx, 40px) - 34px), calc(var(--my, 40px) - 62px)); } }
+
+/* =================================================================== date dictation */
+.date-boxes { align-items: flex-start; }
+.date-slash { font-family: var(--font-display); font-weight: 700; font-size: 2.4rem; line-height: 64px; color: var(--ink-soft, #6b5b4b); }
+.dict-box__lbl { font-size: var(--fs-xs); font-weight: 700; color: var(--ink-soft, #6b5b4b); }
+
+/* =================================================================== the birthday wall */
+.wall-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); }
+.wall-card { margin: 0; display: grid; justify-items: center; align-content: end; gap: 4px; }
+.wall-bubble { display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-2) var(--sp-3); margin: 0 !important; font-size: var(--fs-sm); width: 100%; }
+.wall-es { font-weight: 700; }
+.wall-en { display: block; font-size: var(--fs-xs); color: var(--ink-soft, #6b5b4b); }
+.wall-img { width: 72px; height: 76px; object-fit: contain; object-position: bottom; }
+.wall-card figcaption { font-weight: 700; font-size: var(--fs-sm); }
+.wall-grid--n5 .wall-card:last-child { grid-column: 1 / -1; }
+@media (min-width: 700px) {
+  .wall-grid--n5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .wall-grid--n5 .wall-card:last-child { grid-column: auto; }
+  .wall-img { width: clamp(80px, 14vh, 120px); height: clamp(86px, 15vh, 128px); }
+  .wall-bubble { min-height: 96px; }
+}
+
+/* =================================================================== el + veinte + de + julio */
+.ex-datepattern .pattern-row > .face { grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1.3fr) auto minmax(0, 0.9fr); }
+.ex-datepattern .pattern-cell--el .es { color: var(--terracotta-600); }
+
+/* =================================================================== culture card */
+.culture-card { display: grid; gap: var(--sp-4); padding: var(--sp-4); border-radius: var(--r-xl); background: var(--white); border: 2px solid var(--sand-200); }
+.culture-art { display: grid; place-items: center; }
+.art-seasons { width: min(100%, 420px); height: auto; }
+.culture-img { width: 100%; max-width: 420px; border-radius: var(--r-lg); }
+.culture-text p { margin: 0 0 var(--sp-2); font-size: var(--fs-md); line-height: 1.45; }
+.culture-es { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-lg); }
+@media (min-width: 700px) { .culture-card { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; } }
+
+/* =================================================================== Radio Búho: calendar call-in grid */
+.ex-calradio .radio-row { display: grid; gap: 6px; }
+.ex-calradio .radio-row__head { flex-wrap: wrap; row-gap: 2px; }
+.ex-calradio .radio-row__head .radio-row__call { flex-basis: 100%; }
+.ex-calradio .radio-row__picks { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px var(--sp-2); }
+.calradio-when { display: flex; flex-wrap: wrap; gap: 6px; }
+.calradio-when .id-chip > .face { min-height: 44px; padding: 4px 10px; font-size: var(--fs-sm); }
+.ex-calradio .radio-faces { grid-template-columns: repeat(3, 48px); gap: 6px; }
+.ex-calradio .radio-faces .face-pick > .face { min-height: 44px; padding: 2px; }
+.ex-calradio .radio-faces .art-face { width: 36px; height: 36px; }
+.ex-calradio .radio-row__answer .art-face { width: 26px; height: 26px; vertical-align: middle; }
+@media (min-width: 700px) {
+  .ex-calradio .radio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
+  .ex-calradio .radio-row { grid-template-columns: none; align-items: start; padding: 6px var(--sp-3); }
+  .ex-calradio .radio-row:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+
+/* =================================================================== the party calendar */
+.party-calls { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-2); }
+.party-call { display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-2) var(--sp-3); border-radius: var(--r-md); background: var(--white); border: 2px solid var(--sand-200); font-size: var(--fs-sm); }
+.party-call.is-now { border-color: var(--magenta-400); background: var(--magenta-50); }
+.party-call__done { margin-left: auto; color: var(--emerald-600); }
+@media (min-width: 700px) {
+  .ex-partycal { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "head head" "ctx ctx" "calls cal"; align-content: center; }
+  .ex-partycal > .ex-head { grid-area: head; } .ex-partycal > .context { grid-area: ctx; }
+  .ex-partycal .party-calls { grid-area: calls; align-self: center; } .ex-partycal .party-board { grid-area: cal; }
+}
+
+/* =================================================================== "Your birthday" */
+.mydate-chosen { margin: 0; min-height: 1.6em; text-align: center; font-weight: 700; font-size: var(--fs-lg); color: var(--magenta-600); display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+/* =================================================================== the host (characters change per lesson) */
+.node-pop__host { float: right; width: 64px; height: 68px; object-fit: contain; object-position: bottom; margin: -28px -6px 0 var(--sp-2); filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.2)); }
+.complete-owl--host { object-fit: contain; height: auto; max-height: 220px; }
+
+/* =================================================================== fitting long lines and calendar pictures */
+/* A long Show Me line (the whole week, a full date with its question): a smaller picture, so the
+   microphone and its "Buhísimo heard…" line stay above the feedback bar at 1366×768. */
+@media (min-width: 700px) {
+  .ex-speak--long .speaker-row .char { width: clamp(72px, 12vh, 112px); }
+  .ex-speak--long .bubble { margin-bottom: var(--sp-4); }
+  .ex-speak--long .mic-btn { --size: clamp(76px, 12vh, 96px); }
+  .ex-speak--long .mic-status { margin-bottom: 0; }
+}
+/* Two small month pages on an intro card (junio / julio) */
+.ex-intro--cal-pair .cal-page__grid { gap: 1px; padding: 3px; }
+.ex-intro--cal-pair .cal-page--small span.cal-page__day { min-height: 15px; }
+.ex-intro--cal-pair .cal-page__head { padding: 3px var(--sp-2); }
+
+/* Songs with 9–10 lines («El año», «¿Cuándo es tu cumpleaños?»): two columns of five */
+@media (min-width: 700px) {
+  .song-lines--xl { grid-template-rows: repeat(5, auto); }
+  .song-lines--xl .song-line { font-size: clamp(1rem, 2.5vh, 1.35rem); }
+  .songset-player .song-lines--xl, .radio-song .song-lines--xl { grid-template-rows: none; }
+}
+/* A month page on an intro card or a type/tiles prompt: compact, with readable dates */
+.ex-intro--cal-month .cal-page--small, .type-cal .cal-page--small { max-width: 240px; }
+.ex-intro--cal-month .cal-page--small span.cal-page__day, .type-cal .cal-page--small span.cal-page__day { min-height: 20px; }
+.ex-intro--cal-month .cal-page--small .cal-page__d, .type-cal .cal-page--small .cal-page__d { font-size: 0.78rem; }
+
+/* Fitting 1366×768 (e2e-unit section X): the game with a month page, the birthday wall with dates, the pattern card */
+@media (min-width: 700px) {
+  .lesson .ex-caltap { gap: var(--sp-2); }
+  .ex-caltap .ct-wave { flex-basis: auto; }
+  .ex-caltap .inv-cue { min-height: 44px; }
+  .ex-caltap .ct-board { padding-top: 22px; }
+  .ex-caltap .cal-page { max-width: 520px; }
+  .wall-img { width: clamp(64px, 11vh, 104px); height: clamp(70px, 12vh, 112px); }
+  .wall-bubble { min-height: 84px; }
+  .ex-datepattern .pattern-card { gap: 6px; }
+  .ex-datepattern .pattern-row > .face { padding-block: 6px; }
+  .ex-cal--say .cal-page--small { max-width: 260px; }
+}
+@media (min-width: 700px) and (max-height: 820px) {
+  .ex-caltap .cal-page__day > .face { min-height: 38px; }
+  .ex-caltap .cal-page__head { padding: 3px var(--sp-2); }
+}
+/* The birthday wall: each bubble stacks its play button (or "Audio soon") over the words, and shrinks with its column */
+.wall-card { min-width: 0; }
+.ex-wall .wall-bubble { flex-direction: column; align-items: center; text-align: center; gap: 4px; min-width: 0; box-sizing: border-box; overflow-wrap: anywhere; }
+.ex-wall .wall-bubble::before, .ex-wall .wall-bubble::after { display: none; }
+.ex-wall .wall-bubble .audio-soon { white-space: nowrap; font-size: 0.7rem; }
+.ex-wall .wall-es { font-size: var(--fs-md); line-height: 1.25; }
+@media (min-width: 700px) { .ex-wall .wall-grid { gap: var(--sp-2); } }
+@media (min-width: 700px) {
+  /* Valentina's and Samuel's pictures are full-length: cap their height so a two-row word bank still fits */
+  .lesson .ex-tiles .speaker-row .char { max-height: 24vh; object-fit: contain; }
+  /* A builder or a typing step with a month page: a smaller page */
+  .type-cal .cal-page--small { max-width: 210px; }
+  .type-cal .cal-page--small span.cal-page__day { min-height: 17px; }
+  .ex-tiles .type-cal + .speaker-row .bubble { margin-bottom: var(--sp-2); }
+}
+@media (min-width: 700px) and (max-height: 820px) {
+  .ex-caltap .cal-page__day > .face { min-height: 36px; }
+  .ex-caltap .inv-cue { min-height: 40px; }
+}
+/* The circled date: a real circle at every page size */
+.cal-page__day.is-circled > .face::after, span.cal-page__day.is-circled::after, .ex-intro--cal .cal-page__day.is-circled::after {
+  inset: auto; left: 50%; top: 50%; width: min(100%, 2.3em); aspect-ratio: 1; transform: translate(-50%, -50%); border-width: 2px; }
+/* A builder whose prompt is a calendar: the page beside the bubble */
+.tiles-cal { align-items: center; }
+.tiles-cal .type-cal { flex: none; }
+.tiles-cal .type-cal .cal-page--small { width: 190px; }

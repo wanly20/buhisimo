@@ -45,11 +45,11 @@ const FALLBACK_ROLES = { maria: ["maria", "raul"], raul: ["raul", "maria"], max:
 // holds the Unit 1.1 lines recorded from TODO_lines.json (same pipeline); audio/manifest-max.json
 // holds Max's lines in his own voice (video_generation/scripts/voice_tools/max_voice.py and u12_audio.py);
 // audio/manifest-matilda.json Matilda's in hers and audio/manifest-callers.json the Radio Búho
-// callers' (u12_audio.py). Merged here.
+// callers' (u12_audio.py); audio/manifest-u14.json the Unit 1.4 lines (docs/recording_list_1.4.md). Merged here.
 let manifest = null;
 const getJson = (url) => fetch(url).then((r) => (r.ok ? r.json() : null)).catch(() => null);
 const manifestReady = Promise.all([getJson("audio/manifest.json"), getJson("audio/manifest-extra.json"), getJson("audio/manifest-l2.json"), getJson("audio/manifest-max.json"),
-  getJson("audio/manifest-matilda.json"), getJson("audio/manifest-callers.json")])
+  getJson("audio/manifest-matilda.json"), getJson("audio/manifest-callers.json"), getJson("audio/manifest-u14.json")])
   .then(([main, ...extras]) => {
     const clips = {}, speakers = {};
     for (const m of [main, ...extras]) {
