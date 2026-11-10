@@ -23,7 +23,7 @@ from __future__ import annotations
 import json, subprocess
 from pathlib import Path
 
-SONGS_DIR = Path.home() / "Documents/video_generation/music/songs"
+SONGS_DIR = Path.home() / "Projects/video_generation/music/songs"
 PROTO = Path(__file__).resolve().parent.parent
 OUT = PROTO / "audio/songs"
 

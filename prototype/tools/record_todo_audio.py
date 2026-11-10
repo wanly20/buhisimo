@@ -3,7 +3,7 @@
 (Qwen3-TTS Base x-vector clone via Wan2GP, same reference wavs, settings and MP3 export filter).
 Writes the takes to ~/.cache/buhisimo_l2_audio and the clips + audio/manifest-l2.json here.
 
-Run from ~/Documents/video_generation (GPU stages: ask Juan first, one GPU user at a time):
+Run from ~/Projects/video_generation (GPU stages: ask Juan first, one GPU user at a time):
   python3 <this> plan      # TODO_lines.json -> clips.json + jobs.json
   python3 <this> render    # GPU, headless: render missing takes
   python3 <this> check     # CPU Whisper turbo (music/align_venv) on every take (whisper_cpu.py)
@@ -13,7 +13,7 @@ Run from ~/Documents/video_generation (GPU stages: ask Juan first, one GPU user 
 """
 import json, subprocess, sys, os, re, unicodedata
 from pathlib import Path
-sys.path.insert(0, str(Path.home() / "Documents/video_generation/scripts/voice_tools"))
+sys.path.insert(0, str(Path.home() / "Projects/video_generation/scripts/voice_tools"))
 import lesson_audio as LA
 
 WORK = Path.home() / ".cache/buhisimo_l2_audio"
@@ -34,7 +34,7 @@ def plan():
 def render(): LA.render()
 
 def check():
-    py = Path.home() / "Documents/video_generation/music/align_venv/bin/python"
+    py = Path.home() / "Projects/video_generation/music/align_venv/bin/python"
     takes = sorted(str(p) for p in (WORK / "takes").rglob("*.wav"))
     subprocess.run([str(py), str(Path(__file__).with_name("whisper_cpu.py")), str(WORK / "whisper.json"), *takes], check=True)
 

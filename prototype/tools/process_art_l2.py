@@ -4,7 +4,7 @@ that art was replaced on 18 Oct, see ART below). NO models: the generated art si
 background, so a flood fill from the border (the same "flood" mask as
 process_art.py, without rembg) is enough. CPU only, numpy + scipy + Pillow:
 
-    CUDA_VISIBLE_DEVICES="" ~/Documents/video_generation/Wan2GP/.venv/bin/python prototype/tools/process_art_l2.py
+    CUDA_VISIBLE_DEVICES="" ~/Projects/video_generation/Wan2GP/.venv/bin/python prototype/tools/process_art_l2.py
 
 Reads (never modifies) ~/Jobs/School/spanish/apps/claro_reviewer/design/characters/art_round5/
 and writes optimised WebP files (each <= 120 KB) to prototype/assets/, plus

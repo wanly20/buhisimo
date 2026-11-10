@@ -2,7 +2,7 @@
 """Cut out and optimise the prototype art.
 
 Run with the Python that has rembg installed (CPU is enough):
-    CUDA_VISIBLE_DEVICES="" ~/Documents/video_generation/Wan2GP/.venv/bin/python prototype/tools/process_art.py [names...]
+    CUDA_VISIBLE_DEVICES="" ~/Projects/video_generation/Wan2GP/.venv/bin/python prototype/tools/process_art.py [names...]
 
 With names, only those assets are rebuilt (e.g. `max-wave noun-mapa`).
 
