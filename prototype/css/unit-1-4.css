@@ -9,7 +9,8 @@
 .cal-week__d > .face, span.cal-week__d { display: grid; justify-items: center; align-content: center; gap: 2px; min-height: 48px; padding: 4px 2px; }
 span.cal-week__d { background: var(--white); border: 2px solid var(--sand-200); border-radius: var(--r-md); }
 .cal-week__l { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; line-height: 1; color: var(--terracotta-600); }
-.cal-week__n { font-size: 0.72rem; font-weight: 700; line-height: 1.1; max-width: 100%; overflow-wrap: anywhere; }
+/* min(…, 2.5vw): «miércoles» fits on one line in a 390px-wide phone key instead of breaking mid-word */
+.cal-week__n { font-size: min(0.72rem, 2.5vw); letter-spacing: -0.02em; font-weight: 700; line-height: 1.1; max-width: 100%; overflow-wrap: break-word; }
 .cal-week__d.is-weekend .cal-week__l { color: var(--magenta-500); }
 .cal-week__d.is-lit, .cal-week__d.is-lit > .face { --face: var(--terracotta-50); --face-border: var(--terracotta-400); background: var(--terracotta-50); border-color: var(--terracotta-400); }
 .cal-week__d.is-off, .cal-week__d:disabled { opacity: 0.38; }
@@ -17,7 +18,7 @@ span.cal-week__d { background: var(--white); border: 2px solid var(--sand-200); 
 .cal-week--big .cal-week__l { font-size: 1.7rem; }
 @media (min-width: 700px) {
   .cal-week { gap: var(--sp-2); }
-  .cal-week__n { font-size: var(--fs-sm); }
+  .cal-week__n { font-size: var(--fs-sm); letter-spacing: 0; }
   .cal-week--big .cal-week__d > .face, .cal-week--big span.cal-week__d { min-height: clamp(76px, 12vh, 104px); }
   .cal-week--big .cal-week__l { font-size: clamp(1.8rem, 4.5vh, 2.4rem); }
 }
@@ -32,7 +33,7 @@ span.cal-year__m { background: var(--white); border: 2px solid var(--sand-200); 
 .cal-year__m--3::after { background: var(--mustard-400); } .cal-year__m--4::after { background: var(--emerald-400); }
 .cal-year__ring { position: absolute; top: 2px; left: 0; right: 0; display: flex; justify-content: center; gap: 18px; }
 .cal-year__ring i { width: 5px; height: 9px; border-radius: 3px; background: var(--sand-300); }
-.cal-year__n { font-weight: 700; font-size: var(--fs-sm); line-height: 1.1; overflow-wrap: anywhere; }
+.cal-year__n { font-weight: 700; font-size: var(--fs-sm); line-height: 1.1; overflow-wrap: break-word; }
 .cal-year__m.is-lit, .cal-year__m.is-lit > .face { --face: var(--terracotta-50); --face-border: var(--terracotta-400); background: var(--terracotta-50); border-color: var(--terracotta-400); }
 .cal-year__m.is-off, .cal-year__m:disabled { opacity: 0.38; }
 @media (min-width: 560px) { .cal-year { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
@@ -278,7 +279,9 @@ span.cal-page__day { background: var(--sand-100, #f6eee2); border-radius: 10px; 
 }
 /* The birthday wall: each bubble stacks its play button (or "Audio soon") over the words, and shrinks with its column */
 .wall-card { min-width: 0; }
-.ex-wall .wall-bubble { flex-direction: column; align-items: center; text-align: center; gap: 4px; min-width: 0; box-sizing: border-box; overflow-wrap: anywhere; }
+.ex-wall .wall-bubble { flex-direction: column; align-items: center; text-align: center; gap: 4px; min-width: 0; box-sizing: border-box; overflow-wrap: break-word; }
+/* Five bubbles in a row: less side padding so «cumpleaños?» stays whole instead of breaking mid-word */
+.lesson .ex-wall .wall-bubble { padding-inline: var(--sp-2); }
 .ex-wall .wall-bubble::before, .ex-wall .wall-bubble::after { display: none; }
 .ex-wall .wall-bubble .audio-soon { white-space: nowrap; font-size: 0.7rem; }
 .ex-wall .wall-es { font-size: var(--fs-md); line-height: 1.25; }

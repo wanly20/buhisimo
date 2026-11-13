@@ -277,6 +277,7 @@ export function caltap(step, api) {
   const keyOf = (b) => b.dataset.k || (b.closest(".cal-week") ? `d${b.dataset.oi}` : b.closest(".cal-page") ? `p${b.dataset.oi}/${page}` : `m${b.dataset.oi}`);
   const hits = () => $$(".cal-hit", squares).filter((b) => !b.disabled);
   const answerBtn = () => hits().find((b) => keyOf(b) === keyOfRound(cur));
+  let hopKey = "";
   function hopTo(b, { land = false } = {}) {
     if (!b) return;
     const box = node.querySelector(".ct-board").getBoundingClientRect(), r = b.getBoundingClientRect();
@@ -293,8 +294,12 @@ export function caltap(step, api) {
       prog += dt / roundMs();
       nextHop -= dt;
       if (nextHop <= 0 && prog < 0.92) {
-        const opts = hits().filter((b) => keyOf(b) !== keyOfRound(cur));
-        hopTo(opts[Math.floor(Math.random() * opts.length)]);
+        // Never the answer, and never the square he is already on, so every hop visibly moves him.
+        const all = hits().filter((b) => keyOf(b) !== keyOfRound(cur));
+        const opts = all.length > 1 ? all.filter((b) => keyOf(b) !== hopKey) : all;
+        const to = opts[Math.floor(Math.random() * opts.length)];
+        if (to) hopKey = keyOf(to);
+        hopTo(to);
         nextHop = roundMs() / 6;
       }
       if (prog >= 1) landed();
