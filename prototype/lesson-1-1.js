@@ -74,7 +74,9 @@ export const lesson = {
     {
       id: "intro-el",
       type: "intro",
-      character: "max",
+      // Picture: Buhísimo (the «él» Max talks about), voice: Max (Juan, 17 Nov 2026: Max + the Colombian flag read as "Max is Colombian").
+      character: "owl-explaining",
+      speaker: "max",
       flag: "co",
       contextEn: "Max points at Buhísimo and says:",
       es: "Él es de Colombia.",
@@ -92,10 +94,11 @@ export const lesson = {
       id: "tiles-soy",
       type: "tiles",
       character: "matilda",
-      en: "I'm from Colombia.",
-      answerEs: ["soy", "de", "Colombia"],
-      tilesEs: ["Colombia", "él", "soy", "Australia", "de", "es"],
-      fullEs: "Soy de Colombia.",
+      // Matilda is from Melbourne, so she says Australia; no «él» decoy next to a girl (Juan, 17 Nov 2026).
+      en: "I'm from Australia.",
+      answerEs: ["soy", "de", "Australia"],
+      tilesEs: ["Australia", "es", "soy", "Colombia", "de"],
+      fullEs: "Soy de Australia.",
     },
     {
       id: "intro-espana",

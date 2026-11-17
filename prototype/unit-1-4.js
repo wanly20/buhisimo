@@ -497,10 +497,10 @@ const L9 = {
       options: ["Samuel's birthday? The 1st of May? — No.", "Samuel's birthday? The 1st of March? — No.", "My birthday? The 1st of May? — Yes.", "Samuel's name? May? — No."], answer: 0 },
     { id: "listen-primero-junio", type: "listen", sayEs: "¿Cuándo es tu cumpleaños? — Es el primero de junio.", en: "When is your birthday? — It's the 1st of June.", lookalike: "junio/julio",
       optionsEs: ["¿Cuándo es tu cumpleaños? — Es el primero de junio.", "¿Cuándo es tu cumpleaños? — Es el primero de julio.", "¿Cuándo es tu cumpleaños? — ¿Mi cumpleaños? Junio.", "¿Cuándo es tu cumpleaños? — Es el primero de enero."], answer: 0 },
-    { id: "b-es-en-agosto", type: "tiles", speaker: "neutral", dir: "es-en", character: "owl-explaining", promptEs: "¿Cuándo es tu cumpleaños, Buhísimo? — ¿Mi cumpleaños? Agosto.",
+    { id: "b-es-en-agosto", type: "tiles", speaker: "neutral", dir: "es-en", character: pic("valentina-asking"), promptEs: "¿Cuándo es tu cumpleaños, Buhísimo? — ¿Mi cumpleaños? Agosto.",
       en: "When is your birthday, Buhísimo? — My birthday? August.",
       answerEn: ["When is your birthday,", "Buhísimo?", "My birthday?", "August."], tilesEn: ["August.", "Your birthday?", "Buhísimo?", "My birthday?", "When is your birthday,", "April."] },
-    { id: "b-en-es-max", type: "tiles", character: "max", en: "When is your birthday, Max? — My birthday? February.",
+    { id: "b-en-es-max", type: "tiles", speaker: "neutral", character: pic("valentina-asking"), en: "When is your birthday, Max? — My birthday? February.",
       answerEs: ["cuándo es tu cumpleaños", "Max", "mi cumpleaños", "febrero"], tilesEs: ["mi cumpleaños", "febrero", "Max", "tu cumpleaños", "cuándo es tu cumpleaños"],
       fullEs: "¿Cuándo es tu cumpleaños, Max? — ¿Mi cumpleaños? Febrero." },
     { id: "pick-y-tu", type: "pick", titleEn: "What does it mean?", character: pic("valentina-asking"), promptEs: "¿Y tú, Max? ¿Tu cumpleaños?", lookalike: "tu/tú",
@@ -585,7 +585,8 @@ const L11 = {
   steps: [
     SONG("song-cumple-digits", SONGS.cuando_es_tu_cumpleanos, true),
     SAY("say-1-jul", "Es martes, el primero de julio.", "It's Tuesday, the 1st of July.", ["es", "martes", "el primero", "de", "julio"], ["jueves", "junio"]),
-    SAY("say-1-nov", "¿Cuándo es tu cumpleaños? — Es el uno de noviembre.", "When is your birthday? — It's the 1st of November.", ["cuándo es tu cumpleaños", "es", "el uno", "de", "noviembre"], ["el nombre", "octubre"]),
+    // Not a birthday: Matilda's is 15 June (Juan, 17 Nov 2026).
+    SAY("say-1-nov", "Es el uno de noviembre.", "It's the 1st of November.", ["es", "el uno", "de", "noviembre"], ["el nombre", "octubre"]),
     SAY("say-15-sep", "Es el quince de septiembre.", "It's the 15th of September.", ["es", "el", "quince", "de", "septiembre"], ["cinco", "diciembre"]),
     SAY("say-22-sep", "Es lunes, el veintidós de septiembre.", "It's Monday, the 22nd of September.", ["es", "lunes", "el", "veintidós", "de", "septiembre"], ["martes", "doce"]),
     SAY("say-1-nov-sab", "Es sábado, el primero de noviembre.", "It's Saturday, the 1st of November.", ["es", "sábado", "el primero", "de", "noviembre"], ["domingo", "octubre"]),

@@ -115,7 +115,7 @@ const L2 = {
       noteEn: "Watch the accent: [[Perú]]." },
     { id: "study-l2", type: "mapstudy", places: ["co", "pe", "cl", "ar"], contextEn: "Four countries side by side. Tap each one to hear it. Then find them on a map without names." },
     { id: "map-chile", type: "maptap", sayEs: "Él es de Chile.", en: "He's from Chile.", target: "cl", choices: ["cl", "ar", "pe"] },
-    { id: "tiles-argentina", type: "tiles", character: "matilda", en: "She's from Argentina.",
+    { id: "tiles-argentina", type: "tiles", character: "owl-explaining", en: "She's from Argentina.",
       answerEs: ["ella", "es", "de", "Argentina"], tilesEs: ["Argentina", "él", "es", "soy", "ella", "de", "Chile"], fullEs: "Ella es de Argentina." },
     { id: "map-peru", type: "maptap", sayEs: "¿De dónde es? — Es de Perú.", en: "Where is he/she from? — He's/She's from Peru.", target: "pe", choices: ["pe", "cl", "co"] },
     { id: "type-pais", type: "type", en: "the country", answerEs: "el país" },
@@ -170,7 +170,7 @@ const L3 = {
     { id: "choose-tu", type: "choose", titleEn: "Which one means this?", promptEn: "You're from Australia.", character: "owl-explaining",
       optionsEs: ["Tú eres de Australia.", "Soy de Australia.", "Max es de Australia.", "Matilda es de Melbourne."], answer: 0 },
     { id: "type-rd", type: "type", en: "the Dominican Republic", answerEs: "República Dominicana" },
-    { id: "tiles-eeuu", type: "tiles", character: "max", en: "He's from the United States.",
+    { id: "tiles-eeuu", type: "tiles", character: "matilda", en: "He's from the United States.",
       answerEs: ["él", "es", "de", "Estados Unidos"], tilesEs: ["Estados Unidos", "eres", "él", "de", "tú", "es", "Cuba"], fullEs: "Él es de Estados Unidos." },
     { id: "match-3", type: "match", pairs: [
       { es: "tú", en: "you" }, { es: "eres", en: "you are" }, { es: "soy", en: "I am" },
@@ -212,8 +212,9 @@ const L4 = {
       noteEn: "[[¿Eres de…?]] = Are you from…? The question is just the sentence with ¿…?" },
     { id: "yn-buho", type: "choose", titleEn: "Sí or no?", character: "owl-explaining", flag: "co", promptEs: "¿Él es de Colombia?",
       optionsEs: ["sí", "no"], answer: 0, answerEs: "¿Él es de Colombia? — Sí, es de Salento.", answerEn: "Is he from Colombia? — Yes, he's from Salento." },
-    { id: "pick-peru", type: "pick", character: "max", promptEs: "¿Eres de Perú? — Sí, soy de Perú.",
-      options: ["Are you from Peru? — Yes, I'm from Peru.", "Is he from Peru? — No, he's from Chile.", "Where are you from? — I'm from Peru.", "Are you from Peru? — No, I'm not."], answer: 0 },
+    // Max answers for himself, so the answer is Australia (Juan, 17 Nov 2026: Max used to say «Sí, soy de Perú»).
+    { id: "pick-peru", type: "pick", character: "max", promptEs: "¿Eres de Perú? — No, soy de Australia.",
+      options: ["Are you from Peru? — No, I'm from Australia.", "Are you from Peru? — Yes, I'm from Peru.", "Is he from Peru? — No, he's from Chile.", "Where are you from? — I'm from Australia."], answer: 0 },
     { id: "gap-no", type: "gap", es: "¿Eres de España? — No, soy de Australia.", en: "Are you from Spain? — No, I'm from Australia.", blank: "No", optionsEs: ["Sí", "No"] },
     { id: "listen-colombia", type: "listen", sayEs: "Él es de Colombia.", en: "He's from Colombia.",
       optionsEs: ["Él es de Colombia.", "¿Él es de Colombia? — Sí, es de Salento.", "Soy de Colombia.", "No, no soy de España."], answer: 0 },
@@ -235,8 +236,9 @@ const L5 = {
   xpBase: 10,
   learnedEs: ["soy", "eres", "es"],
   steps: [
-    { id: "model-max", type: "intro", character: "max", flag: "au", badgeEn: "Model", contextEn: "Max is asked, and answers:",
-      es: "¿De dónde eres, Max? — Soy de Melbourne.", en: "Where are you from, Max? — I'm from Melbourne." },
+    // Max only says his own half (Juan, 17 Nov 2026: Max no longer asks himself «¿De dónde eres, Max?»).
+    { id: "model-max", type: "intro", character: "max", flag: "au", badgeEn: "Model", contextEn: "Buhísimo asks [[¿De dónde eres, Max?]] Max answers:",
+      es: "Soy de Melbourne.", en: "I'm from Melbourne." },
     { id: "gap-soy", type: "gap", es: "¿De dónde eres, Max? — Soy de Melbourne.", en: "Where are you from, Max? — I'm from Melbourne.", blank: "Soy", optionsEs: ["Soy", "Eres", "Es"] },
     { id: "sort-ser", type: "sort", titleEn: "Who is it about?", bucketsEn: ["me (soy)", "you (eres)", "him or her (es)"],
       cards: [
@@ -254,12 +256,13 @@ const L5 = {
     { id: "pick-two", type: "pick", character: "owl-thinking", promptEs: "Matilda es de Australia. Buhísimo es de Colombia.",
       options: ["Matilda is from Australia. Buhísimo is from Colombia.", "Matilda is from Colombia. Buhísimo is from Australia.", "I'm from Australia. You're from Colombia.", "Matilda and Buhísimo are from Australia."], answer: 0 },
     { id: "type-peru", type: "type", en: "You're from Peru.", answerEs: "Eres de Perú." },
-    { id: "tiles-rd", type: "tiles", character: "matilda", en: "No, I'm from the Dominican Republic.",
-      answerEs: ["no", "soy", "de", "República Dominicana"], tilesEs: ["República Dominicana", "sí", "soy", "eres", "de", "no", "Cuba"], fullEs: "No, soy de República Dominicana." },
+    // Matilda is from Australia (Juan, 17 Nov 2026); República Dominicana stays as a decoy.
+    { id: "tiles-rd", type: "tiles", character: "matilda", en: "No, I'm from Australia.",
+      answerEs: ["no", "soy", "de", "Australia"], tilesEs: ["Australia", "sí", "soy", "eres", "de", "no", "República Dominicana"], fullEs: "No, soy de Australia." },
     { id: "match-5", type: "match", pairs: [
       { es: "soy", en: "I am" }, { es: "eres", en: "you are" }, { es: "es", en: "he is · she is" },
       { es: "tú", en: "you" }, { es: "él", en: "he" }] },
-    { id: "speak-max", type: "speak", character: "max", es: "¿De dónde eres, Max? — Soy de Melbourne.", en: "Where are you from, Max? — I'm from Melbourne." },
+    { id: "speak-max", type: "speak", character: "max", es: "Soy de Melbourne.", en: "I'm from Melbourne." },
   ],
 };
 

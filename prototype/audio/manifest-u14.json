@@ -1,5 +1,19 @@
 {
  "_about": "Unit 1.4 recordings (docs/recording_list_1.4.md, written by the 1.4 recording run in video_generation/scripts/voice_tools/). Same shape as the other manifests: clips = Spanish text -> { voice: \"audio/<voice>/<slug>.mp3\" }; speakers = Spanish text -> role, for lines that always play in one character's voice. Empty until the GPU session runs: until then every 1.4 line falls back to text ('Audio soon').",
  "clips": {},
- "speakers": {}
+ "speakers": {
+  "¡Hola, Buhísimo! Me llamo Valentina. ¡Es sábado! ¡Fantástico!": "valentina",
+  "Mi nombre es Valentina. Mi cumpleaños es el veinte de julio.": "valentina",
+  "Mi nombre es Samuel. ¿El mes? Noviembre.": "samuel",
+  "¡Buenos días! Soy Buhísimo. ¿Cómo estás?": "buho",
+  "¡Hola, Buhísimo! Soy Max. ¿Lunes? Matilda está regular.": "max",
+  "¿Mi cumpleaños? Enero.": "samuel",
+  "¿Mi cumpleaños? Febrero.": "max",
+  "¿Mi cumpleaños? Junio.": "matilda",
+  "¿Mi cumpleaños? Julio.": "valentina",
+  "¿Mi cumpleaños? Agosto.": "buho",
+  "Mi cumpleaños es el diez de enero.": "samuel",
+  "Mi cumpleaños es el siete de agosto. ¡Fenomenal!": "buho",
+  "Mi cumpleaños es el veintinueve de febrero.": "max"
+ }
 }
