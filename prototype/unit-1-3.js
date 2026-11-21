@@ -199,7 +199,7 @@ const L2 = {
       noteEn: "For him or for her, it's [[se llama]]: [[Ella se llama Matilda.]]" },
     { id: "gap-se-llama", type: "gap", es: "Ella se llama Matilda.", en: "Her name is Matilda.", blank: "se llama", optionsEs: ["me llamo", "te llamas", "se llama"] },
     { id: "intro-como-se-llama", type: "intro", character: "max-thinking", contextEn: "Max asks about the boy:",
-      es: "¿Cómo se llama?", en: "What's his/her name?", exampleEs: "¿Cómo se llama él? — Se llama Samuel.", exampleEn: "What's his name? — His name is Samuel." },
+      es: "¿Cómo se llama?", en: "What's his/her name?", exampleEs: "¿Cómo se llama él?", exampleEn: "What's his name?" },
     { id: "sort-person", type: "sort", titleEn: "Who is it about?", bucketsEn: ["me (I)", "you", "he / she"],
       cards: [{ es: "Me llamo Max. Soy de Australia.", bucket: 0 }, { es: "¿Te llamas Max?", bucket: 1 }, { es: "Ella se llama Matilda.", bucket: 2 },
         { es: "Él se llama Samuel.", bucket: 2 }, { es: "¿Cómo te llamas?", bucket: 1 }, { es: "¡Hola! Me llamo Valentina.", bucket: 0 }] },
@@ -211,7 +211,7 @@ const L2 = {
     { id: "match-2", type: "match", pairs: [
       { es: "me llamo", en: "my name is" }, { es: "te llamas", en: "your name is" }, { es: "se llama", en: "his/her name is" },
       { es: "¿Cómo te llamas?", en: "What's your name?" }, { es: "¿Cómo se llama?", en: "What's his/her name?" }] },
-    { id: "speak-me-llamo", type: "speak", character: "valentina", es: "¿Cómo te llamas? — Me llamo Valentina.", en: "What's your name? — My name is Valentina." },
+    { id: "speak-me-llamo", type: "speak", character: "valentina", es: "¡Hola! Me llamo Valentina.", en: "Hi! My name is Valentina." },
   ],
 };
 
@@ -232,7 +232,7 @@ const L3 = {
     { id: "choose-matilda", type: "choose", titleEn: "Matilda talks about herself", character: "matilda", promptEn: "Which one does Matilda say?",
       optionsEs: ["Me llamo Matilda.", "Te llamas Matilda.", "Se llama Matilda."], answer: 0, answerEs: "Me llamo Matilda. Soy de Melbourne.", answerEn: "My name is Matilda. I'm from Melbourne." },
     { id: "gap-te-llamas", type: "gap", es: "Te llamas Samuel. Eres de Colombia.", en: "Your name is Samuel. You're from Colombia.", blank: "Te llamas", optionsEs: ["Me llamo", "Te llamas", "Se llama"] },
-    { id: "choose-buho", type: "choose", titleEn: "Talking about Buhísimo", character: "owl-celebrating", promptEn: "Max tells Valentina the owl's name.",
+    { id: "choose-buho", type: "choose", titleEn: "Talking about Buhísimo", character: "owl-celebrating", speaker: "max", promptEn: "Max tells Valentina the owl's name.",
       optionsEs: ["Se llama Buhísimo.", "Me llamo Buhísimo.", "Te llamas Buhísimo."], answer: 0, answerEs: "Se llama Buhísimo. Es de Salento.", answerEn: "His name is Buhísimo. He's from Salento." },
     { id: "table-pattern", type: "table", titleEn: "Two verbs, one pattern", contextEn: "[[soy, eres, es]] from Unit 1.1 work the same way.",
       rows: [
@@ -384,11 +384,11 @@ const L8 = {
     { id: "intro-tienes", type: "intro", character: "matilda", contextEn: "Matilda can't find the map:",
       es: "tienes", en: "you have", exampleEs: "¿Tienes el mapa, Max?", exampleEn: "Do you have the map, Max?",
       noteEn: "[[tengo]] (I have) → [[tienes]] (you have)." },
-    { id: "intro-tiene", type: "intro", character: "valentina", contextEn: "And now Valentina has it:",
+    { id: "intro-tiene", type: "intro", character: "valentina", speaker: "max", contextEn: "Max sees that Valentina has it now:",
       es: "tiene", en: "he/she has", exampleEs: "Valentina tiene el mapa.", exampleEn: "Valentina has the map." },
     { id: "gap-tiene", type: "gap", es: "Valentina tiene el mapa.", en: "Valentina has the map.", blank: "tiene", optionsEs: ["tengo", "tienes", "tiene"] },
     { id: "intro-cuantos", type: "intro", character: "matilda", contextEn: "Matilda asks Valentina:",
-      es: "¿Cuántos años tienes?", en: "How old are you?", exampleEs: "¿Cuántos años tienes? — Doce.", exampleEn: "How old are you? — Twelve.",
+      es: "¿Cuántos años tienes?", en: "How old are you?", exampleEs: "¿Cuántos años tienes, Valentina?", exampleEn: "How old are you, Valentina?",
       noteEn: "Word for word: “How many years do you have?”" },
     { id: "table-anos", type: "table", titleEn: "In Spanish, you have years", contextEn: "[[tengo]] = I have. You have a map, and you have years too.",
       rows: [
@@ -396,7 +396,7 @@ const L8 = {
         { es: "Tengo doce años.", en: "I'm twelve. (I have twelve years.)", exampleEs: "Samuel tiene trece años.", exampleEn: "Samuel is thirteen." },
       ],
       noteEn: "The word for years always comes after a number: [[doce años]], [[trece años]]." },
-    { id: "pick-samuel-13", type: "pick", character: "samuel", promptEs: "Samuel tiene trece años.",
+    { id: "pick-samuel-13", type: "pick", character: "max", promptEs: "Samuel tiene trece años.",
       options: ["Samuel is thirteen.", "Samuel is three.", "Samuel has thirteen maps.", "I'm thirteen, Samuel."], answer: 0 },
     { id: "yn-doce", type: "choose", titleEn: "Sí or no?", character: "matilda", promptEs: "¿Tienes doce años?", promptEn: "Matilda asks Valentina. Valentina is twelve.",
       optionsEs: ["sí", "no"], answer: 0, answerEs: "¿Tienes doce años? — Sí, tengo doce años.", answerEn: "Are you twelve? — Yes, I'm twelve." },
@@ -507,7 +507,7 @@ const L11 = {
     { id: "c-tiles-samuel", type: "tiles", character: "samuel", en: "My name is Samuel. I'm thirteen.",
       answerEs: ["me llamo", "Samuel", "tengo", "trece años"], tilesEs: ["tres", "me llamo", "trece años", "Samuel", "tiene", "tengo"], fullEs: "Me llamo Samuel. Tengo trece años." },
     { id: "c-type-valentina", type: "type", en: "Her name is Valentina. She's twelve. She's from Salento.", answerEs: "Se llama Valentina. Tiene doce años. Es de Salento." },
-    { id: "c-speak", type: "speak", character: "samuel", es: "¿Cómo te llamas? — Me llamo Samuel. Tengo trece años.", en: "What's your name? — My name is Samuel. I'm thirteen." },
+    { id: "c-speak", type: "speak", character: "samuel", es: "Me llamo Samuel. Tengo trece años.", en: "My name is Samuel. I'm thirteen." },
   ],
 };
 
@@ -693,9 +693,9 @@ const L17 = {
   canDoEn: "Now you can fill in a whole ID card: name, surname, age and place of birth.",
   xpBase: 10, learnedEs: ["la edad", "el amigo", "la amiga", "el lugar de nacimiento"],
   steps: [
-    { id: "intro-amiga", type: "intro", character: "valentina", contextEn: "Valentina and Matilda are always together now:",
+    { id: "intro-amiga", type: "intro", character: "valentina", speaker: "max", contextEn: "Valentina and Matilda are always together now. Max says:",
       es: "la amiga", en: "the friend (a girl)", exampleEs: "Valentina es la amiga de Matilda.", exampleEn: "Valentina is Matilda's friend." },
-    { id: "intro-amigo", type: "intro", character: "samuel", contextEn: "And Samuel plays football with Max:",
+    { id: "intro-amigo", type: "intro", character: "samuel", speaker: "matilda", contextEn: "And Samuel plays football with Max. Matilda says:",
       es: "el amigo", en: "the friend (a boy)", exampleEs: "Samuel es el amigo de Max.", exampleEn: "Samuel is Max's friend.",
       noteEn: "[[el amigo]] for a boy, [[la amiga]] for a girl, like [[famoso]] and [[famosa]]." },
     // Matilda, then Max, point out a friend: «el amigo» or «la amiga» decides who.
@@ -724,7 +724,7 @@ const L17 = {
         { qEs: Q.lugar, kind: "chips", optionsEs: ["Salento", "Melbourne", "Australia"], valueEs: "Salento" }] }] },
     { id: "listen-amiga", type: "listen", sayEs: "Mi amiga se llama Valentina.", en: "My friend's name is Valentina.",
       optionsEs: ["Mi amiga se llama Valentina.", "Mi amigo se llama Max.", "Valentina es la amiga de Matilda.", "Me llamo Valentina."], answer: 0 },
-    { id: "tiles-amiga", type: "tiles", character: "matilda", en: "Valentina is Matilda's friend.",
+    { id: "tiles-amiga", type: "tiles", character: "max", en: "Valentina is Matilda's friend.",
       answerEs: ["Valentina", "es", "la amiga", "de", "Matilda"], tilesEs: ["la amiga", "Matilda", "es", "el amigo", "Valentina", "de"], fullEs: "Valentina es la amiga de Matilda." },
     { id: "type-edad", type: "type", en: "the age", answerEs: "la edad" },
     { id: "fill-matilda", type: "idcard", titleEn: "Fill in Matilda's card", contextEn: "Type the answers. Names start with a capital letter.",
@@ -734,7 +734,7 @@ const L17 = {
       { es: "la edad", en: "the age" }, { es: "el amigo", en: "the friend (boy)" }, { es: "la amiga", en: "the friend (girl)" },
       { es: "el lugar de nacimiento", en: "the place of birth" }, { es: "el apellido", en: "the surname" }] },
     { id: "type-mi-amigo", type: "type", en: "My friend's name is Max.", answerEs: "Mi amigo se llama Max." },
-    { id: "speak-amiga", type: "speak", character: "matilda", es: "Valentina es la amiga de Matilda.", en: "Valentina is Matilda's friend." },
+    { id: "speak-amiga", type: "speak", character: "matilda", es: "Mi amiga se llama Valentina.", en: "My friend's name is Valentina." },
   ],
 };
 
@@ -828,10 +828,10 @@ const L20 = {
         { qEs: Q.de, kind: "chips", optionsEs: ["Colombia", "Australia", "Chile"], valueEs: "Colombia" },
         { qEs: Q.edad, kind: "digits", value: 13 }] }] },
     { id: "c-type-lugar", type: "type", en: "the place of birth", answerEs: "el lugar de nacimiento" },
-    { id: "c-who-amigo", type: "choose", layout: "bubbles", speaker: "owl", speakerArt: "owl-explaining", titleEn: "Who is it?", promptEs: "Samuel es el amigo de Matilda.", focusEs: "Samuel",
-      optionsArt: ART4, tagsEs: NAMES4, namesAfter: true, answer: 1, answerEs: "Samuel es el amigo de Matilda.", answerEn: "Samuel is Matilda's friend.",
-      rightEn: "The line names [[Samuel]]: he's Matilda's friend here.", whyEn: "The line names [[Samuel]]: Matilda's friend here is Samuel, not {picked}." },
-    { id: "c-gap-amigo", type: "gap", es: "Samuel es el amigo de Matilda.", en: "Samuel is Matilda's friend.", blank: "el amigo", optionsEs: ["el amigo", "la amiga"] },
+    { id: "c-who-amigo", type: "choose", layout: "bubbles", speaker: "owl", speakerArt: "owl-explaining", titleEn: "Who is it?", promptEs: "Samuel es el amigo de Max.", focusEs: "Samuel",
+      optionsArt: ART4, tagsEs: NAMES4, namesAfter: true, answer: 1, answerEs: "Samuel es el amigo de Max.", answerEn: "Samuel is Max's friend.",
+      rightEn: "The line names [[Samuel]]: he's Max's friend.", whyEn: "The line names [[Samuel]]: Max's friend is Samuel, not {picked}." },
+    { id: "c-gap-amigo", type: "gap", es: "Samuel es el amigo de Max.", en: "Samuel is Max's friend.", blank: "el amigo", optionsEs: ["el amigo", "la amiga"] },
     TYPE("c-type-31", 31),
     { id: "c-type-trece", type: "type", en: "How old are you? — Thirteen.", answerEs: "¿Cuántos años tienes? — Trece." },
     { id: "c-match", type: "match", pairs: [

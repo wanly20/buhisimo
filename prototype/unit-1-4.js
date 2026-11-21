@@ -122,12 +122,12 @@ export const RADIO = [
   { id: "1.4-7", lesson: "1.4-7", unit: "1.4", titleEn: "Radio Búho: the week and the months", songs: SONG_SET_7,
     lines: [
       { who: "buho", clip: "D0", es: "¡Buenos días! Soy Buhísimo. ¿Cómo estás?", en: "Good morning! I'm Buhísimo. How are you?" },
-      { who: "valentina", clip: "D8", es: "¡Hola, Buhísimo! Me llamo Valentina. ¡Es sábado! ¡Fantástico!", en: "Hi, Buhísimo! My name is Valentina. It's Saturday! Fantastic!" },
+      { who: "valentina", clip: "D8", es: "¡Hola, Buhísimo! Me llamo Valentina. ¿Sábado? ¡Fantástico!", en: "Hi, Buhísimo! My name is Valentina. Saturday? Fantastic!" },
       { who: "caller", nameEn: "Caller from Peru", voice: "caller_peru", clip: "D8", es: "¡Hola, Buhísimo! ¿Es martes?", en: "Hi, Buhísimo! Is it Tuesday?" },
       { who: "buho", clip: "D8", es: "No, es miércoles.", en: "No, it's Wednesday." },
       { who: "caller", nameEn: "Caller from Peru", voice: "caller_peru", clip: "D8", es: "¿Miércoles? ¡Fenomenal!", en: "Wednesday? Great!" },
       { who: "max", clip: "D8", es: "¡Hola, Buhísimo! Soy Max. ¿Lunes? Matilda está regular.", en: "Hi, Buhísimo! I'm Max. Monday? Matilda is so-so." },
-      { who: "caller", nameEn: "Caller from Spain", voice: "caller_espana", clip: "D8", es: "¡Hola, Buhísimo! Soy de España. Es domingo. ¡Fenomenal!", en: "Hi, Buhísimo! I'm from Spain. It's Sunday. Great!" },
+      { who: "caller", nameEn: "Caller from Spain", voice: "caller_espana", clip: "D8", es: "¡Hola, Buhísimo! Soy de España. ¿Domingo? ¡Fenomenal!", en: "Hi, Buhísimo! I'm from Spain. Sunday? Great!" },
       { who: "caller", nameEn: "Caller from Chile", voice: "caller_chile", clip: "D8", es: "¡Hola! Soy de Chile. ¿Julio? Regular.", en: "Hi! I'm from Chile. July? So-so." },
       { who: "buho", clip: "D9", es: "¡Muy bien! La semana, el mes, el año… ¡hasta luego!", en: "Very good! The week, the month, the year… see you later!" },
     ] },
@@ -328,7 +328,7 @@ const L5 = {
     { id: "gap-julio", type: "gap", es: "Mayo, junio, julio, agosto.", en: "May, June, July, August.", blank: "julio", optionsEs: ["junio", "julio"], lookalike: "junio/julio" },
     { id: "b-es-en-julio", type: "tiles", dir: "es-en", character: "max-thinking", promptEs: "¿Junio? No, julio.", en: "June? No, July.", lookalike: "junio/julio",
       answerEn: ["June?", "No,", "July."], tilesEn: ["July.", "June?", "No,", "Yes,", "January?"] },
-    { id: "b-en-es-julio", type: "tiles", character: "owl-celebrating", en: "It's July. Buhísimo is feeling great.",
+    { id: "b-en-es-julio", type: "tiles", character: pic("valentina-celebrate"), en: "It's July. Buhísimo is feeling great.",
       answerEs: ["es", "julio", "Buhísimo", "está", "fenomenal"], tilesEs: ["junio", "fenomenal", "es", "Buhísimo", "julio", "está"], fullEs: "Es julio. Buhísimo está fenomenal.", lookalike: "junio/julio" },
     { id: "pick-junio", type: "pick", titleEn: "What does it mean?", character: "max-celebrate", promptEs: "¿Junio? ¡Fantástico!",
       options: ["June? Fantastic!", "July? Fantastic!", "June? So-so.", "January? Fantastic!"], answer: 0, lookalike: "junio/julio" },
@@ -388,7 +388,7 @@ const L6 = {
 const L7 = {
   ...common(7, pic("owl-mic")), id: "1.4-7", n: 7, kind: "listen",
   titleEn: "Radio Búho: the week and the months",
-  storyEn: "Radio Búho plays the week song and the year song, then five callers say what day or month it is, and how they are.",
+  storyEn: "Radio Búho plays the week song and the year song, then five callers say a day or a month, and how they feel about it.",
   canDoEn: "You sang the week and the year, and understood five callers!",
   xpBase: 15, learnedEs: [],
   steps: [
@@ -411,10 +411,10 @@ const L7 = {
         { lines: [7], labelEn: "Caller from Chile", whenEs: "julio", optionsEs: ["junio", "julio", "jueves"], face: "regular" },
       ] },
     { id: "transcript-calendario", type: "transcript", episode: "1.4-7", contextEn: "The whole show. Tap a line to hear it; tap EN for the English." },
-    { id: "who-sabado", type: "choose", layout: "bubbles", speaker: "owl", speakerArt: "owl-explaining", titleEn: "Who phoned?", promptEs: "¡Es sábado! ¡Fantástico!", focusEs: "sábado",
+    { id: "who-sabado", type: "choose", layout: "bubbles", speaker: "owl", speakerArt: "owl-explaining", titleEn: "Who phoned?", promptEs: "¿Sábado? ¡Fantástico!", focusEs: "Sábado",
       optionsArt: [{ art: "valentina", labelEn: "Valentina" }, { art: pic("max-tired"), labelEn: "Max" }], tagsEs: ["sábado", "lunes"], answer: 0,
-      answerEs: "¡Hola, Buhísimo! Me llamo Valentina. ¡Es sábado! ¡Fantástico!", answerEn: "Hi, Buhísimo! My name is Valentina. It's Saturday! Fantastic!",
-      rightEn: "On the radio Valentina said [[¡Es sábado!]].", whyEn: "On the radio Max said [[¿Lunes?]]. It was Valentina who said [[¡Es sábado!]]." },
+      answerEs: "¡Hola, Buhísimo! Me llamo Valentina. ¿Sábado? ¡Fantástico!", answerEn: "Hi, Buhísimo! My name is Valentina. Saturday? Fantastic!",
+      rightEn: "On the radio Valentina said [[¿Sábado? ¡Fantástico!]]", whyEn: "On the radio Max said [[¿Lunes?]]. It was Valentina who said [[¿Sábado? ¡Fantástico!]]" },
     { id: "pick-martes", type: "pick", speaker: "neutral", character: "owl-thinking", promptEs: "¿Es martes? — No, es miércoles.",
       options: ["Is it Tuesday? — No, it's Wednesday.", "Is it Tuesday? — Yes, it's Tuesday.", "Is it March? — No, it's Wednesday.", "Is it Wednesday? — No, it's Tuesday."], answer: 0 },
     { id: "pick-bye", type: "pick", character: "owl-celebrating", promptEs: "¡Muy bien! La semana, el mes, el año… ¡hasta luego!",
@@ -509,7 +509,7 @@ const L9 = {
     { id: "type-mi-enero", type: "type", en: "My birthday? January.", answerEs: "¿Mi cumpleaños? Enero." },
     { id: "match-9", type: "match", pairs: [{ es: "el cumpleaños", en: "the birthday" }, { es: "tu cumpleaños", en: "your birthday" }, { es: "el primero", en: "the 1st (Colombia)" },
       { es: "el uno", en: "the 1st (Spain)" }, { es: "¿Cuándo es tu cumpleaños?", en: "When is your birthday?" }] },
-    { id: "speak-max", type: "speak", character: "max", es: "¿Cuándo es tu cumpleaños? — ¿Mi cumpleaños? Febrero.", en: "When is your birthday? — My birthday? February." },
+    { id: "speak-max", type: "speak", character: "max", es: "¿Mi cumpleaños? Febrero.", en: "My birthday? February." },
   ],
 };
 
@@ -602,9 +602,9 @@ const L11 = {
       answerEs: ["el", "quince", "de", "junio"], tilesEs: ["junio", "de", "cinco", "quince", "el", "julio"], fullEs: "el quince de junio", lookalike: "junio/julio" },
     { id: "type-15-junio", type: "type", cal: { view: "month", month: 6, circle: [15] }, en: "The circled date: 15 June", answerEs: "el quince de junio" },
     { id: "my-pick", type: "mydate", stage: "pick", titleEn: "Your birthday" },
-    { id: "my-tiles", type: "mydate", stage: "tiles", character: "matilda" },
+    { id: "my-tiles", type: "mydate", stage: "tiles" },
     { id: "my-type", type: "mydate", stage: "type" },
-    { id: "my-say", type: "mydate", stage: "say", character: "matilda" },
+    { id: "my-say", type: "mydate", stage: "say" },
   ],
 };
 
@@ -662,8 +662,8 @@ const L13 = {
     ORDER_DAYS("c-order-week", 0, 6, { titleEn: "The whole week, in order" }),
     { id: "c-caltap-julio", type: "caltap", titleEn: "Calendar tap: one round", lookalike: "junio/julio",
       waves: [{ titleEs: "el año", board: "year", roundMs: 8000, rounds: [{ sayEs: "Es julio.", month: 7 }] }] },
-    { id: "c-nombre-mes", type: "choose", speaker: "neutral", titleEn: "Which word is the month?", character: "owl-thinking", promptEs: "Mi nombre es Samuel. ¿El mes? Noviembre.",
-      optionsEs: ["noviembre", "el nombre"], answer: 0, answerEs: "Mi nombre es Samuel. ¿El mes? Noviembre.", answerEn: "My name is Samuel. The month? November.", lookalike: "nombre/noviembre" },
+    { id: "c-nombre-mes", type: "choose", speaker: "neutral", titleEn: "Which word is the month?", character: "owl-thinking", promptEs: "¿El nombre? Samuel. ¿El mes? Noviembre.",
+      optionsEs: ["noviembre", "el nombre"], answer: 0, answerEs: "¿El nombre? Samuel. ¿El mes? Noviembre.", answerEn: "The name? Samuel. The month? November.", lookalike: "nombre/noviembre" },
     { id: "c-dict-22-5", type: "datedict", sayEs: "Es jueves, el veintidós de mayo.", d: 22, m: 5, en: "It's Thursday, the 22nd of May." },
     { id: "c-dict-1-3", type: "datedict", sayEs: "Es sábado, el uno de marzo.", d: 1, m: 3, en: "It's Saturday, the 1st of March." },
     { id: "c-party", type: "partycal", episode: "1.4-13", titleEn: "The party calendar", startMonth: 1,
@@ -690,7 +690,7 @@ const L13 = {
       tilesEs: ["febrero", "veintinueve", "es", "mi cumpleaños", "de", "el", "tu cumpleaños", "veintiuno"],
       fullEs: "Mi cumpleaños es el veintinueve de febrero." },
     { id: "c-type-max", type: "type", en: "My birthday is the 29th of February.", answerEs: "Mi cumpleaños es el veintinueve de febrero." },
-    { id: "c-speak-max", type: "speak", character: "max", es: "¿Cuándo es tu cumpleaños? — Mi cumpleaños es el veintinueve de febrero.", en: "When is your birthday? — My birthday is the 29th of February." },
+    { id: "c-speak-max", type: "speak", character: "max", es: "Mi cumpleaños es el veintinueve de febrero.", en: "My birthday is the 29th of February." },
   ],
 };
 

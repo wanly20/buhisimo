@@ -17,7 +17,7 @@
 import { icon } from "./icons.js";
 import { $, $$, esc, es, rich, el, charImg, shuffle, pick, restartAnim, reducedMotion } from "./ui.js";
 import { sfx } from "./sound.js";
-import { weekStrip, yearView, monthPage, idCard, seasonsArt, face, faceEn } from "./art.js";
+import { weekStrip, yearView, monthPage, idCard, seasonsArt, face, faceEn, calArt } from "./art.js";
 import { episodeById } from "../course.js";
 import { hasAudio, audioSoon, head, choiceController, typeIt, tiles, speak } from "./lesson.js";
 import { cue, wireCue } from "./exercises-1-3.js";
@@ -685,10 +685,16 @@ export function mydate(step, api) {
   const { d, m } = myDate(api);
   const sentence = birthdaySentence(d, m);
   const en = `My birthday is ${dateEnLong(d, m)}.`;
-  const built = { ...sentenceTiles(d, m), id: step.id, type: "tiles", character: step.character || "matilda", titleEn: "Your birthday: build the sentence", en, fullEs: sentence };
+  // The student's own date, so the picture is their calendar page, never a cast member (Juan, 17 Nov 2026:
+  // Matilda used to stand next to «Mi cumpleaños es…» with a date that isn't hers).
+  const cal = { view: "month", month: m, circle: [d], leap: m === 2 && d === 29 };
+  const built = { ...sentenceTiles(d, m), id: step.id, type: "tiles", cal, titleEn: "Your birthday: build the sentence", en, fullEs: sentence };
   if (step.stage === "tiles" || (step.stage === "say" && !speakingOn())) return tiles(built, api);
   if (step.stage === "type") return typeIt({ id: step.id, type: "type", titleEn: "Your birthday: type it", en, answerEs: sentence, altEs: d === 1 ? [birthdaySentence(d, m, { uno: true })] : [] }, api);
-  const ctrl = speak({ id: step.id, type: "speak", character: step.character || "matilda", es: sentence, en }, api);
+  const ctrl = speak({ id: step.id, type: "speak", character: "owl-encouraging", es: sentence, en }, api);
+  const row = ctrl.el.querySelector(".speaker-row");
+  row?.querySelector("img")?.replaceWith(el(`<div class="type-cal">${calArt(cal)}</div>`));
+  row?.classList.add("tiles-cal");
   // No model audio for this step (366 possible dates): no "audio soon" chip either.
   ctrl.el.querySelectorAll(".audio-soon, [data-audio]").forEach((x) => x.remove());
   return ctrl;

@@ -121,7 +121,7 @@ const L2 = {
     { id: "type-pais", type: "type", en: "the country", answerEs: "el país" },
     { id: "pick-max", type: "pick", character: "owl-explaining", promptEs: "Max es de Australia.",
       options: ["Max is from Australia.", "Max is from Austria.", "Matilda is from Australia.", "I'm from Australia."], answer: 0 },
-    { id: "tiles-pais-matilda", type: "tiles", character: "matilda", en: "Australia is Matilda's country.",
+    { id: "tiles-pais-matilda", type: "tiles", character: "max", en: "Australia is Matilda's country.",
       answerEs: ["Australia", "es", "el país", "de", "Matilda"], tilesEs: ["el país", "Matilda", "soy", "Australia", "de", "es", "ella"], fullEs: "Australia es el país de Matilda." },
     { id: "match-2", type: "match", pairs: [
       { es: "ella", en: "she" }, { es: "él", en: "he" }, { es: "el país", en: "the country" },
@@ -192,7 +192,7 @@ const L4 = {
   xpBase: 10,
   learnedEs: ["sí", "no"],
   steps: [
-    { id: "intro-si", type: "intro", character: "matilda", flag: "au", contextEn: "Max asks about Matilda. The answer:",
+    { id: "intro-si", type: "intro", character: "matilda", speaker: "neutral", flag: "au", contextEn: "Max asks about Matilda. The answer:",
       es: "¿Matilda es de Australia? — Sí.", en: "Is Matilda from Australia? — Yes.",
       noteEn: "[[sí]] = yes. It always has an accent." },
     { id: "intro-no", type: "intro", character: "max", flag: "au", contextEn: "Now a question about Max:",
@@ -207,7 +207,7 @@ const L4 = {
       noteEn: "The first [[no]] answers the question. The second [[no]] means “not” and goes right before [[soy]]." },
     { id: "tiles-no-soy", type: "tiles", character: "matilda", en: "No, I'm not from Spain.",
       answerEs: ["no", "no", "soy", "de", "España"], tilesEs: ["soy", "no", "sí", "España", "de", "no", "eres"], fullEs: "No, no soy de España." },
-    { id: "intro-eres-de", type: "intro", character: "matilda", flag: "au", contextEn: "A question and its answer:",
+    { id: "intro-eres-de", type: "intro", character: "matilda", speaker: "neutral", flag: "au", contextEn: "A question and its answer:",
       es: "¿Eres de España? — No, soy de Australia.", en: "Are you from Spain? — No, I'm from Australia.",
       noteEn: "[[¿Eres de…?]] = Are you from…? The question is just the sentence with ¿…?" },
     { id: "yn-buho", type: "choose", titleEn: "Sí or no?", character: "owl-explaining", flag: "co", promptEs: "¿Él es de Colombia?",
@@ -222,7 +222,7 @@ const L4 = {
     { id: "match-4", type: "match", pairs: [
       { es: "sí", en: "yes" }, { es: "no", en: "no" }, { es: "tú", en: "you" },
       { es: "ella", en: "she" }, { es: "¿De dónde eres?", en: "Where are you from?" }] },
-    { id: "speak-no", type: "speak", character: "matilda", es: "¿Eres de España? — No, soy de Australia.", en: "Are you from Spain? — No, I'm from Australia." },
+    { id: "speak-no", type: "speak", character: "matilda", es: "No, no soy de España.", en: "No, I'm not from Spain." },
   ],
 };
 

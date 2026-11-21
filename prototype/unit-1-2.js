@@ -141,7 +141,7 @@ const L1 = {
     { id: "r-match", type: "match", pairs: [
       { es: "el país", en: "the country" }, { es: "el mundo", en: "the world" }, { es: "la capital", en: "the capital" },
       { es: "el destino", en: "the destination" }, { es: "hispanohablante", en: "Spanish-speaking" }] },
-    { id: "r-speak", type: "speak", character: "matilda", es: "¿Eres de España? — No, soy de Australia.", en: "Are you from Spain? — No, I'm from Australia." },
+    { id: "r-speak", type: "speak", character: "matilda", es: "No, no soy de España.", en: "No, I'm not from Spain." },
   ],
 };
 
@@ -221,7 +221,7 @@ const L3 = {
     { id: "match-3", type: "match", pairs: [
       { es: "¿Qué tal?", en: "How's it going?" }, { es: "bien", en: "good" }, { es: "mal", en: "bad" },
       { es: "regular", en: "so-so" }, { es: "¿Y tú?", en: "And you?" }] },
-    { id: "speak-que-tal", type: "speak", character: "matilda", es: "¿Qué tal? — Bien. ¿Y tú?", en: "How's it going? — Good. And you?" },
+    { id: "speak-que-tal", type: "speak", character: "matilda", es: "Bien. ¿Y tú, Buhísimo?", en: "Good. And you, Buhísimo?" },
   ],
 };
 
@@ -261,7 +261,7 @@ const L4 = {
     { id: "match-4", type: "match", pairs: [
       { es: "¿Cómo estás?", en: "How are you?" }, { es: "gracias", en: "thank you" }, { es: "fatal", en: "awful" },
       { es: "fenomenal", en: "great" }, { es: "muy", en: "very" }] },
-    { id: "speak-muy-bien", type: "speak", character: "matilda", es: "¿Cómo estás? — Muy bien, gracias.", en: "How are you? — Very well, thank you." },
+    { id: "speak-muy-bien", type: "speak", character: "matilda", es: "Muy bien, gracias. ¿Y tú?", en: "Very well, thank you. And you?" },
   ],
 };
 
@@ -272,21 +272,22 @@ const L5 = {
   canDoEn: "You can hold a whole greeting conversation, both sides.",
   xpBase: 10, learnedEs: ["¡Hola! ¿Qué tal?", "Muy bien, gracias.", "¿Y tú?"],
   steps: [
-    { id: "model-1", type: "intro", character: "owl-explaining", badgeEn: "Model", contextEn: "Buhísimo meets a friend:",
-      es: "¡Hola! ¿Qué tal? — Muy bien, gracias. ¿Y tú?", en: "Hi! How's it going? — Very well, thanks. And you?" },
+    // Each character says only their own half (Juan, 17 Nov 2026): Buhísimo asks here, Matilda answers in tiles-1.
+    { id: "model-1", type: "intro", character: "owl-explaining", badgeEn: "Model", contextEn: "Buhísimo meets Matilda and asks:",
+      es: "¡Hola! ¿Qué tal?", en: "Hi! How's it going?" },
     { id: "gap-1", type: "gap", es: "¡Hola! ¿Qué tal? — Muy bien, gracias. ¿Y tú?", en: "Hi! How's it going? — Very well, thanks. And you?", blank: "tú", optionsEs: ["tú", "Max", "eres"] },
-    { id: "tiles-1", type: "tiles", character: "matilda", en: "Hi! How's it going? — Very well, thanks. And you?",
-      answerEs: ["hola", "qué tal", "muy", "bien", "gracias", "y tú"], tilesEs: ["gracias", "qué tal", "y tú", "bien", "muy", "hola", "mal", "adiós"],
-      fullEs: "¡Hola! ¿Qué tal? — Muy bien, gracias. ¿Y tú?" },
+    { id: "tiles-1", type: "tiles", character: "matilda", en: "Very well, thanks. And you?",
+      answerEs: ["muy", "bien", "gracias", "y tú"], tilesEs: ["gracias", "qué tal", "y tú", "bien", "muy", "hola", "mal", "adiós"],
+      fullEs: "Muy bien, gracias. ¿Y tú?" },
     // Max answers for himself (Juan, 17 Nov 2026: Max used to say «Soy de Perú»). gap-2 keeps the traveller from Peru.
     { id: "model-2", type: "intro", character: "max", badgeEn: "Model", contextEn: "Buhísimo meets Max in the afternoon. Max answers:",
       es: "Buenas tardes. ¿De dónde eres? — Soy de Australia.", en: "Good afternoon. Where are you from? — I'm from Australia." },
     { id: "gap-2", type: "gap", es: "Buenas tardes. ¿De dónde eres? — Soy de Perú.", en: "Good afternoon. Where are you from? — I'm from Peru.", blank: "Buenas tardes", optionsEs: ["Buenos días", "Buenas tardes"] },
     { id: "reply", type: "choose", titleEn: "Pick the best answer", character: "owl-explaining", promptEs: "¿Cómo estás?",
       optionsEs: ["Muy bien, gracias.", "Soy de Perú.", "¡Adiós, Max!"], answer: 0, answerEs: "¿Cómo estás? — Muy bien, gracias.", answerEn: "How are you? — Very well, thank you." },
-    { id: "tiles-bye", type: "tiles", character: "max", en: "See you later, Buhísimo! — Bye, Max!",
-      answerEs: ["hasta luego", "Buhísimo", "adiós", "Max"], tilesEs: ["Max", "adiós", "hola", "Buhísimo", "hasta luego"],
-      fullEs: "¡Hasta luego, Buhísimo! — ¡Adiós, Max!" },
+    { id: "tiles-bye", type: "tiles", character: "max", en: "See you later, Buhísimo!",
+      answerEs: ["hasta luego", "Buhísimo"], tilesEs: ["Max", "adiós", "hola", "Buhísimo", "hasta luego"],
+      fullEs: "¡Hasta luego, Buhísimo!" },
     { id: "listen-matilda", type: "listen", sayEs: "¡Hola! Soy Matilda. Soy de Melbourne.", en: "Hi! I'm Matilda. I'm from Melbourne.",
       optionsEs: ["¡Hola! Soy Matilda. Soy de Melbourne.", "¡Hola! Soy Max. Soy de Australia.", "Buenas tardes. ¿De dónde eres? — Soy de Perú.", "¡Adiós, Max!"], answer: 0 },
     { id: "type-tardes", type: "type", en: "Good afternoon. Where are you from?", answerEs: "Buenas tardes. ¿De dónde eres?" },
@@ -308,24 +309,24 @@ const L6 = {
         { es: "está", en: "is (how they feel now)", exampleEs: "Max está fenomenal.", exampleEn: "Max is feeling great." },
       ],
       noteEn: "Max is always from Australia: [[es de]]. How he feels changes all day: [[está]]." },
-    { id: "intro-esta", type: "intro", character: "matilda-thinking", contextEn: "Matilda, before her nap:",
+    { id: "intro-esta", type: "intro", character: "matilda-thinking", speaker: "owl", contextEn: "Matilda, before her nap:",
       es: "Matilda está regular.", en: "Matilda is so-so." },
     { id: "gap-esta", type: "gap", es: "Matilda está regular.", en: "Matilda is so-so.", blank: "está", optionsEs: ["es", "está"] },
     { id: "gap-es", type: "gap", es: "Max es de Australia. Está fenomenal.", en: "Max is from Australia. He's feeling great.", blank: "es", optionsEs: ["es", "está"] },
     { id: "sort-es-esta", type: "sort", titleEn: "Where from, or how they feel?", bucketsEn: ["where from (es)", "how they feel (está)"],
       cards: [{ es: "Max es de Australia.", bucket: 0 }, { es: "Matilda está regular.", bucket: 1 }, { es: "Ella está bien, gracias.", bucket: 1 },
         { es: "Él es de Colombia.", bucket: 0 }, { es: "Max está fenomenal.", bucket: 1 }, { es: "Ella es de Melbourne.", bucket: 0 }] },
-    { id: "pick-buho", type: "pick", character: "owl-celebrating", promptEs: "¿Qué tal Buhísimo? — Está muy bien.",
+    { id: "pick-buho", type: "pick", character: "matilda", promptEs: "¿Qué tal Buhísimo? — Está muy bien.",
       options: ["How's Buhísimo? — He's very well.", "Where is Buhísimo from? — Salento.", "How are you? — Very well.", "Is Buhísimo from Colombia? — Yes."], answer: 0 },
     { id: "listen-ella", type: "listen", sayEs: "Ella está bien, gracias.", en: "She's fine, thanks.",
       optionsEs: ["Ella está bien, gracias.", "Ella es de Melbourne.", "Matilda está regular.", "Max está fenomenal."], answer: 0 },
-    { id: "tiles-max", type: "tiles", character: "max-celebrate", en: "Max is feeling great.",
+    { id: "tiles-max", type: "tiles", character: "owl-explaining", en: "Max is feeling great.",
       answerEs: ["Max", "está", "fenomenal"], tilesEs: ["es", "fenomenal", "está", "Max", "de"], fullEs: "Max está fenomenal." },
     { id: "type-matilda", type: "type", en: "Matilda is so-so.", answerEs: "Matilda está regular." },
     { id: "match-6", type: "match", pairs: [
       { es: "está", en: "is (feeling)" }, { es: "es", en: "is" }, { es: "fenomenal", en: "great" },
       { es: "regular", en: "so-so" }, { es: "gracias", en: "thank you" }] },
-    { id: "speak-max", type: "speak", character: "max", es: "Max es de Australia. Está fenomenal.", en: "Max is from Australia. He's feeling great." },
+    { id: "speak-max", type: "speak", character: "matilda", es: "Max es de Australia. Está fenomenal.", en: "Max is from Australia. He's feeling great." },
   ],
 };
 
