@@ -14,7 +14,7 @@ import { gradeStep, meetLesson, buildReview, reviewViewHtml, dueItems, metItems 
 import { mountRadio, stopRadio } from "./radio.js";
 
 // Bump together with VERSION in sw.js for every release (tools/e2e-unit.mjs checks they match).
-export const APP_VERSION = "2026-11-17.charfix2";
+export const APP_VERSION = "2026-11-24.notts";
 
 const app = document.getElementById("app");
 applyFont(store.get().font);

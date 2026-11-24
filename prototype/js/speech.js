@@ -5,16 +5,24 @@ import { store } from "./store.js";
 const VOICE_PREFS = ["es-CO", "es-US", "es-MX", "es-419", "es-ES"];
 const REC_LANGS = ["es-CO", "es-ES", "es-US"];
 
+// The browser's speech engine is only woken when the computer voice is actually used
+// (Settings → "Computer voice for unrecorded lines"). Touching speechSynthesis at load made
+// some systems pop up a notice about a text-to-speech library on the very first lesson,
+// even though every line there is a recording (Juan, 24 Nov 2026).
 let voices = [];
+let synthUsed = false;
 function refreshVoices() {
   try { voices = window.speechSynthesis?.getVoices() || []; } catch { voices = []; }
 }
-if ("speechSynthesis" in window) {
+function wakeSynth() {
+  if (synthUsed || !("speechSynthesis" in window)) return;
+  synthUsed = true;
   refreshVoices();
   window.speechSynthesis.addEventListener?.("voiceschanged", refreshVoices);
 }
 
 function pickVoice() {
+  wakeSynth();
   if (!voices.length) refreshVoices();
   const norm = (l) => (l || "").replace("_", "-").toLowerCase();
   for (const pref of VOICE_PREFS) {
@@ -173,7 +181,7 @@ export const tts = {
     speakToken++;
     try { player?.pause(); } catch { /* ignore */ }
     endCurrent?.(false);
-    try { window.speechSynthesis?.cancel(); } catch { /* ignore */ }
+    if (synthUsed) { try { window.speechSynthesis?.cancel(); } catch { /* ignore */ } }
   },
 };
 
@@ -186,6 +194,7 @@ function synthSpeak(text, { slow = false, sayAs = {} } = {}) {
   for (const [word, say] of Object.entries(sayAs)) spoken = spoken.replaceAll(word, say);
   return new Promise((resolve) => {
     try {
+      wakeSynth();
       const synth = window.speechSynthesis;
       synth.cancel();
       const u = new SpeechSynthesisUtterance(spoken);
